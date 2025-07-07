@@ -14,7 +14,189 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      grenade_throws: {
+        Row: {
+          aim_image_url: string | null
+          created_at: string
+          description: string | null
+          difficulty: Database["public"]["Enums"]["difficulty_level"]
+          grenade_type: Database["public"]["Enums"]["grenade_type"]
+          id: string
+          is_public: boolean
+          is_verified: boolean
+          landing_point_x: number
+          landing_point_y: number
+          map_id: string
+          media_type: Database["public"]["Enums"]["media_type"]
+          name: string
+          result_image_url: string | null
+          setup_image_url: string | null
+          team: Database["public"]["Enums"]["team_type"]
+          throw_point_x: number
+          throw_point_y: number
+          throw_types: Database["public"]["Enums"]["throw_type"][]
+          thumbnail_url: string | null
+          updated_at: string
+          user_id: string | null
+          video_url: string | null
+        }
+        Insert: {
+          aim_image_url?: string | null
+          created_at?: string
+          description?: string | null
+          difficulty?: Database["public"]["Enums"]["difficulty_level"]
+          grenade_type: Database["public"]["Enums"]["grenade_type"]
+          id?: string
+          is_public?: boolean
+          is_verified?: boolean
+          landing_point_x: number
+          landing_point_y: number
+          map_id: string
+          media_type?: Database["public"]["Enums"]["media_type"]
+          name: string
+          result_image_url?: string | null
+          setup_image_url?: string | null
+          team?: Database["public"]["Enums"]["team_type"]
+          throw_point_x: number
+          throw_point_y: number
+          throw_types?: Database["public"]["Enums"]["throw_type"][]
+          thumbnail_url?: string | null
+          updated_at?: string
+          user_id?: string | null
+          video_url?: string | null
+        }
+        Update: {
+          aim_image_url?: string | null
+          created_at?: string
+          description?: string | null
+          difficulty?: Database["public"]["Enums"]["difficulty_level"]
+          grenade_type?: Database["public"]["Enums"]["grenade_type"]
+          id?: string
+          is_public?: boolean
+          is_verified?: boolean
+          landing_point_x?: number
+          landing_point_y?: number
+          map_id?: string
+          media_type?: Database["public"]["Enums"]["media_type"]
+          name?: string
+          result_image_url?: string | null
+          setup_image_url?: string | null
+          team?: Database["public"]["Enums"]["team_type"]
+          throw_point_x?: number
+          throw_point_y?: number
+          throw_types?: Database["public"]["Enums"]["throw_type"][]
+          thumbnail_url?: string | null
+          updated_at?: string
+          user_id?: string | null
+          video_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "grenade_throws_map_id_fkey"
+            columns: ["map_id"]
+            isOneToOne: false
+            referencedRelation: "maps"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "grenade_throws_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      maps: {
+        Row: {
+          created_at: string
+          display_name: string
+          id: string
+          image_url: string
+          is_active: boolean
+          name: string
+          thumbnail_url: string
+        }
+        Insert: {
+          created_at?: string
+          display_name: string
+          id?: string
+          image_url: string
+          is_active?: boolean
+          name: string
+          thumbnail_url: string
+        }
+        Update: {
+          created_at?: string
+          display_name?: string
+          id?: string
+          image_url?: string
+          is_active?: boolean
+          name?: string
+          thumbnail_url?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          id: string
+          updated_at: string
+          username: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          id: string
+          updated_at?: string
+          username?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          id?: string
+          updated_at?: string
+          username?: string | null
+        }
+        Relationships: []
+      }
+      user_favorites: {
+        Row: {
+          created_at: string
+          id: string
+          throw_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          throw_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          throw_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_favorites_throw_id_fkey"
+            columns: ["throw_id"]
+            isOneToOne: false
+            referencedRelation: "grenade_throws"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_favorites_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -23,7 +205,18 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      difficulty_level: "easy" | "medium" | "hard"
+      grenade_type: "smoke" | "flash" | "he" | "molotov" | "decoy"
+      media_type: "video" | "screenshots"
+      team_type: "ct" | "t" | "both"
+      throw_type:
+        | "standing"
+        | "jump_throw"
+        | "running_left"
+        | "running_right"
+        | "running_forward"
+        | "crouching"
+        | "walk_throw"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +343,20 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      difficulty_level: ["easy", "medium", "hard"],
+      grenade_type: ["smoke", "flash", "he", "molotov", "decoy"],
+      media_type: ["video", "screenshots"],
+      team_type: ["ct", "t", "both"],
+      throw_type: [
+        "standing",
+        "jump_throw",
+        "running_left",
+        "running_right",
+        "running_forward",
+        "crouching",
+        "walk_throw",
+      ],
+    },
   },
 } as const

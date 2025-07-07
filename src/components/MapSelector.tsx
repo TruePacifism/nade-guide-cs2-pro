@@ -1,13 +1,13 @@
 
 import React from 'react';
-import { maps } from '../data/maps';
 import { Map } from '../types/map';
 
 interface MapSelectorProps {
+  maps: Map[];
   onMapSelect: (map: Map) => void;
 }
 
-const MapSelector: React.FC<MapSelectorProps> = ({ onMapSelect }) => {
+const MapSelector: React.FC<MapSelectorProps> = ({ maps, onMapSelect }) => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
       {maps.map((map) => (
@@ -18,15 +18,15 @@ const MapSelector: React.FC<MapSelectorProps> = ({ onMapSelect }) => {
         >
           <div className="aspect-video bg-slate-700 relative overflow-hidden">
             <img
-              src={map.thumbnailUrl}
-              alt={map.displayName}
+              src={map.thumbnail_url}
+              alt={map.display_name}
               className="w-full h-full object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 to-transparent" />
             <div className="absolute bottom-4 left-4">
-              <h3 className="text-2xl font-bold text-white mb-1">{map.displayName}</h3>
+              <h3 className="text-2xl font-bold text-white mb-1">{map.display_name}</h3>
               <p className="text-orange-400 text-sm">
-                {map.throws.length} раскидок доступно
+                {map.throws?.length || 0} раскидок доступно
               </p>
             </div>
           </div>
@@ -34,7 +34,7 @@ const MapSelector: React.FC<MapSelectorProps> = ({ onMapSelect }) => {
             <div className="flex justify-between items-center">
               <div className="flex space-x-2">
                 {['smoke', 'flash', 'he', 'molotov', 'decoy'].map((type) => {
-                  const count = map.throws.filter(t => t.type === type).length;
+                  const count = map.throws?.filter(t => t.grenade_type === type).length || 0;
                   if (count === 0) return null;
                   
                   const colors = {
