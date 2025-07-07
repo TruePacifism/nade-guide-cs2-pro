@@ -55,7 +55,7 @@ const MapSelector: React.FC<MapSelectorProps> = ({ maps, onMapSelect }) => {
                   );
                 })}
               </div>
-              <button className="text-blue-400 hover:text-blue-300 font-medium">
+              <button className="text-blue-400 hover:text-blue-300 font-medium transition-colors">
                 Открыть →
               </button>
             </div>

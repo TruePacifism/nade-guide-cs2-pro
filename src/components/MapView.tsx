@@ -1,9 +1,12 @@
 
 import React, { useState } from 'react';
 import { Map, GrenadeThrow } from '../types/map';
+import { useMaps } from '@/hooks/useMaps';
 import GrenadePoint from './GrenadePoint';
 import VideoModal from './VideoModal';
-import { ArrowLeft } from 'lucide-react';
+import AddGrenadeForm from './AddGrenadeForm';
+import { ArrowLeft, Plus } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 interface MapViewProps {
   map: Map;
@@ -11,10 +14,12 @@ interface MapViewProps {
 }
 
 const MapView: React.FC<MapViewProps> = ({ map, onBack }) => {
+  const { refetch } = useMaps();
   const [selectedThrow, setSelectedThrow] = useState<GrenadeThrow | null>(null);
   const [hoveredThrow, setHoveredThrow] = useState<GrenadeThrow | null>(null);
   const [filterType, setFilterType] = useState<string>('all');
   const [filterTeam, setFilterTeam] = useState<string>('all');
+  const [showAddForm, setShowAddForm] = useState(false);
 
   const filteredThrows = (map.throws || []).filter(t => {
     const typeMatch = filterType === 'all' || t.grenade_type === filterType;
@@ -24,6 +29,10 @@ const MapView: React.FC<MapViewProps> = ({ map, onBack }) => {
 
   const grenadeTypes = ['all', 'smoke', 'flash', 'he', 'molotov', 'decoy'];
   const teams = ['all', 'ct', 't'];
+
+  const handleAddSuccess = () => {
+    refetch();
+  };
 
   return (
     <div className="relative">
@@ -40,12 +49,21 @@ const MapView: React.FC<MapViewProps> = ({ map, onBack }) => {
           <h1 className="text-3xl font-bold text-white">{map.display_name}</h1>
         </div>
         
-        {/* Filters */}
-        <div className="flex space-x-4">
+        <div className="flex items-center space-x-4">
+          {/* Add Grenade Button */}
+          <Button
+            onClick={() => setShowAddForm(true)}
+            className="bg-orange-500 hover:bg-orange-600 text-white flex items-center space-x-2"
+          >
+            <Plus size={18} />
+            <span>Добавить раскидку</span>
+          </Button>
+          
+          {/* Filters */}
           <select
             value={filterType}
             onChange={(e) => setFilterType(e.target.value)}
-            className="bg-slate-800 text-white border border-slate-600 rounded-lg px-3 py-2"
+            className="bg-slate-800 text-white border border-slate-600 rounded-lg px-3 py-2 focus:ring-2 focus:ring-orange-500 focus:border-transparent"
           >
             {grenadeTypes.map(type => (
               <option key={type} value={type}>
@@ -57,7 +75,7 @@ const MapView: React.FC<MapViewProps> = ({ map, onBack }) => {
           <select
             value={filterTeam}
             onChange={(e) => setFilterTeam(e.target.value)}
-            className="bg-slate-800 text-white border border-slate-600 rounded-lg px-3 py-2"
+            className="bg-slate-800 text-white border border-slate-600 rounded-lg px-3 py-2 focus:ring-2 focus:ring-orange-500 focus:border-transparent"
           >
             {teams.map(team => (
               <option key={team} value={team}>
@@ -176,6 +194,14 @@ const MapView: React.FC<MapViewProps> = ({ map, onBack }) => {
           onClose={() => setSelectedThrow(null)}
         />
       )}
+
+      {/* Add Grenade Form */}
+      <AddGrenadeForm
+        map={map}
+        isOpen={showAddForm}
+        onClose={() => setShowAddForm(false)}
+        onSuccess={handleAddSuccess}
+      />
     </div>
   );
 };

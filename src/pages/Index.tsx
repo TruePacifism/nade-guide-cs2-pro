@@ -4,15 +4,17 @@ import { useAuth } from '@/hooks/useAuth';
 import { useMaps } from '@/hooks/useMaps';
 import MapSelector from '../components/MapSelector';
 import MapView from '../components/MapView';
+import Settings from './Settings';
 import Auth from '../components/Auth';
 import { Map } from '../types/map';
 import { Button } from '@/components/ui/button';
-import { User, LogOut, Settings } from 'lucide-react';
+import { User, LogOut, Settings as SettingsIcon } from 'lucide-react';
 
 const Index = () => {
   const { user, profile, signOut, loading } = useAuth();
   const { data: maps, isLoading: mapsLoading } = useMaps();
   const [selectedMap, setSelectedMap] = useState<Map | null>(null);
+  const [showSettings, setShowSettings] = useState(false);
 
   const handleSignOut = async () => {
     await signOut();
@@ -28,6 +30,10 @@ const Index = () => {
 
   if (!user) {
     return <Auth />;
+  }
+
+  if (showSettings) {
+    return <Settings onBack={() => setShowSettings(false)} />;
   }
 
   if (mapsLoading) {
@@ -53,16 +59,17 @@ const Index = () => {
             <Button 
               variant="ghost" 
               size="sm" 
-              className="text-slate-300 hover:text-white"
+              onClick={() => setShowSettings(true)}
+              className="text-slate-300 hover:text-slate-900 hover:bg-slate-300 transition-colors"
             >
-              <Settings size={16} className="mr-2" />
+              <SettingsIcon size={16} className="mr-2" />
               Настройки
             </Button>
             <Button 
               variant="ghost" 
               size="sm" 
               onClick={handleSignOut}
-              className="text-slate-300 hover:text-white"
+              className="text-slate-300 hover:text-slate-900 hover:bg-slate-300 transition-colors"
             >
               <LogOut size={16} className="mr-2" />
               Выйти
