@@ -19,7 +19,9 @@ const GrenadePoint: React.FC<GrenadePointProps> = ({
   onLeave,
   isHovered
 }) => {
-  const position = isThrowPoint ? grenadeThrow.throwPoint : grenadeThrow.landingPoint;
+  const position = isThrowPoint 
+    ? { x: grenadeThrow.throw_point_x, y: grenadeThrow.throw_point_y }
+    : { x: grenadeThrow.landing_point_x, y: grenadeThrow.landing_point_y };
   
   const grenadeColors = {
     smoke: 'bg-gray-500 border-gray-300',
@@ -49,7 +51,7 @@ const GrenadePoint: React.FC<GrenadePointProps> = ({
       onMouseLeave={onLeave}
     >
       <div
-        className={`w-4 h-4 rounded-full border-2 ${grenadeColors[grenadeThrow.type]} ${
+        className={`w-4 h-4 rounded-full border-2 ${grenadeColors[grenadeThrow.grenade_type]} ${
           isThrowPoint ? 'ring-2 ring-white' : `ring-2 ${teamColors[grenadeThrow.team]}`
         } ${isHovered ? 'animate-pulse' : ''}`}
       >

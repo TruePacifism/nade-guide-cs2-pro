@@ -32,7 +32,7 @@ const VideoModal: React.FC<VideoModalProps> = ({ throw: grenadeThrow, isOpen, on
         {/* Video */}
         <div className="aspect-video bg-black">
           <iframe
-            src={grenadeThrow.videoUrl}
+            src={grenadeThrow.video_url || ''}
             className="w-full h-full"
             allowFullScreen
             title={grenadeThrow.name}
@@ -44,13 +44,13 @@ const VideoModal: React.FC<VideoModalProps> = ({ throw: grenadeThrow, isOpen, on
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center space-x-4">
               <span className={`w-4 h-4 rounded-full ${
-                grenadeThrow.type === 'smoke' ? 'bg-gray-500' :
-                grenadeThrow.type === 'flash' ? 'bg-yellow-500' :
-                grenadeThrow.type === 'he' ? 'bg-red-500' :
-                grenadeThrow.type === 'molotov' ? 'bg-orange-500' :
+                grenadeThrow.grenade_type === 'smoke' ? 'bg-gray-500' :
+                grenadeThrow.grenade_type === 'flash' ? 'bg-yellow-500' :
+                grenadeThrow.grenade_type === 'he' ? 'bg-red-500' :
+                grenadeThrow.grenade_type === 'molotov' ? 'bg-orange-500' :
                 'bg-green-500'
               }`} />
-              <span className="text-white font-medium">{grenadeThrow.type.toUpperCase()}</span>
+              <span className="text-white font-medium">{grenadeThrow.grenade_type.toUpperCase()}</span>
               
               <span className={`px-3 py-1 rounded-full text-sm ${
                 grenadeThrow.team === 'ct' ? 'bg-blue-500/20 text-blue-300' :

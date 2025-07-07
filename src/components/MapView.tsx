@@ -16,8 +16,8 @@ const MapView: React.FC<MapViewProps> = ({ map, onBack }) => {
   const [filterType, setFilterType] = useState<string>('all');
   const [filterTeam, setFilterTeam] = useState<string>('all');
 
-  const filteredThrows = map.throws.filter(t => {
-    const typeMatch = filterType === 'all' || t.type === filterType;
+  const filteredThrows = (map.throws || []).filter(t => {
+    const typeMatch = filterType === 'all' || t.grenade_type === filterType;
     const teamMatch = filterTeam === 'all' || t.team === filterTeam || t.team === 'both';
     return typeMatch && teamMatch;
   });
@@ -37,7 +37,7 @@ const MapView: React.FC<MapViewProps> = ({ map, onBack }) => {
             <ArrowLeft size={20} />
             <span>Назад к картам</span>
           </button>
-          <h1 className="text-3xl font-bold text-white">{map.displayName}</h1>
+          <h1 className="text-3xl font-bold text-white">{map.display_name}</h1>
         </div>
         
         {/* Filters */}
@@ -72,8 +72,8 @@ const MapView: React.FC<MapViewProps> = ({ map, onBack }) => {
       <div className="relative bg-slate-800 rounded-xl overflow-hidden border border-slate-700">
         <div className="aspect-video relative">
           <img
-            src={map.imageUrl}
-            alt={map.displayName}
+            src={map.image_url}
+            alt={map.display_name}
             className="w-full h-full object-cover"
           />
           
@@ -101,10 +101,10 @@ const MapView: React.FC<MapViewProps> = ({ map, onBack }) => {
               {hoveredThrow?.id === grenadeThrow.id && (
                 <svg className="absolute inset-0 pointer-events-none">
                   <line
-                    x1={`${grenadeThrow.throwPoint.x}%`}
-                    y1={`${grenadeThrow.throwPoint.y}%`}
-                    x2={`${grenadeThrow.landingPoint.x}%`}
-                    y2={`${grenadeThrow.landingPoint.y}%`}
+                    x1={`${grenadeThrow.throw_point_x}%`}
+                    y1={`${grenadeThrow.throw_point_y}%`}
+                    x2={`${grenadeThrow.landing_point_x}%`}
+                    y2={`${grenadeThrow.landing_point_y}%`}
                     stroke="#f97316"
                     strokeWidth="2"
                     strokeDasharray="5,5"
@@ -123,13 +123,13 @@ const MapView: React.FC<MapViewProps> = ({ map, onBack }) => {
             <p className="text-slate-300 text-sm mb-3">{hoveredThrow.description}</p>
             <div className="flex items-center space-x-2">
               <span className={`w-3 h-3 rounded-full ${
-                hoveredThrow.type === 'smoke' ? 'bg-gray-500' :
-                hoveredThrow.type === 'flash' ? 'bg-yellow-500' :
-                hoveredThrow.type === 'he' ? 'bg-red-500' :
-                hoveredThrow.type === 'molotov' ? 'bg-orange-500' :
+                hoveredThrow.grenade_type === 'smoke' ? 'bg-gray-500' :
+                hoveredThrow.grenade_type === 'flash' ? 'bg-yellow-500' :
+                hoveredThrow.grenade_type === 'he' ? 'bg-red-500' :
+                hoveredThrow.grenade_type === 'molotov' ? 'bg-orange-500' :
                 'bg-green-500'
               }`} />
-              <span className="text-sm text-slate-300">{hoveredThrow.type.toUpperCase()}</span>
+              <span className="text-sm text-slate-300">{hoveredThrow.grenade_type.toUpperCase()}</span>
               <span className={`text-xs px-2 py-1 rounded-full ${
                 hoveredThrow.difficulty === 'easy' ? 'bg-green-500/20 text-green-300' :
                 hoveredThrow.difficulty === 'medium' ? 'bg-yellow-500/20 text-yellow-300' :
