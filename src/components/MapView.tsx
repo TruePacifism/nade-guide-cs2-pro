@@ -7,6 +7,7 @@ import VideoModal from './VideoModal';
 import AddGrenadeForm from './AddGrenadeForm';
 import { ArrowLeft, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 
 interface MapViewProps {
   map: Map;
@@ -29,6 +30,16 @@ const MapView: React.FC<MapViewProps> = ({ map, onBack }) => {
 
   const grenadeTypes = ['all', 'smoke', 'flash', 'he', 'molotov', 'decoy'];
   const teams = ['all', 'ct', 't'];
+
+  const throwTypeLabels = {
+    standing: 'С места',
+    jump_throw: 'Jump Throw',
+    running_left: 'Влево',
+    running_right: 'Вправо',
+    running_forward: 'Вперед',
+    crouching: 'В присяде',
+    walk_throw: 'Шагом'
+  };
 
   const handleAddSuccess = () => {
     refetch();
@@ -139,7 +150,7 @@ const MapView: React.FC<MapViewProps> = ({ map, onBack }) => {
           <div className="absolute top-4 left-4 bg-black/80 backdrop-blur-sm rounded-lg p-4 max-w-xs">
             <h3 className="text-white font-bold mb-2">{hoveredThrow.name}</h3>
             <p className="text-slate-300 text-sm mb-3">{hoveredThrow.description}</p>
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-2 mb-3">
               <span className={`w-3 h-3 rounded-full ${
                 hoveredThrow.grenade_type === 'smoke' ? 'bg-gray-500' :
                 hoveredThrow.grenade_type === 'flash' ? 'bg-yellow-500' :
@@ -156,6 +167,20 @@ const MapView: React.FC<MapViewProps> = ({ map, onBack }) => {
                 {hoveredThrow.difficulty}
               </span>
             </div>
+            {/* Throw Types */}
+            {hoveredThrow.throw_types && hoveredThrow.throw_types.length > 0 && (
+              <div className="flex flex-wrap gap-1">
+                {hoveredThrow.throw_types.map((throwType) => (
+                  <Badge
+                    key={throwType}
+                    variant="outline"
+                    className="text-xs text-slate-300 border-slate-600"
+                  >
+                    {throwTypeLabels[throwType] || throwType}
+                  </Badge>
+                ))}
+              </div>
+            )}
           </div>
         )}
       </div>
