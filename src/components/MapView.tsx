@@ -1,13 +1,12 @@
-
-import React, { useState } from 'react';
-import { Map, GrenadeThrow } from '../types/map';
-import { useMaps } from '@/hooks/useMaps';
-import GrenadePoint from './GrenadePoint';
-import VideoModal from './VideoModal';
-import AddGrenadeForm from './AddGrenadeForm';
-import { ArrowLeft, Plus } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+import React, { useState } from "react";
+import { Map, GrenadeThrow, ThrowTypes } from "../types/map";
+import { useMaps } from "@/hooks/useMaps";
+import GrenadePoint from "./GrenadePoint";
+import VideoModal from "./VideoModal";
+import AddGrenadeForm from "./AddGrenadeForm";
+import { ArrowLeft, Plus } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 
 interface MapViewProps {
   map: Map;
@@ -18,28 +17,19 @@ const MapView: React.FC<MapViewProps> = ({ map, onBack }) => {
   const { refetch } = useMaps();
   const [selectedThrow, setSelectedThrow] = useState<GrenadeThrow | null>(null);
   const [hoveredThrow, setHoveredThrow] = useState<GrenadeThrow | null>(null);
-  const [filterType, setFilterType] = useState<string>('all');
-  const [filterTeam, setFilterTeam] = useState<string>('all');
+  const [filterType, setFilterType] = useState<string>("all");
+  const [filterTeam, setFilterTeam] = useState<string>("all");
   const [showAddForm, setShowAddForm] = useState(false);
 
-  const filteredThrows = (map.throws || []).filter(t => {
-    const typeMatch = filterType === 'all' || t.grenade_type === filterType;
-    const teamMatch = filterTeam === 'all' || t.team === filterTeam || t.team === 'both';
+  const filteredThrows = (map.throws || []).filter((t) => {
+    const typeMatch = filterType === "all" || t.grenade_type === filterType;
+    const teamMatch =
+      filterTeam === "all" || t.team === filterTeam || t.team === "both";
     return typeMatch && teamMatch;
   });
 
-  const grenadeTypes = ['all', 'smoke', 'flash', 'he', 'molotov', 'decoy'];
-  const teams = ['all', 'ct', 't'];
-
-  const throwTypeLabels = {
-    standing: 'С места',
-    jump_throw: 'Jump Throw',
-    running_left: 'Влево',
-    running_right: 'Вправо',
-    running_forward: 'Вперед',
-    crouching: 'В присяде',
-    walk_throw: 'Шагом'
-  };
+  const grenadeTypes = ["all", "smoke", "flash", "he", "molotov", "decoy"];
+  const teams = ["all", "ct", "t"];
 
   const handleAddSuccess = () => {
     refetch();
@@ -59,7 +49,7 @@ const MapView: React.FC<MapViewProps> = ({ map, onBack }) => {
           </button>
           <h1 className="text-3xl font-bold text-white">{map.display_name}</h1>
         </div>
-        
+
         <div className="flex items-center space-x-4">
           {/* Add Grenade Button */}
           <Button
@@ -69,28 +59,28 @@ const MapView: React.FC<MapViewProps> = ({ map, onBack }) => {
             <Plus size={18} />
             <span>Добавить раскидку</span>
           </Button>
-          
+
           {/* Filters */}
           <select
             value={filterType}
             onChange={(e) => setFilterType(e.target.value)}
             className="bg-slate-800 text-white border border-slate-600 rounded-lg px-3 py-2 focus:ring-2 focus:ring-orange-500 focus:border-transparent"
           >
-            {grenadeTypes.map(type => (
+            {grenadeTypes.map((type) => (
               <option key={type} value={type}>
-                {type === 'all' ? 'Все гранаты' : type.toUpperCase()}
+                {type === "all" ? "Все гранаты" : type.toUpperCase()}
               </option>
             ))}
           </select>
-          
+
           <select
             value={filterTeam}
             onChange={(e) => setFilterTeam(e.target.value)}
             className="bg-slate-800 text-white border border-slate-600 rounded-lg px-3 py-2 focus:ring-2 focus:ring-orange-500 focus:border-transparent"
           >
-            {teams.map(team => (
+            {teams.map((team) => (
               <option key={team} value={team}>
-                {team === 'all' ? 'Все команды' : team.toUpperCase()}
+                {team === "all" ? "Все команды" : team.toUpperCase()}
               </option>
             ))}
           </select>
@@ -103,9 +93,9 @@ const MapView: React.FC<MapViewProps> = ({ map, onBack }) => {
           <img
             src={map.image_url}
             alt={map.display_name}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-contain"
           />
-          
+
           {/* Grenade Points */}
           {filteredThrows.map((grenadeThrow) => (
             <React.Fragment key={grenadeThrow.id}>
@@ -125,7 +115,7 @@ const MapView: React.FC<MapViewProps> = ({ map, onBack }) => {
                 onLeave={() => setHoveredThrow(null)}
                 isHovered={hoveredThrow?.id === grenadeThrow.id}
               />
-              
+
               {/* Connection Line */}
               {hoveredThrow?.id === grenadeThrow.id && (
                 <svg className="absolute inset-0 pointer-events-none">
@@ -144,43 +134,58 @@ const MapView: React.FC<MapViewProps> = ({ map, onBack }) => {
             </React.Fragment>
           ))}
         </div>
-        
+
         {/* Hover Preview */}
         {hoveredThrow && (
           <div className="absolute top-4 left-4 bg-black/80 backdrop-blur-sm rounded-lg p-4 max-w-xs">
             <h3 className="text-white font-bold mb-2">{hoveredThrow.name}</h3>
-            <p className="text-slate-300 text-sm mb-3">{hoveredThrow.description}</p>
+            <p className="text-slate-300 text-sm mb-3">
+              {hoveredThrow.description}
+            </p>
             <div className="flex items-center space-x-2 mb-3">
-              <span className={`w-3 h-3 rounded-full ${
-                hoveredThrow.grenade_type === 'smoke' ? 'bg-gray-500' :
-                hoveredThrow.grenade_type === 'flash' ? 'bg-yellow-500' :
-                hoveredThrow.grenade_type === 'he' ? 'bg-red-500' :
-                hoveredThrow.grenade_type === 'molotov' ? 'bg-orange-500' :
-                'bg-green-500'
-              }`} />
-              <span className="text-sm text-slate-300">{hoveredThrow.grenade_type.toUpperCase()}</span>
-              <span className={`text-xs px-2 py-1 rounded-full ${
-                hoveredThrow.difficulty === 'easy' ? 'bg-green-500/20 text-green-300' :
-                hoveredThrow.difficulty === 'medium' ? 'bg-yellow-500/20 text-yellow-300' :
-                'bg-red-500/20 text-red-300'
-              }`}>
+              <span
+                className={`w-3 h-3 rounded-full ${
+                  hoveredThrow.grenade_type === "smoke"
+                    ? "bg-gray-500"
+                    : hoveredThrow.grenade_type === "flash"
+                    ? "bg-yellow-500"
+                    : hoveredThrow.grenade_type === "he"
+                    ? "bg-red-500"
+                    : hoveredThrow.grenade_type === "molotov"
+                    ? "bg-orange-500"
+                    : "bg-green-500"
+                }`}
+              />
+              <span className="text-sm text-slate-300">
+                {hoveredThrow.grenade_type.toUpperCase()}
+              </span>
+              <span
+                className={`text-xs px-2 py-1 rounded-full ${
+                  hoveredThrow.difficulty === "easy"
+                    ? "bg-green-500/20 text-green-300"
+                    : hoveredThrow.difficulty === "medium"
+                    ? "bg-yellow-500/20 text-yellow-300"
+                    : "bg-red-500/20 text-red-300"
+                }`}
+              >
                 {hoveredThrow.difficulty}
               </span>
             </div>
             {/* Throw Types */}
-            {hoveredThrow.throw_types && hoveredThrow.throw_types.length > 0 && (
-              <div className="flex flex-wrap gap-1">
-                {hoveredThrow.throw_types.map((throwType) => (
-                  <Badge
-                    key={throwType}
-                    variant="outline"
-                    className="text-xs text-slate-300 border-slate-600"
-                  >
-                    {throwTypeLabels[throwType] || throwType}
-                  </Badge>
-                ))}
-              </div>
-            )}
+            {hoveredThrow.throw_types &&
+              hoveredThrow.throw_types.length > 0 && (
+                <div className="flex flex-wrap gap-1">
+                  {hoveredThrow.throw_types.map((throwType) => (
+                    <Badge
+                      key={throwType}
+                      variant="outline"
+                      className="text-xs text-slate-300 border-slate-600"
+                    >
+                      {ThrowTypes[throwType] || throwType}
+                    </Badge>
+                  ))}
+                </div>
+              )}
           </div>
         )}
       </div>
@@ -188,24 +193,26 @@ const MapView: React.FC<MapViewProps> = ({ map, onBack }) => {
       {/* Stats */}
       <div className="mt-6 grid grid-cols-2 md:grid-cols-4 gap-4">
         <div className="bg-slate-800 rounded-lg p-4 border border-slate-700">
-          <div className="text-2xl font-bold text-white">{filteredThrows.length}</div>
+          <div className="text-2xl font-bold text-white">
+            {filteredThrows.length}
+          </div>
           <div className="text-slate-400">Раскидок найдено</div>
         </div>
         <div className="bg-slate-800 rounded-lg p-4 border border-slate-700">
           <div className="text-2xl font-bold text-green-400">
-            {filteredThrows.filter(t => t.difficulty === 'easy').length}
+            {filteredThrows.filter((t) => t.difficulty === "easy").length}
           </div>
           <div className="text-slate-400">Легких</div>
         </div>
         <div className="bg-slate-800 rounded-lg p-4 border border-slate-700">
           <div className="text-2xl font-bold text-yellow-400">
-            {filteredThrows.filter(t => t.difficulty === 'medium').length}
+            {filteredThrows.filter((t) => t.difficulty === "medium").length}
           </div>
           <div className="text-slate-400">Средних</div>
         </div>
         <div className="bg-slate-800 rounded-lg p-4 border border-slate-700">
           <div className="text-2xl font-bold text-red-400">
-            {filteredThrows.filter(t => t.difficulty === 'hard').length}
+            {filteredThrows.filter((t) => t.difficulty === "hard").length}
           </div>
           <div className="text-slate-400">Сложных</div>
         </div>

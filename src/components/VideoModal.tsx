@@ -1,7 +1,6 @@
-
-import React from 'react';
-import { GrenadeThrow } from '../types/map';
-import { X } from 'lucide-react';
+import React from "react";
+import { GrenadeThrow, ThrowTypes } from "../types/map";
+import { X } from "lucide-react";
 
 interface VideoModalProps {
   throw: GrenadeThrow;
@@ -9,16 +8,22 @@ interface VideoModalProps {
   onClose: () => void;
 }
 
-const VideoModal: React.FC<VideoModalProps> = ({ throw: grenadeThrow, isOpen, onClose }) => {
+const VideoModal: React.FC<VideoModalProps> = ({
+  throw: grenadeThrow,
+  isOpen,
+  onClose,
+}) => {
   if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="bg-slate-800 rounded-xl max-w-4xl w-full max-h-[90vh] overflow-hidden">
+      <div className="bg-slate-800 rounded-xl max-w-4xl w-full max-h-[90vh] overflow-y-scroll">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-slate-700">
           <div>
-            <h2 className="text-2xl font-bold text-white mb-2">{grenadeThrow.name}</h2>
+            <h2 className="text-2xl font-bold text-white mb-2">
+              {grenadeThrow.name}
+            </h2>
             <p className="text-slate-300">{grenadeThrow.description}</p>
           </div>
           <button
@@ -30,53 +35,101 @@ const VideoModal: React.FC<VideoModalProps> = ({ throw: grenadeThrow, isOpen, on
         </div>
 
         {/* Video */}
-        <div className="aspect-video bg-black">
-          <iframe
-            src={grenadeThrow.video_url || ''}
-            className="w-full h-full"
-            allowFullScreen
-            title={grenadeThrow.name}
-          />
-        </div>
+        {grenadeThrow.media_type === "video" ? (
+          <div className="aspect-video bg-black">
+            <iframe
+              src={grenadeThrow.video_url || ""}
+              className="w-full h-full"
+              allowFullScreen
+              title={grenadeThrow.name}
+            />
+          </div>
+        ) : (
+          <div>
+            <ul>
+              <li>
+                <img src={grenadeThrow.setup_image_url} alt="Куда встать" />
+                <p>Куда встать</p>
+              </li>
+              <li>
+                <img src={grenadeThrow.aim_image_url} alt="Куда прицелиться" />
+                <p>Куда прицелиться</p>
+              </li>
+              <li>
+                <img src={grenadeThrow.result_image_url} alt="Результат" />
+                <p>Результат</p>
+              </li>
+            </ul>
+          </div>
+        )}
 
         {/* Details */}
         <div className="p-6">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center space-x-4">
-              <span className={`w-4 h-4 rounded-full ${
-                grenadeThrow.grenade_type === 'smoke' ? 'bg-gray-500' :
-                grenadeThrow.grenade_type === 'flash' ? 'bg-yellow-500' :
-                grenadeThrow.grenade_type === 'he' ? 'bg-red-500' :
-                grenadeThrow.grenade_type === 'molotov' ? 'bg-orange-500' :
-                'bg-green-500'
-              }`} />
-              <span className="text-white font-medium">{grenadeThrow.grenade_type.toUpperCase()}</span>
-              
-              <span className={`px-3 py-1 rounded-full text-sm ${
-                grenadeThrow.team === 'ct' ? 'bg-blue-500/20 text-blue-300' :
-                grenadeThrow.team === 't' ? 'bg-yellow-500/20 text-yellow-300' :
-                'bg-purple-500/20 text-purple-300'
-              }`}>
-                {grenadeThrow.team === 'both' ? 'CT & T' : grenadeThrow.team.toUpperCase()}
+              <span
+                className={`w-4 h-4 rounded-full ${
+                  grenadeThrow.grenade_type === "smoke"
+                    ? "bg-gray-500"
+                    : grenadeThrow.grenade_type === "flash"
+                    ? "bg-yellow-500"
+                    : grenadeThrow.grenade_type === "he"
+                    ? "bg-red-500"
+                    : grenadeThrow.grenade_type === "molotov"
+                    ? "bg-orange-500"
+                    : "bg-green-500"
+                }`}
+              />
+              <span className="text-white font-medium">
+                {grenadeThrow.grenade_type.toUpperCase()}
               </span>
-              
-              <span className={`px-3 py-1 rounded-full text-sm ${
-                grenadeThrow.difficulty === 'easy' ? 'bg-green-500/20 text-green-300' :
-                grenadeThrow.difficulty === 'medium' ? 'bg-yellow-500/20 text-yellow-300' :
-                'bg-red-500/20 text-red-300'
-              }`}>
-                {grenadeThrow.difficulty === 'easy' ? 'Легко' :
-                 grenadeThrow.difficulty === 'medium' ? 'Средне' : 'Сложно'}
+
+              <span
+                className={`px-3 py-1 rounded-full text-sm ${
+                  grenadeThrow.team === "ct"
+                    ? "bg-blue-500/20 text-blue-300"
+                    : grenadeThrow.team === "t"
+                    ? "bg-yellow-500/20 text-yellow-300"
+                    : "bg-purple-500/20 text-purple-300"
+                }`}
+              >
+                {grenadeThrow.team === "both"
+                  ? "CT & T"
+                  : grenadeThrow.team.toUpperCase()}
               </span>
+
+              <span
+                className={`px-3 py-1 rounded-full text-sm ${
+                  grenadeThrow.difficulty === "easy"
+                    ? "bg-green-500/20 text-green-300"
+                    : grenadeThrow.difficulty === "medium"
+                    ? "bg-yellow-500/20 text-yellow-300"
+                    : "bg-red-500/20 text-red-300"
+                }`}
+              >
+                {grenadeThrow.difficulty === "easy"
+                  ? "Легко"
+                  : grenadeThrow.difficulty === "medium"
+                  ? "Средне"
+                  : "Сложно"}
+              </span>
+              {grenadeThrow.throw_types.map((type) => (
+                <span>{ThrowTypes[type]}</span>
+              ))}
             </div>
           </div>
-          
+
           <div className="bg-slate-700 rounded-lg p-4">
-            <h3 className="text-white font-medium mb-2">Инструкция по выполнению:</h3>
+            <h3 className="text-white font-medium mb-2">
+              Инструкция по выполнению:
+            </h3>
             <ol className="text-slate-300 text-sm space-y-1">
               <li>1. Встаньте в указанную точку броска</li>
-              <li>2. Наведите прицел согласно видео</li>
-              <li>3. Выполните бросок с правильной силой</li>
+              <li>
+                2. Наведите прицел согласно{" "}
+                {grenadeThrow.media_type === "video" ? "видео" : "скриншотам"}
+              </li>
+              <li>3. Выполните бросок с правильной техникой</li>
               <li>4. Граната должна попасть в целевую точку</li>
             </ol>
           </div>
