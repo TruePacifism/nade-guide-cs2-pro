@@ -1,6 +1,10 @@
 import React from "react";
 import { GrenadeThrow, ThrowTypes } from "../types/map";
-import { X } from "lucide-react";
+import { Heart, X } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
+import { useToggleFavorite, useUserFavorites } from "@/hooks/useGrenadeThrows";
+import { Button } from "./ui/button";
+import { Badge } from "./ui/badge";
 
 interface VideoModalProps {
   throw: GrenadeThrow;
@@ -14,6 +18,19 @@ const VideoModal: React.FC<VideoModalProps> = ({
   onClose,
 }) => {
   if (!isOpen) return null;
+  const { user } = useAuth();
+  const { data: userFavorites } = useUserFavorites();
+  const toggleFavorite = useToggleFavorite();
+
+  const isThrowFavorite = (throwId: string) => {
+    return userFavorites?.some((fav) => fav.throw_id === throwId) || false;
+  };
+
+  const handleToggleFavorite = (throwId: string) => {
+    if (!user) return;
+    const isFavorite = isThrowFavorite(throwId);
+    toggleFavorite.mutate({ throwId, isFavorite });
+  };
 
   return (
     <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
@@ -26,17 +43,47 @@ const VideoModal: React.FC<VideoModalProps> = ({
             </h2>
             <p className="text-slate-300">{grenadeThrow.description}</p>
           </div>
-          <button
-            onClick={onClose}
-            className="text-slate-400 hover:text-white transition-colors"
-          >
-            <X size={24} />
-          </button>
+          <div className="flex space-x-6 justify-between">
+            {user && (
+              <button
+                onClick={() => {
+                  handleToggleFavorite(grenadeThrow.id);
+                  // Add a simple effect: animate the heart on toggle
+                  const heart = document.getElementById(
+                    `heart-${grenadeThrow.id}`
+                  );
+                  if (heart) {
+                    heart.classList.remove("animate-ping");
+                    // Force reflow to restart animation
+                    void heart.offsetWidth;
+                    heart.classList.add("animate-ping");
+                  }
+                }}
+                className={`p-1 h-fit w-fit bg-transparent hover:bg-transparent group`}
+              >
+                <Heart
+                  id={`heart-${grenadeThrow.id}`}
+                  size={24}
+                  className={`transition-colors ${
+                    isThrowFavorite(grenadeThrow.id)
+                      ? "fill-red-500 text-red-500 group-hover:fill-transparent group-hover:text-slate-400"
+                      : "text-slate-400 group-hover:fill-red-500 group-hover:text-red-500"
+                  }`}
+                />
+              </button>
+            )}
+            <button
+              onClick={onClose}
+              className="text-slate-400 transition-colors hover:text-orange-500"
+            >
+              <X size={28} />
+            </button>
+          </div>
         </div>
 
         {/* Video */}
         {grenadeThrow.media_type === "video" ? (
-          <div className="aspect-video bg-black">
+          <div className="aspect-video bg-black p-6">
             <iframe
               src={grenadeThrow.video_url || ""}
               className="w-full h-full"
@@ -45,19 +92,35 @@ const VideoModal: React.FC<VideoModalProps> = ({
             />
           </div>
         ) : (
-          <div>
+          <div className="p-6">
             <ul>
-              <li>
-                <img src={grenadeThrow.setup_image_url} alt="Куда встать" />
-                <p>Куда встать</p>
+              <li className="max-w-full mb-4">
+                <img
+                  src={grenadeThrow.setup_image_url}
+                  alt="Куда встать"
+                  className="mx-auto mb-1 max-h-[60vh]"
+                />
+                <p className="text-slate-300 text-center text-xl">
+                  Куда встать
+                </p>
               </li>
-              <li>
-                <img src={grenadeThrow.aim_image_url} alt="Куда прицелиться" />
-                <p>Куда прицелиться</p>
+              <li className="max-w-full mb-4">
+                <img
+                  className="mx-auto mb-1 max-h-[60vh]"
+                  src={grenadeThrow.aim_image_url}
+                  alt="Куда прицелиться"
+                />
+                <p className="text-slate-300 text-center text-xl">
+                  Куда прицелиться
+                </p>
               </li>
-              <li>
-                <img src={grenadeThrow.result_image_url} alt="Результат" />
-                <p>Результат</p>
+              <li className="max-w-full mb-4">
+                <img
+                  className="mx-auto mb-1 max-h-[60vh]"
+                  src={grenadeThrow.result_image_url}
+                  alt="Результат"
+                />
+                <p className="text-slate-300 text-center text-xl">Результат</p>
               </li>
             </ul>
           </div>
@@ -113,8 +176,14 @@ const VideoModal: React.FC<VideoModalProps> = ({
                   ? "Средне"
                   : "Сложно"}
               </span>
-              {grenadeThrow.throw_types.map((type) => (
-                <span>{ThrowTypes[type]}</span>
+              {grenadeThrow.throw_types.map((throwType) => (
+                <Badge
+                  key={throwType}
+                  variant="outline"
+                  className="text-xs text-slate-300 border-slate-600"
+                >
+                  {ThrowTypes[throwType] || throwType}
+                </Badge>
               ))}
             </div>
           </div>

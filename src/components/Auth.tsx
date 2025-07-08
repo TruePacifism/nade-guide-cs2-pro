@@ -77,7 +77,7 @@ const Auth = ({ onSkip }: { onSkip?: () => void }) => {
             <Button
               onClick={onSkip}
               variant="outline"
-              className="mt-4 w-full border-slate-600 text-slate-300 hover:bg-slate-700"
+              className="mt-4 w-full border-slate-600 text-slate-700 hover:bg-slate-700 hover:text-slate-300"
             >
               Пропустить регистрацию
             </Button>
@@ -150,9 +150,9 @@ const Auth = ({ onSkip }: { onSkip?: () => void }) => {
                   </Label>
                   <Input
                     id="signup-username"
-                     name="username"
-                     autoComplete="username"
-                     type="text"
+                    name="username"
+                    autoComplete="username"
+                    type="text"
                     value={formData.username}
                     onChange={handleInputChange}
                     className="bg-slate-700 border-slate-600 text-white"

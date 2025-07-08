@@ -31,13 +31,13 @@ const MapView: React.FC<MapViewProps> = ({ map, onBack }) => {
     const typeMatch = filterType === "all" || t.grenade_type === filterType;
     const teamMatch =
       filterTeam === "all" || t.team === filterTeam || t.team === "both";
-    const favoriteMatch = !filterFavorites || 
-      (userFavorites?.some(fav => fav.throw_id === t.id));
+    const favoriteMatch =
+      !filterFavorites || userFavorites?.some((fav) => fav.throw_id === t.id);
     return typeMatch && teamMatch && favoriteMatch;
   });
 
   const isThrowFavorite = (throwId: string) => {
-    return userFavorites?.some(fav => fav.throw_id === throwId) || false;
+    return userFavorites?.some((fav) => fav.throw_id === throwId) || false;
   };
 
   const handleToggleFavorite = (throwId: string) => {
@@ -82,7 +82,7 @@ const MapView: React.FC<MapViewProps> = ({ map, onBack }) => {
           <select
             value={filterType}
             onChange={(e) => setFilterType(e.target.value)}
-            className="bg-slate-800 text-white border border-slate-600 rounded-lg px-3 py-2 focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+            className="bg-slate-800 text-white border border-slate-600 rounded-lg px-3 pr-6 py-2 focus:ring-2 focus:ring-orange-500 focus:border-transparent"
           >
             {grenadeTypes.map((type) => (
               <option key={type} value={type}>
@@ -94,7 +94,7 @@ const MapView: React.FC<MapViewProps> = ({ map, onBack }) => {
           <select
             value={filterTeam}
             onChange={(e) => setFilterTeam(e.target.value)}
-            className="bg-slate-800 text-white border border-slate-600 rounded-lg px-3 py-2 focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+            className="bg-slate-800 text-white border border-slate-600 rounded-lg px-3 pr-6  py-2 focus:ring-2 focus:ring-orange-500 focus:border-transparent"
           >
             {teams.map((team) => (
               <option key={team} value={team}>
@@ -106,10 +106,17 @@ const MapView: React.FC<MapViewProps> = ({ map, onBack }) => {
           {user && (
             <Button
               onClick={() => setFilterFavorites(!filterFavorites)}
-              variant={filterFavorites ? "default" : "outline"}
-              className="flex items-center space-x-2"
+              variant={filterFavorites ? "outline" : "outline"}
+              className={`flex items-center space-x-2 ${
+                filterFavorites ? "" : ""
+              }`}
             >
-              <Star size={16} />
+              <Star
+                size={16}
+                className={`transition-colors ${
+                  filterFavorites ? "fill-current" : ""
+                }`}
+              />
               <span>Избранное</span>
             </Button>
           )}
@@ -147,7 +154,7 @@ const MapView: React.FC<MapViewProps> = ({ map, onBack }) => {
 
               {/* Connection Line */}
               {hoveredThrow?.id === grenadeThrow.id && (
-                <svg className="absolute inset-0 pointer-events-none">
+                <svg className="absolute inset-0 pointer-events-none w-full h-full">
                   <line
                     x1={`${grenadeThrow.throw_point_x}%`}
                     y1={`${grenadeThrow.throw_point_y}%`}
@@ -169,21 +176,6 @@ const MapView: React.FC<MapViewProps> = ({ map, onBack }) => {
           <div className="absolute top-4 left-4 bg-black/80 backdrop-blur-sm rounded-lg p-4 max-w-xs">
             <div className="flex items-center justify-between mb-2">
               <h3 className="text-white font-bold">{hoveredThrow.name}</h3>
-              {user && (
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  onClick={() => handleToggleFavorite(hoveredThrow.id)}
-                  className="p-1 h-auto"
-                >
-                  <Heart 
-                    size={16} 
-                    className={`${isThrowFavorite(hoveredThrow.id) 
-                      ? 'fill-red-500 text-red-500' 
-                      : 'text-slate-400'}`}
-                  />
-                </Button>
-              )}
             </div>
             <p className="text-slate-300 text-sm mb-3">
               {hoveredThrow.description}

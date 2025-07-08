@@ -75,7 +75,7 @@ const Settings: React.FC<SettingsProps> = ({ onBack }) => {
           </div>
 
           {/* Уведомления */}
-          <div className="bg-slate-800 rounded-xl p-6 border border-slate-700">
+          {/* <div className="bg-slate-800 rounded-xl p-6 border border-slate-700">
             <h2 className="text-xl font-bold text-white mb-4">Уведомления</h2>
             <div className="space-y-3">
               <label className="flex items-center space-x-3">
@@ -87,7 +87,7 @@ const Settings: React.FC<SettingsProps> = ({ onBack }) => {
                 <span className="text-slate-300">Обновления карт</span>
               </label>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>
