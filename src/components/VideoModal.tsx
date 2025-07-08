@@ -33,7 +33,12 @@ const VideoModal: React.FC<VideoModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+      className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+    >
       <div className="bg-slate-800 rounded-xl max-w-4xl w-full max-h-[90vh] overflow-y-scroll">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-slate-700">

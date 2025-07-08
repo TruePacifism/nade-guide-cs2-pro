@@ -221,7 +221,12 @@ const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+      className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+    >
       <div className="bg-slate-800 rounded-xl max-w-6xl w-full max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between p-6 border-b border-slate-700">
           <h2 className="text-2xl font-bold text-white">Добавить раскидку</h2>
@@ -518,7 +523,9 @@ const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
                         }}
                       />
                       <XIcon
-                        className="absolute top-1/2 -translate-y-1/2 right-4 text-white cursor-pointer"
+                        className={`absolute top-1/2 -translate-y-1/2 right-4  text-white cursor-pointer ${
+                          !formData.video_url && "invisible"
+                        }`}
                         onClick={() => {
                           setFormData((old) => {
                             return { ...old, video_url: undefined };
@@ -552,7 +559,9 @@ const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
                         }}
                       />
                       <XIcon
-                        className="absolute top-1/2 -translate-y-1/2 right-4 text-white cursor-pointer"
+                        className={`absolute top-1/2 -translate-y-1/2 right-4 text-white cursor-pointer ${
+                          !uploadedFiles.video && "invisible"
+                        }`}
                         onClick={() => {
                           setUploadedFiles((old) => {
                             return { ...old, video: null };
@@ -589,7 +598,9 @@ const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
                         }}
                       />
                       <XIcon
-                        className="absolute top-1/2 -translate-y-1/2 right-4 text-white cursor-pointer"
+                        className={`absolute top-1/2 -translate-y-1/2 right-4 text-white cursor-pointer ${
+                          !uploadedFiles.setup_image && "invisible"
+                        }`}
                         onClick={() => {
                           setUploadedFiles((old) => {
                             return { ...old, setup_image: null };
@@ -623,7 +634,9 @@ const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
                         className="w-full bg-slate-700 border border-slate-600 rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                       />
                       <XIcon
-                        className="absolute top-1/2 -translate-y-1/2 right-4 text-white cursor-pointer"
+                        className={`absolute top-1/2 -translate-y-1/2 right-4 text-white cursor-pointer ${
+                          !uploadedFiles.aim_image && "invisible"
+                        }`}
                         onClick={() => {
                           setUploadedFiles((old) => {
                             return { ...old, aim_image: null };
@@ -658,7 +671,9 @@ const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
                         }}
                       />
                       <XIcon
-                        className="absolute top-1/2 -translate-y-1/2 right-4 text-white cursor-pointer"
+                        className={`absolute top-1/2 -translate-y-1/2 right-4 text-white cursor-pointer ${
+                          !uploadedFiles.result_image && "invisible"
+                        }`}
                         onClick={() => {
                           setUploadedFiles((old) => {
                             return { ...old, result_image: null };
