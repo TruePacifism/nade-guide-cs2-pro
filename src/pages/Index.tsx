@@ -29,7 +29,7 @@ const Index = () => {
   }
 
   if (!user) {
-    return <Auth />;
+    return <Auth onSkip={() => {/* позволяем гостевой доступ */}} />;
   }
 
   if (showSettings) {

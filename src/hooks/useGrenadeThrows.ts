@@ -34,11 +34,12 @@ export const useCreateGrenadeThrow = () => {
 
   return useMutation({
     mutationFn: async (data: CreateGrenadeThrowData) => {
-      if (!user) throw new Error("Must be logged in to create throws");
+      const currentUser = user;
+      if (!currentUser) throw new Error("Must be logged in to create throws");
 
       const { data: newThrow, error } = await supabase
         .from("grenade_throws")
-        .insert([{ ...data, user_id: user.id }])
+        .insert([{ ...data, user_id: currentUser.id }])
         .select()
         .single();
 
@@ -47,6 +48,7 @@ export const useCreateGrenadeThrow = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["grenade-throws"] });
+      queryClient.invalidateQueries({ queryKey: ["maps"] });
       toast.success("Раскидка успешно создана!");
     },
     onError: (error) => {

@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import { Map, GrenadeThrow, ThrowTypes } from "../types/map";
 import { useMaps } from "@/hooks/useMaps";
+import { useUserFavorites, useToggleFavorite } from "@/hooks/useGrenadeThrows";
+import { useAuth } from "@/hooks/useAuth";
 import GrenadePoint from "./GrenadePoint";
 import VideoModal from "./VideoModal";
 import AddGrenadeForm from "./AddGrenadeForm";
-import { ArrowLeft, Plus } from "lucide-react";
+import { ArrowLeft, Plus, Heart, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
@@ -15,18 +17,34 @@ interface MapViewProps {
 
 const MapView: React.FC<MapViewProps> = ({ map, onBack }) => {
   const { refetch } = useMaps();
+  const { user } = useAuth();
+  const { data: userFavorites } = useUserFavorites();
+  const toggleFavorite = useToggleFavorite();
   const [selectedThrow, setSelectedThrow] = useState<GrenadeThrow | null>(null);
   const [hoveredThrow, setHoveredThrow] = useState<GrenadeThrow | null>(null);
   const [filterType, setFilterType] = useState<string>("all");
   const [filterTeam, setFilterTeam] = useState<string>("all");
+  const [filterFavorites, setFilterFavorites] = useState<boolean>(false);
   const [showAddForm, setShowAddForm] = useState(false);
 
   const filteredThrows = (map.throws || []).filter((t) => {
     const typeMatch = filterType === "all" || t.grenade_type === filterType;
     const teamMatch =
       filterTeam === "all" || t.team === filterTeam || t.team === "both";
-    return typeMatch && teamMatch;
+    const favoriteMatch = !filterFavorites || 
+      (userFavorites?.some(fav => fav.throw_id === t.id));
+    return typeMatch && teamMatch && favoriteMatch;
   });
+
+  const isThrowFavorite = (throwId: string) => {
+    return userFavorites?.some(fav => fav.throw_id === throwId) || false;
+  };
+
+  const handleToggleFavorite = (throwId: string) => {
+    if (!user) return;
+    const isFavorite = isThrowFavorite(throwId);
+    toggleFavorite.mutate({ throwId, isFavorite });
+  };
 
   const grenadeTypes = ["all", "smoke", "flash", "he", "molotov", "decoy"];
   const teams = ["all", "ct", "t"];
@@ -84,6 +102,17 @@ const MapView: React.FC<MapViewProps> = ({ map, onBack }) => {
               </option>
             ))}
           </select>
+
+          {user && (
+            <Button
+              onClick={() => setFilterFavorites(!filterFavorites)}
+              variant={filterFavorites ? "default" : "outline"}
+              className="flex items-center space-x-2"
+            >
+              <Star size={16} />
+              <span>Избранное</span>
+            </Button>
+          )}
         </div>
       </div>
 
@@ -138,7 +167,24 @@ const MapView: React.FC<MapViewProps> = ({ map, onBack }) => {
         {/* Hover Preview */}
         {hoveredThrow && (
           <div className="absolute top-4 left-4 bg-black/80 backdrop-blur-sm rounded-lg p-4 max-w-xs">
-            <h3 className="text-white font-bold mb-2">{hoveredThrow.name}</h3>
+            <div className="flex items-center justify-between mb-2">
+              <h3 className="text-white font-bold">{hoveredThrow.name}</h3>
+              {user && (
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={() => handleToggleFavorite(hoveredThrow.id)}
+                  className="p-1 h-auto"
+                >
+                  <Heart 
+                    size={16} 
+                    className={`${isThrowFavorite(hoveredThrow.id) 
+                      ? 'fill-red-500 text-red-500' 
+                      : 'text-slate-400'}`}
+                  />
+                </Button>
+              )}
+            </div>
             <p className="text-slate-300 text-sm mb-3">
               {hoveredThrow.description}
             </p>

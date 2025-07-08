@@ -12,6 +12,7 @@ import {
 import { X, Upload } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import GrenadePoint from "./GrenadePoint";
+import { toast } from "sonner";
 
 interface AddGrenadeFormProps {
   map: Map;
@@ -116,6 +117,23 @@ const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) return;
+
+    if ((formData.throw_point_x === 0 && formData.throw_point_y === 0) || 
+        (formData.landing_point_x === 0 && formData.landing_point_y === 0)) {
+      toast.error('Пожалуйста, укажите точки броска и попадания на карте');
+      return;
+    }
+
+    // Проверяем обязательные медиа
+    if (formData.media_type === 'video' && !formData.video_url && !uploadedFiles.video) {
+      toast.error('Видео обязательно при создании раскидки');
+      return;
+    }
+    if (formData.media_type === 'screenshots' && 
+        !uploadedFiles.setup_image && !uploadedFiles.aim_image && !uploadedFiles.result_image) {
+      toast.error('Хотя бы одно изображение обязательно при создании раскидки');
+      return;
+    }
 
     setLoading(true);
     try {

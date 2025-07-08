@@ -13,7 +13,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 
-const Auth = () => {
+const Auth = ({ onSkip }: { onSkip?: () => void }) => {
   const { signIn, signUp } = useAuth();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -73,6 +73,15 @@ const Auth = () => {
           <CardDescription className="text-slate-300">
             Войдите или создайте аккаунт для сохранения своих раскидок
           </CardDescription>
+          {onSkip && (
+            <Button
+              onClick={onSkip}
+              variant="outline"
+              className="mt-4 w-full border-slate-600 text-slate-300 hover:bg-slate-700"
+            >
+              Пропустить регистрацию
+            </Button>
+          )}
         </CardHeader>
         <CardContent>
           <Tabs defaultValue="signin" className="w-full">
@@ -141,9 +150,9 @@ const Auth = () => {
                   </Label>
                   <Input
                     id="signup-username"
-                    name="username"
-                    autoComplete="nickname"
-                    type="text"
+                     name="username"
+                     autoComplete="username"
+                     type="text"
                     value={formData.username}
                     onChange={handleInputChange}
                     className="bg-slate-700 border-slate-600 text-white"
