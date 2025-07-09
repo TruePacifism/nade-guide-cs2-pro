@@ -22,6 +22,12 @@ const VideoModal: React.FC<VideoModalProps> = ({
   const { data: userFavorites } = useUserFavorites();
   const toggleFavorite = useToggleFavorite();
 
+  const isNewThrow = (createdAt: string) => {
+    const twoWeeksAgo = new Date();
+    twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14);
+    return new Date(createdAt) > twoWeeksAgo;
+  };
+
   const isThrowFavorite = (throwId: string) => {
     return userFavorites?.some((fav) => fav.throw_id === throwId) || false;
   };
@@ -43,9 +49,16 @@ const VideoModal: React.FC<VideoModalProps> = ({
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-slate-700">
           <div>
-            <h2 className="text-2xl font-bold text-white mb-2">
-              {grenadeThrow.name}
-            </h2>
+            <div className="flex items-center space-x-3 mb-2">
+              <h2 className="text-2xl font-bold text-white">
+                {grenadeThrow.name}
+              </h2>
+              {isNewThrow(grenadeThrow.created_at) && (
+                <Badge variant="outline" className="bg-green-500/20 text-green-300 border-green-500">
+                  НОВОЕ
+                </Badge>
+              )}
+            </div>
             <p className="text-slate-300">{grenadeThrow.description}</p>
           </div>
           <div className="flex space-x-6 justify-between">

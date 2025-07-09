@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -13,14 +14,21 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 
-const Auth = ({ onSkip }: { onSkip?: () => void }) => {
-  const { signIn, signUp } = useAuth();
+const Auth = () => {
+  const { signIn, signUp, user } = useAuth();
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
     username: "",
   });
+
+  useEffect(() => {
+    if (user) {
+      navigate("/");
+    }
+  }, [user, navigate]);
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,6 +40,7 @@ const Auth = ({ onSkip }: { onSkip?: () => void }) => {
       toast.error("Ошибка входа: " + error.message);
     } else {
       toast.success("Вход выполнен успешно!");
+      navigate("/");
     }
 
     setLoading(false);
@@ -63,6 +72,10 @@ const Auth = ({ onSkip }: { onSkip?: () => void }) => {
     });
   };
 
+  const handleSkip = () => {
+    navigate("/");
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center p-4">
       <Card className="w-full max-w-md bg-slate-800 border-slate-700">
@@ -73,28 +86,26 @@ const Auth = ({ onSkip }: { onSkip?: () => void }) => {
           <CardDescription className="text-slate-300">
             Войдите или создайте аккаунт для сохранения своих раскидок
           </CardDescription>
-          {onSkip && (
-            <Button
-              onClick={onSkip}
-              variant="outline"
-              className="mt-4 w-full border-slate-600 text-slate-700 hover:bg-slate-700 hover:text-slate-300"
-            >
-              Пропустить регистрацию
-            </Button>
-          )}
+          <Button
+            onClick={handleSkip}
+            variant="outline"
+            className="mt-4 w-full border-slate-600 text-slate-300 hover:bg-slate-700 hover:text-white transition-colors"
+          >
+            Пропустить регистрацию
+          </Button>
         </CardHeader>
         <CardContent>
           <Tabs defaultValue="signin" className="w-full">
             <TabsList className="grid w-full grid-cols-2 bg-slate-700">
               <TabsTrigger
                 value="signin"
-                className="text-slate-300 data-[state=active]:slate-700"
+                className="text-slate-300 data-[state=active]:bg-slate-600 data-[state=active]:text-white"
               >
                 Вход
               </TabsTrigger>
               <TabsTrigger
                 value="signup"
-                className="text-slate-300 data-[state=active]:slate-700"
+                className="text-slate-300 data-[state=active]:bg-slate-600 data-[state=active]:text-white"
               >
                 Регистрация
               </TabsTrigger>
