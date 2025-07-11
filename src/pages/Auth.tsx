@@ -95,7 +95,7 @@ const Auth = () => {
           onClick={() => navigate("/")}
           variant="ghost"
           size="sm"
-          className="flex items-center space-x-2 text-slate-300 hover:text-white transition-colors"
+          className="flex items-center space-x-2 text-slate-300 hover:text-slate-800 transition-colors"
         >
           <ArrowLeft size={20} />
           <span className="hidden sm:inline">Назад к картам</span>
@@ -271,7 +271,7 @@ const Auth = () => {
                 onClick={handleSkip}
                 variant="ghost"
                 size="sm"
-                className="text-slate-400 hover:text-slate-300 text-sm"
+                className="text-slate-400 hover:text-slate-800 text-sm"
               >
                 Пропустить авторизацию
               </Button>

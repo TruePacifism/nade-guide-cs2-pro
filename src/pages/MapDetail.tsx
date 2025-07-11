@@ -97,7 +97,7 @@ const MapDetail = () => {
               onClick={() => navigate("/")}
               variant="ghost"
               size="sm"
-              className="flex items-center space-x-1 sm:space-x-2 text-slate-300 hover:text-white transition-colors"
+              className="flex items-center space-x-1 sm:space-x-2 text-slate-300 hover:text-slate-800 transition-colors"
             >
               <ArrowLeft size={18} className="sm:w-5 sm:h-5" />
               <span className="text-sm sm:text-base">Назад</span>
@@ -293,7 +293,9 @@ const MapDetail = () => {
             <div className="text-xl sm:text-2xl font-bold text-white">
               {filteredThrows.length}
             </div>
-            <div className="text-slate-400 text-sm sm:text-base">Раскидок найдено</div>
+            <div className="text-slate-400 text-sm sm:text-base">
+              Раскидок найдено
+            </div>
           </div>
           <div className="bg-slate-800 rounded-lg p-3 sm:p-4 border border-slate-700">
             <div className="text-xl sm:text-2xl font-bold text-green-400">
