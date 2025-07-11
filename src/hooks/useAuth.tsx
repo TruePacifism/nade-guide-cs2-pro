@@ -14,6 +14,7 @@ interface AuthContextType {
     username?: string
   ) => Promise<{ error: any }>;
   signIn: (email: string, password: string) => Promise<{ error: any }>;
+  signInWithGoogle: () => Promise<{ error: any }>;
   signOut: () => Promise<{ error: any }>;
   updateProfile: (updates: Partial<UserProfile>) => Promise<{ error: any }>;
 }
@@ -89,6 +90,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     return { error };
   };
 
+  const signInWithGoogle = async () => {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: `${window.location.origin}/`,
+      },
+    });
+    return { error };
+  };
+
   const signOut = async () => {
     const { error } = await supabase.auth.signOut();
     return { error };
@@ -118,6 +129,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         loading,
         signUp,
         signIn,
+        signInWithGoogle,
         signOut,
         updateProfile,
       }}

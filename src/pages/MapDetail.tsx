@@ -89,89 +89,94 @@ const MapDetail = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
-      <div className="container mx-auto px-4 py-8">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center space-x-4">
+      <div className="container mx-auto px-4 py-6 sm:py-8">
+        {/* Mobile-first Header */}
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-6 gap-4">
+          <div className="flex items-center space-x-2 sm:space-x-4">
             <Button
               onClick={() => navigate("/")}
               variant="ghost"
-              className="flex items-center space-x-2 text-slate-300 hover:text-slate-800 transition-colors"
+              size="sm"
+              className="flex items-center space-x-1 sm:space-x-2 text-slate-300 hover:text-white transition-colors"
             >
-              <ArrowLeft size={20} />
-              <span>Назад к картам</span>
+              <ArrowLeft size={18} className="sm:w-5 sm:h-5" />
+              <span className="text-sm sm:text-base">Назад</span>
             </Button>
-            <h1 className="text-3xl font-bold text-white">
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white truncate">
               {map.display_name}
             </h1>
           </div>
 
-          <div className="flex items-center space-x-4">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 lg:gap-4">
             {/* Add Grenade Button */}
             <Button
               onClick={() => setShowAddForm(true)}
-              className="bg-orange-500 hover:bg-orange-600 text-white flex items-center space-x-2"
+              size="sm"
+              className="bg-orange-500 hover:bg-orange-600 text-white flex items-center justify-center space-x-1 sm:space-x-2 order-last sm:order-first"
             >
-              <Plus size={18} />
-              <span>Добавить раскидку</span>
+              <Plus size={16} className="sm:w-4 sm:h-4" />
+              <span className="text-sm sm:text-base">Добавить</span>
             </Button>
 
-            {/* Filters */}
-            <Select value={filterType} onValueChange={setFilterType}>
-              <SelectTrigger className="w-48 bg-slate-800 text-white border-slate-600">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent className="bg-slate-800 border-slate-600">
-                {grenadeTypes.map((type) => (
-                  <SelectItem
-                    key={type.value}
-                    value={type.value}
-                    className="text-white hover:bg-slate-700"
-                  >
-                    {type.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            {/* Filters Row */}
+            <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 lg:gap-4 w-full sm:w-auto">
+              <Select value={filterType} onValueChange={setFilterType}>
+                <SelectTrigger className="w-full sm:w-40 lg:w-48 bg-slate-800 text-white border-slate-600 text-sm">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent className="bg-slate-800 border-slate-600">
+                  {grenadeTypes.map((type) => (
+                    <SelectItem
+                      key={type.value}
+                      value={type.value}
+                      className="text-white hover:bg-slate-700 text-sm"
+                    >
+                      {type.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
 
-            <Select value={filterTeam} onValueChange={setFilterTeam}>
-              <SelectTrigger className="w-48 bg-slate-800 text-white border-slate-600">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent className="bg-slate-800 border-slate-600">
-                {teams.map((team) => (
-                  <SelectItem
-                    key={team.value}
-                    value={team.value}
-                    className="text-white hover:bg-slate-700"
-                  >
-                    {team.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+              <Select value={filterTeam} onValueChange={setFilterTeam}>
+                <SelectTrigger className="w-full sm:w-40 lg:w-48 bg-slate-800 text-white border-slate-600 text-sm">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent className="bg-slate-800 border-slate-600">
+                  {teams.map((team) => (
+                    <SelectItem
+                      key={team.value}
+                      value={team.value}
+                      className="text-white hover:bg-slate-700 text-sm"
+                    >
+                      {team.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
 
-            {user && (
-              <Button
-                onClick={() => setFilterFavorites(!filterFavorites)}
-                variant="outline"
-                className="flex items-center space-x-2"
-              >
-                <Star
-                  size={16}
-                  className={`transition-colors ${
-                    filterFavorites ? "fill-current" : ""
-                  }`}
-                />
-                <span>Избранное</span>
-              </Button>
-            )}
+              {user && (
+                <Button
+                  onClick={() => setFilterFavorites(!filterFavorites)}
+                  variant="outline"
+                  size="sm"
+                  className="flex items-center justify-center space-x-1 sm:space-x-2 w-full sm:w-auto"
+                >
+                  <Star
+                    size={14}
+                    className={`transition-colors ${
+                      filterFavorites ? "fill-current" : ""
+                    }`}
+                  />
+                  <span className="text-sm">Избранное</span>
+                </Button>
+              )}
+            </div>
           </div>
         </div>
 
         {/* Map Container */}
-        <div className="relative bg-slate-800 rounded-xl overflow-hidden border border-slate-700">
-          <div className="aspect-video relative">
+        <div className="relative bg-slate-800 rounded-lg sm:rounded-xl overflow-hidden border border-slate-700">
+          <div className="aspect-video relative touch-pan-x touch-pan-y">
             <img
               src={map.image_url}
               alt={map.display_name}
@@ -219,7 +224,7 @@ const MapDetail = () => {
 
           {/* Hover Preview */}
           {hoveredThrow && (
-            <div className="absolute top-4 left-4 bg-black/80 backdrop-blur-sm rounded-lg p-4 max-w-xs">
+            <div className="absolute top-2 left-2 sm:top-4 sm:left-4 bg-black/90 backdrop-blur-sm rounded-lg p-3 sm:p-4 max-w-xs z-10 text-xs sm:text-sm">
               <div className="flex items-center justify-between mb-2">
                 <h3 className="text-white font-bold">{hoveredThrow.name}</h3>
                 {isNewThrow(hoveredThrow.created_at) && (
@@ -283,30 +288,30 @@ const MapDetail = () => {
         </div>
 
         {/* Stats */}
-        <div className="mt-6 grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="bg-slate-800 rounded-lg p-4 border border-slate-700">
-            <div className="text-2xl font-bold text-white">
+        <div className="mt-4 sm:mt-6 grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+          <div className="bg-slate-800 rounded-lg p-3 sm:p-4 border border-slate-700">
+            <div className="text-xl sm:text-2xl font-bold text-white">
               {filteredThrows.length}
             </div>
-            <div className="text-slate-400">Раскидок найдено</div>
+            <div className="text-slate-400 text-sm sm:text-base">Раскидок найдено</div>
           </div>
-          <div className="bg-slate-800 rounded-lg p-4 border border-slate-700">
-            <div className="text-2xl font-bold text-green-400">
+          <div className="bg-slate-800 rounded-lg p-3 sm:p-4 border border-slate-700">
+            <div className="text-xl sm:text-2xl font-bold text-green-400">
               {filteredThrows.filter((t) => t.difficulty === "easy").length}
             </div>
-            <div className="text-slate-400">Легких</div>
+            <div className="text-slate-400 text-sm sm:text-base">Легких</div>
           </div>
-          <div className="bg-slate-800 rounded-lg p-4 border border-slate-700">
-            <div className="text-2xl font-bold text-yellow-400">
+          <div className="bg-slate-800 rounded-lg p-3 sm:p-4 border border-slate-700">
+            <div className="text-xl sm:text-2xl font-bold text-yellow-400">
               {filteredThrows.filter((t) => t.difficulty === "medium").length}
             </div>
-            <div className="text-slate-400">Средних</div>
+            <div className="text-slate-400 text-sm sm:text-base">Средних</div>
           </div>
-          <div className="bg-slate-800 rounded-lg p-4 border border-slate-700">
-            <div className="text-2xl font-bold text-red-400">
+          <div className="bg-slate-800 rounded-lg p-3 sm:p-4 border border-slate-700">
+            <div className="text-xl sm:text-2xl font-bold text-red-400">
               {filteredThrows.filter((t) => t.difficulty === "hard").length}
             </div>
-            <div className="text-slate-400">Сложных</div>
+            <div className="text-slate-400 text-sm sm:text-base">Сложных</div>
           </div>
         </div>
 

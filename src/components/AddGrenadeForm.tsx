@@ -225,11 +225,11 @@ const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
-      className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+      className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-2 sm:p-4"
     >
-      <div className="bg-slate-800 rounded-xl max-w-6xl w-full max-h-[90vh] overflow-y-auto">
-        <div className="flex items-center justify-between p-6 border-b border-slate-700">
-          <h2 className="text-2xl font-bold text-white">Добавить раскидку</h2>
+      <div className="bg-slate-800 rounded-lg sm:rounded-xl max-w-6xl w-full max-h-[95vh] sm:max-h-[90vh] overflow-y-auto">
+        <div className="flex items-center justify-between p-4 sm:p-6 border-b border-slate-700">
+          <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-white">Добавить раскидку</h2>
           <button
             onClick={onClose}
             className="text-slate-400 hover:text-white transition-colors"
@@ -238,10 +238,10 @@ const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
           </button>
         </div>
 
-        <div className="flex">
+        <div className="flex flex-col lg:flex-row">
           {/* Map Preview */}
-          <div className="w-1/2 p-6">
-            <h3 className="text-lg font-bold text-white mb-4">
+          <div className="w-full lg:w-1/2 p-4 sm:p-6">
+            <h3 className="text-base sm:text-lg font-bold text-white mb-3 sm:mb-4">
               {isSelectingCoordinates
                 ? `Кликните на карту для ${
                     coordinateMode === "throw"
@@ -316,29 +316,31 @@ const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
               </svg>
             </div>
 
-            <div className="flex space-x-2 mt-4">
+            <div className="flex flex-col sm:flex-row gap-2 sm:gap-0 sm:space-x-2 mt-3 sm:mt-4">
               <Button
                 type="button"
                 onClick={() => startCoordinateSelection("throw")}
-                className="bg-orange-500 hover:bg-orange-600 text-white"
+                size="sm"
+                className="bg-orange-500 hover:bg-orange-600 text-white text-xs sm:text-sm"
                 disabled={isSelectingCoordinates}
               >
-                Выбрать точку броска
+                Точка броска
               </Button>
               <Button
                 type="button"
                 onClick={() => startCoordinateSelection("landing")}
-                className="bg-blue-500 hover:bg-blue-600 text-white"
+                size="sm"
+                className="bg-blue-500 hover:bg-blue-600 text-white text-xs sm:text-sm"
                 disabled={isSelectingCoordinates}
               >
-                Выбрать точку падения
+                Точка падения
               </Button>
             </div>
           </div>
 
           {/* Form */}
-          <div className="w-1/2 p-6">
-            <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="w-full lg:w-1/2 p-4 sm:p-6">
+            <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
               <div>
                 <label className="block text-sm font-medium text-slate-300 mb-2">
                   Название раскидки *
@@ -368,7 +370,7 @@ const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
                 />
               </div>
 
-              <div className="grid grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
                 <div>
                   <label className="block text-sm font-medium text-slate-300 mb-2">
                     Тип гранаты *
@@ -459,12 +461,12 @@ const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
                 </div>
               </div>
 
-              {/* Media Type Selection */}
+                {/* Media Type Selection */}
               <div>
                 <label className="block text-sm font-medium text-slate-300 mb-2">
                   Тип медиа *
                 </label>
-                <div className="flex space-x-4">
+                <div className="flex flex-col sm:flex-row gap-2 sm:gap-0 sm:space-x-4">
                   <label className="flex items-center space-x-2">
                     <input
                       type="radio"
@@ -689,12 +691,12 @@ const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
                 </div>
               )}
 
-              <div className="flex justify-end space-x-4 pt-4 border-t border-slate-700">
+              <div className="flex flex-col sm:flex-row justify-end gap-2 sm:gap-0 sm:space-x-4 pt-4 border-t border-slate-700">
                 <Button
                   type="button"
                   variant="ghost"
                   onClick={onClose}
-                  className="text-slate-300 hover:text-white hover:bg-slate-700"
+                  className="text-slate-300 hover:text-white hover:bg-slate-700 order-last sm:order-first"
                 >
                   Отмена
                 </Button>
@@ -712,7 +714,7 @@ const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
                         !uploadedFiles.setup_image ||
                         !uploadedFiles.result_image))
                   }
-                  className="bg-orange-500 hover:bg-orange-600 text-white disabled:opacity-50"
+                  className="bg-orange-500 hover:bg-orange-600 text-white disabled:opacity-50 order-first sm:order-last"
                 >
                   {loading ? "Создание..." : "Создать раскидку"}
                 </Button>
