@@ -298,7 +298,7 @@ const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
                   style={{
                     visibility: `${
                       (formData.throw_point_x === 0 &&
-                        formData.throw_point_y) ||
+                        formData.throw_point_y === 0) ||
                       (formData.landing_point_x === 0 &&
                         formData.landing_point_y === 0)
                         ? "hidden"

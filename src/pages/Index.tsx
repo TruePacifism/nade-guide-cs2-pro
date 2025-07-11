@@ -1,12 +1,11 @@
-
-import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { useAuth } from '@/hooks/useAuth';
-import { useMaps } from '@/hooks/useMaps';
-import MapSelector from '../components/MapSelector';
-import Settings from './Settings';
-import { Button } from '@/components/ui/button';
-import { User, LogOut, Settings as SettingsIcon } from 'lucide-react';
+import React, { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
+import { useMaps } from "@/hooks/useMaps";
+import MapSelector from "../components/MapSelector";
+import Settings from "./Settings";
+import { Button } from "@/components/ui/button";
+import { User, LogOut, Settings as SettingsIcon } from "lucide-react";
 
 const Index = () => {
   const { user, profile, signOut, loading } = useAuth();
@@ -36,7 +35,8 @@ const Index = () => {
               CS2 Grenade Throws
             </h1>
             <p className="text-xl text-slate-300 max-w-2xl mx-auto mb-8">
-              Изучите лучшие раскидки гранат для Counter-Strike 2. Выберите карту и откройте для себя профессиональные тактики.
+              Изучите лучшие раскидки гранат для Counter-Strike 2. Выберите
+              карту и откройте для себя профессиональные тактики.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link to="/auth">
@@ -44,19 +44,17 @@ const Index = () => {
                   Войти / Регистрация
                 </Button>
               </Link>
-              <Button 
-                variant="outline" 
-                onClick={() => {/* гостевой доступ */}}
-                className="border-slate-600 text-slate-300 hover:bg-slate-700 hover:text-white px-8 py-3 text-lg"
-              >
-                Продолжить как гость
-              </Button>
             </div>
           </div>
           {mapsLoading ? (
-            <div className="text-center text-white text-xl">Загрузка карт...</div>
+            <div className="text-center text-white text-xl">
+              Загрузка карт...
+            </div>
           ) : (
-            <MapSelector maps={maps || []} onMapSelect={(map) => navigate(`/map/${map.id}`)} />
+            <MapSelector
+              maps={maps || []}
+              onMapSelect={(map) => navigate(`/map/${map.id}`)}
+            />
           )}
         </div>
       </div>
@@ -87,18 +85,18 @@ const Index = () => {
             </div>
           </div>
           <div className="flex items-center space-x-2">
-            <Button 
-              variant="ghost" 
-              size="sm" 
+            <Button
+              variant="ghost"
+              size="sm"
               onClick={() => setShowSettings(true)}
               className="text-slate-300 hover:text-slate-900 hover:bg-slate-300 transition-colors"
             >
               <SettingsIcon size={16} className="mr-2" />
               Настройки
             </Button>
-            <Button 
-              variant="ghost" 
-              size="sm" 
+            <Button
+              variant="ghost"
+              size="sm"
               onClick={handleSignOut}
               className="text-slate-300 hover:text-slate-900 hover:bg-slate-300 transition-colors"
             >
@@ -113,10 +111,14 @@ const Index = () => {
             CS2 Grenade Throws
           </h1>
           <p className="text-xl text-slate-300 max-w-2xl mx-auto">
-            Изучите лучшие раскидки гранат для Counter-Strike 2. Выберите карту и откройте для себя профессиональные тактики.
+            Изучите лучшие раскидки гранат для Counter-Strike 2. Выберите карту
+            и откройте для себя профессиональные тактики.
           </p>
         </div>
-        <MapSelector maps={maps || []} onMapSelect={(map) => navigate(`/map/${map.id}`)} />
+        <MapSelector
+          maps={maps || []}
+          onMapSelect={(map) => navigate(`/map/${map.id}`)}
+        />
       </div>
     </div>
   );

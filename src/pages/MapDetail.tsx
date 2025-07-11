@@ -10,7 +10,13 @@ import AddGrenadeForm from "../components/AddGrenadeForm";
 import { ArrowLeft, Plus, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const MapDetail = () => {
   const { mapId } = useParams<{ mapId: string }>();
@@ -19,7 +25,7 @@ const MapDetail = () => {
   const { data: maps, refetch } = useMaps();
   const { data: userFavorites } = useUserFavorites();
   const toggleFavorite = useToggleFavorite();
-  
+
   const [selectedThrow, setSelectedThrow] = useState<GrenadeThrow | null>(null);
   const [hoveredThrow, setHoveredThrow] = useState<GrenadeThrow | null>(null);
   const [filterType, setFilterType] = useState<string>("all");
@@ -27,7 +33,7 @@ const MapDetail = () => {
   const [filterFavorites, setFilterFavorites] = useState<boolean>(false);
   const [showAddForm, setShowAddForm] = useState(false);
 
-  const map = maps?.find(m => m.id === mapId);
+  const map = maps?.find((m) => m.id === mapId);
 
   if (!map) {
     return (
@@ -45,8 +51,10 @@ const MapDetail = () => {
 
   const filteredThrows = (map.throws || []).filter((t) => {
     const typeMatch = filterType === "all" || t.grenade_type === filterType;
-    const teamMatch = filterTeam === "all" || t.team === filterTeam || t.team === "both";
-    const favoriteMatch = !filterFavorites || userFavorites?.some((fav) => fav.throw_id === t.id);
+    const teamMatch =
+      filterTeam === "all" || t.team === filterTeam || t.team === "both";
+    const favoriteMatch =
+      !filterFavorites || userFavorites?.some((fav) => fav.throw_id === t.id);
     return typeMatch && teamMatch && favoriteMatch;
   });
 
@@ -66,13 +74,13 @@ const MapDetail = () => {
     { value: "flash", label: "FLASH" },
     { value: "he", label: "HE" },
     { value: "molotov", label: "MOLOTOV" },
-    { value: "decoy", label: "DECOY" }
+    { value: "decoy", label: "DECOY" },
   ];
 
   const teams = [
     { value: "all", label: "Все команды" },
     { value: "ct", label: "CT" },
-    { value: "t", label: "T" }
+    { value: "t", label: "T" },
   ];
 
   const handleAddSuccess = () => {
@@ -88,12 +96,14 @@ const MapDetail = () => {
             <Button
               onClick={() => navigate("/")}
               variant="ghost"
-              className="flex items-center space-x-2 text-slate-300 hover:text-white transition-colors"
+              className="flex items-center space-x-2 text-slate-300 hover:text-slate-800 transition-colors"
             >
               <ArrowLeft size={20} />
               <span>Назад к картам</span>
             </Button>
-            <h1 className="text-3xl font-bold text-white">{map.display_name}</h1>
+            <h1 className="text-3xl font-bold text-white">
+              {map.display_name}
+            </h1>
           </div>
 
           <div className="flex items-center space-x-4">
@@ -113,7 +123,11 @@ const MapDetail = () => {
               </SelectTrigger>
               <SelectContent className="bg-slate-800 border-slate-600">
                 {grenadeTypes.map((type) => (
-                  <SelectItem key={type.value} value={type.value} className="text-white hover:bg-slate-700">
+                  <SelectItem
+                    key={type.value}
+                    value={type.value}
+                    className="text-white hover:bg-slate-700"
+                  >
                     {type.label}
                   </SelectItem>
                 ))}
@@ -126,7 +140,11 @@ const MapDetail = () => {
               </SelectTrigger>
               <SelectContent className="bg-slate-800 border-slate-600">
                 {teams.map((team) => (
-                  <SelectItem key={team.value} value={team.value} className="text-white hover:bg-slate-700">
+                  <SelectItem
+                    key={team.value}
+                    value={team.value}
+                    className="text-white hover:bg-slate-700"
+                  >
                     {team.label}
                   </SelectItem>
                 ))}
@@ -136,7 +154,7 @@ const MapDetail = () => {
             {user && (
               <Button
                 onClick={() => setFilterFavorites(!filterFavorites)}
-                variant={filterFavorites ? "default" : "outline"}
+                variant="outline"
                 className="flex items-center space-x-2"
               >
                 <Star
@@ -205,7 +223,10 @@ const MapDetail = () => {
               <div className="flex items-center justify-between mb-2">
                 <h3 className="text-white font-bold">{hoveredThrow.name}</h3>
                 {isNewThrow(hoveredThrow.created_at) && (
-                  <Badge variant="outline" className="bg-green-500/20 text-green-300 border-green-500">
+                  <Badge
+                    variant="outline"
+                    className="bg-green-500/20 text-green-300 border-green-500"
+                  >
                     НОВОЕ
                   </Badge>
                 )}

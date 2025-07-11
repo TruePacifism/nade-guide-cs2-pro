@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
+import { ArrowLeft } from "lucide-react";
 
 const Auth = () => {
   const { signIn, signUp, user } = useAuth();
@@ -78,139 +79,146 @@ const Auth = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center p-4">
-      <Card className="w-full max-w-md bg-slate-800 border-slate-700">
-        <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-bold text-white">
-            CS2 Grenade Throws
-          </CardTitle>
-          <CardDescription className="text-slate-300">
-            Войдите или создайте аккаунт для сохранения своих раскидок
-          </CardDescription>
+      <div className="flex items-center justify-between mb-6 absolute top-8 left-4">
+        <div className="flex items-center space-x-4">
           <Button
-            onClick={handleSkip}
-            variant="outline"
-            className="mt-4 w-full border-slate-600 text-slate-300 hover:bg-slate-700 hover:text-white transition-colors"
+            onClick={() => navigate("/")}
+            variant="ghost"
+            className="flex items-center space-x-2 text-slate-300 hover:text-slate-800 transition-colors"
           >
-            Пропустить регистрацию
+            <ArrowLeft size={20} />
+            <span>Назад к картам</span>
           </Button>
-        </CardHeader>
-        <CardContent>
-          <Tabs defaultValue="signin" className="w-full">
-            <TabsList className="grid w-full grid-cols-2 bg-slate-700">
-              <TabsTrigger
-                value="signin"
-                className="text-slate-300 data-[state=active]:bg-slate-600 data-[state=active]:text-white"
-              >
-                Вход
-              </TabsTrigger>
-              <TabsTrigger
-                value="signup"
-                className="text-slate-300 data-[state=active]:bg-slate-600 data-[state=active]:text-white"
-              >
-                Регистрация
-              </TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="signin">
-              <form onSubmit={handleSignIn} className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="signin-email" className="text-slate-300">
-                    Email
-                  </Label>
-                  <Input
-                    id="signin-email"
-                    name="email"
-                    autoComplete="email"
-                    type="email"
-                    value={formData.email}
-                    onChange={handleInputChange}
-                    required
-                    className="bg-slate-700 border-slate-600 text-white"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="signin-password" className="text-slate-300">
-                    Пароль
-                  </Label>
-                  <Input
-                    id="signin-password"
-                    name="password"
-                    autoComplete="current-password"
-                    type="password"
-                    value={formData.password}
-                    onChange={handleInputChange}
-                    required
-                    className="bg-slate-700 border-slate-600 text-white"
-                  />
-                </div>
-                <Button
-                  type="submit"
-                  className="w-full bg-orange-600 hover:bg-orange-700"
-                  disabled={loading}
+        </div>
+      </div>
+      <div className="">
+        <Card className="w-full max-w-md bg-slate-800 border-slate-700">
+          <CardHeader className="text-center">
+            <CardTitle className="text-2xl font-bold text-white">
+              CS2 Grenade Throws
+            </CardTitle>
+            <CardDescription className="text-slate-300">
+              Войдите или создайте аккаунт для сохранения своих раскидок
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Tabs defaultValue="signin" className="w-full">
+              <TabsList className="grid w-full grid-cols-2 bg-slate-700">
+                <TabsTrigger
+                  value="signin"
+                  className="text-slate-300 data-[state=active]:bg-slate-600 data-[state=active]:text-white"
                 >
-                  {loading ? "Вход..." : "Войти"}
-                </Button>
-              </form>
-            </TabsContent>
-
-            <TabsContent value="signup">
-              <form onSubmit={handleSignUp} className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="signup-username" className="text-slate-300">
-                    Имя пользователя
-                  </Label>
-                  <Input
-                    id="signup-username"
-                    name="username"
-                    autoComplete="username"
-                    type="text"
-                    value={formData.username}
-                    onChange={handleInputChange}
-                    className="bg-slate-700 border-slate-600 text-white"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="signup-email" className="text-slate-300">
-                    Email
-                  </Label>
-                  <Input
-                    id="signup-email"
-                    name="email"
-                    type="email"
-                    autoComplete="email"
-                    value={formData.email}
-                    onChange={handleInputChange}
-                    required
-                    className="bg-slate-700 border-slate-600 text-white"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="signup-password" className="text-slate-300">
-                    Пароль
-                  </Label>
-                  <Input
-                    id="signup-password"
-                    name="password"
-                    type="password"
-                    autoComplete="new-password"
-                    value={formData.password}
-                    onChange={handleInputChange}
-                    required
-                    className="bg-slate-700 border-slate-600 text-white"
-                  />
-                </div>
-                <Button
-                  type="submit"
-                  className="w-full bg-blue-600 hover:bg-blue-700"
-                  disabled={loading}
+                  Вход
+                </TabsTrigger>
+                <TabsTrigger
+                  value="signup"
+                  className="text-slate-300 data-[state=active]:bg-slate-600 data-[state=active]:text-white"
                 >
-                  {loading ? "Регистрация..." : "Зарегистрироваться"}
-                </Button>
-              </form>
-            </TabsContent>
-          </Tabs>
-        </CardContent>
-      </Card>
+                  Регистрация
+                </TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="signin">
+                <form onSubmit={handleSignIn} className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="signin-email" className="text-slate-300">
+                      Email
+                    </Label>
+                    <Input
+                      id="signin-email"
+                      name="email"
+                      autoComplete="email"
+                      type="email"
+                      value={formData.email}
+                      onChange={handleInputChange}
+                      required
+                      className="bg-slate-700 border-slate-600 text-white"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="signin-password" className="text-slate-300">
+                      Пароль
+                    </Label>
+                    <Input
+                      id="signin-password"
+                      name="password"
+                      autoComplete="current-password"
+                      type="password"
+                      value={formData.password}
+                      onChange={handleInputChange}
+                      required
+                      className="bg-slate-700 border-slate-600 text-white"
+                    />
+                  </div>
+                  <Button
+                    type="submit"
+                    className="w-full bg-orange-600 hover:bg-orange-700"
+                    disabled={loading}
+                  >
+                    {loading ? "Вход..." : "Войти"}
+                  </Button>
+                </form>
+              </TabsContent>
+
+              <TabsContent value="signup">
+                <form onSubmit={handleSignUp} className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="signup-username" className="text-slate-300">
+                      Имя пользователя
+                    </Label>
+                    <Input
+                      id="signup-username"
+                      name="username"
+                      autoComplete="username"
+                      type="text"
+                      value={formData.username}
+                      onChange={handleInputChange}
+                      className="bg-slate-700 border-slate-600 text-white"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="signup-email" className="text-slate-300">
+                      Email
+                    </Label>
+                    <Input
+                      id="signup-email"
+                      name="email"
+                      type="email"
+                      autoComplete="email"
+                      value={formData.email}
+                      onChange={handleInputChange}
+                      required
+                      className="bg-slate-700 border-slate-600 text-white"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="signup-password" className="text-slate-300">
+                      Пароль
+                    </Label>
+                    <Input
+                      id="signup-password"
+                      name="password"
+                      type="password"
+                      autoComplete="new-password"
+                      value={formData.password}
+                      onChange={handleInputChange}
+                      required
+                      className="bg-slate-700 border-slate-600 text-white"
+                    />
+                  </div>
+                  <Button
+                    type="submit"
+                    className="w-full bg-blue-600 hover:bg-blue-700"
+                    disabled={loading}
+                  >
+                    {loading ? "Регистрация..." : "Зарегистрироваться"}
+                  </Button>
+                </form>
+              </TabsContent>
+            </Tabs>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 };
