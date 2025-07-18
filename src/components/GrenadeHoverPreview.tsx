@@ -18,28 +18,23 @@ const GrenadeHoverPreview: React.FC<GrenadeHoverPreviewProps> = ({
   };
 
   return (
-    <div 
-      className="absolute bg-black/90 backdrop-blur-sm rounded-lg p-3 sm:p-4 max-w-xs z-10 text-xs sm:text-sm"
-      style={{
-        left: `${Math.min(position.x, 80)}%`,
-        top: `${Math.min(position.y, 70)}%`
-      }}
-    >
+    <div className="absolute top-2 left-2 sm:top-4 sm:left-4 bg-black/90 backdrop-blur-sm rounded-lg p-3 sm:p-4 max-w-sm w-80 z-10 text-xs sm:text-sm">
       {/* Video Preview */}
       {grenadeThrow.media_type === "video" && grenadeThrow.video_url && (
-        <div className="aspect-video mb-3 rounded overflow-hidden">
+        <div className="aspect-video mb-3 rounded overflow-hidden w-full">
           <iframe
             src={grenadeThrow.video_url}
             className="w-full h-full"
             title={grenadeThrow.name}
             style={{ pointerEvents: 'none' }}
+            allow="autoplay; muted"
           />
         </div>
       )}
 
       {/* Thumbnail for image throws */}
       {grenadeThrow.media_type === "screenshots" && grenadeThrow.thumbnail_url && (
-        <div className="aspect-video mb-3 rounded overflow-hidden">
+        <div className="aspect-video mb-3 rounded overflow-hidden w-full">
           <img
             src={grenadeThrow.thumbnail_url}
             alt={grenadeThrow.name}

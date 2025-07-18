@@ -113,10 +113,7 @@ const GrenadeCluster: React.FC<GrenadeClusterProps> = ({
       {hoveredThrow && (
         <GrenadeHoverPreview 
           throw={hoveredThrow} 
-          position={{ 
-            x: position.x + 20, // Offset to avoid overlap
-            y: position.y 
-          }} 
+          position={position}
         />
       )}
     </div>
