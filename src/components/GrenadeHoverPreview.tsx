@@ -18,7 +18,7 @@ const GrenadeHoverPreview: React.FC<GrenadeHoverPreviewProps> = ({
   };
 
   return (
-    <div className="absolute top-2 left-2 sm:top-4 sm:left-4 bg-black/90 backdrop-blur-sm rounded-lg p-3 sm:p-4 max-w-sm w-80 z-10 text-xs sm:text-sm">
+    <div className="fixed top-2 left-2 sm:top-4 sm:left-4 bg-black/90 backdrop-blur-sm rounded-lg p-3 sm:p-4 max-w-sm w-80 z-50 text-xs sm:text-sm">
       {/* Video Preview */}
       {grenadeThrow.media_type === "video" && grenadeThrow.video_url && (
         <div className="aspect-video mb-3 rounded overflow-hidden w-full">
