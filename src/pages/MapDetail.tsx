@@ -4,7 +4,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useMaps } from "@/hooks/useMaps";
 import { useUserFavorites, useToggleFavorite } from "@/hooks/useGrenadeThrows";
 import { ThrowTypes, GrenadeThrow } from "../types/map";
-import GrenadePoint from "../components/GrenadePoint";
+import GrenadeCluster from "../components/GrenadeCluster";
 import VideoModal from "../components/VideoModal";
 import AddGrenadeForm from "../components/AddGrenadeForm";
 import { ArrowLeft, Plus, Star } from "lucide-react";
@@ -87,6 +87,46 @@ const MapDetail = () => {
     refetch();
   };
 
+  // Group nearby throws (within 3% distance)
+  const groupNearbyThrows = (throws: GrenadeThrow[], isThrowPoint: boolean) => {
+    const groups: { throws: GrenadeThrow[]; position: { x: number; y: number } }[] = [];
+    const processed = new Set<string>();
+
+    throws.forEach((currentThrow) => {
+      if (processed.has(currentThrow.id)) return;
+
+      const currentPos = isThrowPoint 
+        ? { x: currentThrow.throw_point_x, y: currentThrow.throw_point_y }
+        : { x: currentThrow.landing_point_x, y: currentThrow.landing_point_y };
+
+      const nearbyThrows = throws.filter((otherThrow) => {
+        if (processed.has(otherThrow.id)) return false;
+
+        const otherPos = isThrowPoint
+          ? { x: otherThrow.throw_point_x, y: otherThrow.throw_point_y }
+          : { x: otherThrow.landing_point_x, y: otherThrow.landing_point_y };
+
+        const distance = Math.sqrt(
+          Math.pow(currentPos.x - otherPos.x, 2) + Math.pow(currentPos.y - otherPos.y, 2)
+        );
+
+        return distance <= 3; // 3% distance threshold
+      });
+
+      nearbyThrows.forEach(t => processed.add(t.id));
+      
+      groups.push({
+        throws: nearbyThrows,
+        position: currentPos
+      });
+    });
+
+    return groups;
+  };
+
+  const throwPointGroups = groupNearbyThrows(filteredThrows, true);
+  const landingPointGroups = groupNearbyThrows(filteredThrows, false);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
       <div className="container mx-auto px-4 py-6 sm:py-8">
@@ -108,15 +148,17 @@ const MapDetail = () => {
           </div>
 
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 lg:gap-4">
-            {/* Add Grenade Button */}
-            <Button
-              onClick={() => setShowAddForm(true)}
-              size="sm"
-              className="bg-orange-500 hover:bg-orange-600 text-white flex items-center justify-center space-x-1 sm:space-x-2 order-last sm:order-first"
-            >
-              <Plus size={16} className="sm:w-4 sm:h-4" />
-              <span className="text-sm sm:text-base">Добавить</span>
-            </Button>
+            {/* Add Grenade Button - Only for authenticated users */}
+            {user && (
+              <Button
+                onClick={() => setShowAddForm(true)}
+                size="sm"
+                className="bg-orange-500 hover:bg-orange-600 text-white flex items-center justify-center space-x-1 sm:space-x-2 order-last sm:order-first"
+              >
+                <Plus size={16} className="sm:w-4 sm:h-4" />
+                <span className="text-sm sm:text-base">Добавить</span>
+              </Button>
+            )}
 
             {/* Filters Row */}
             <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 lg:gap-4 w-full sm:w-auto">
@@ -183,108 +225,47 @@ const MapDetail = () => {
               className="w-full h-full object-contain"
             />
 
-            {/* Grenade Points */}
-            {filteredThrows.map((grenadeThrow) => (
-              <React.Fragment key={grenadeThrow.id}>
-                <GrenadePoint
-                  throw={grenadeThrow}
-                  isThrowPoint={true}
-                  onClick={() => setSelectedThrow(grenadeThrow)}
-                  onHover={() => setHoveredThrow(grenadeThrow)}
-                  onLeave={() => setHoveredThrow(null)}
-                  isHovered={hoveredThrow?.id === grenadeThrow.id}
-                />
-                <GrenadePoint
-                  throw={grenadeThrow}
-                  isThrowPoint={false}
-                  onClick={() => setSelectedThrow(grenadeThrow)}
-                  onHover={() => setHoveredThrow(grenadeThrow)}
-                  onLeave={() => setHoveredThrow(null)}
-                  isHovered={hoveredThrow?.id === grenadeThrow.id}
-                />
-
-                {/* Connection Line */}
-                {hoveredThrow?.id === grenadeThrow.id && (
-                  <svg className="absolute inset-0 pointer-events-none w-full h-full">
-                    <line
-                      x1={`${grenadeThrow.throw_point_x}%`}
-                      y1={`${grenadeThrow.throw_point_y}%`}
-                      x2={`${grenadeThrow.landing_point_x}%`}
-                      y2={`${grenadeThrow.landing_point_y}%`}
-                      stroke="#f97316"
-                      strokeWidth="2"
-                      strokeDasharray="5,5"
-                      className="animate-pulse"
-                    />
-                  </svg>
-                )}
-              </React.Fragment>
+            {/* Throw Point Clusters */}
+            {throwPointGroups.map((group, index) => (
+              <GrenadeCluster
+                key={`throw-${index}`}
+                throws={group.throws}
+                isThrowPoint={true}
+                position={group.position}
+                onClick={setSelectedThrow}
+                onHover={setHoveredThrow}
+              />
             ))}
+
+            {/* Landing Point Clusters */}
+            {landingPointGroups.map((group, index) => (
+              <GrenadeCluster
+                key={`landing-${index}`}
+                throws={group.throws}
+                isThrowPoint={false}
+                position={group.position}
+                onClick={setSelectedThrow}
+                onHover={setHoveredThrow}
+              />
+            ))}
+
+            {/* Connection Lines for hovered throws */}
+            {hoveredThrow && (
+              <svg className="absolute inset-0 pointer-events-none w-full h-full">
+                <line
+                  x1={`${hoveredThrow.throw_point_x}%`}
+                  y1={`${hoveredThrow.throw_point_y}%`}
+                  x2={`${hoveredThrow.landing_point_x}%`}
+                  y2={`${hoveredThrow.landing_point_y}%`}
+                  stroke="#f97316"
+                  strokeWidth="2"
+                  strokeDasharray="5,5"
+                  className="animate-pulse"
+                />
+              </svg>
+            )}
           </div>
 
-          {/* Hover Preview */}
-          {hoveredThrow && (
-            <div className="absolute top-2 left-2 sm:top-4 sm:left-4 bg-black/90 backdrop-blur-sm rounded-lg p-3 sm:p-4 max-w-xs z-10 text-xs sm:text-sm">
-              <div className="flex items-center justify-between mb-2">
-                <h3 className="text-white font-bold">{hoveredThrow.name}</h3>
-                {isNewThrow(hoveredThrow.created_at) && (
-                  <Badge
-                    variant="outline"
-                    className="bg-green-500/20 text-green-300 border-green-500"
-                  >
-                    НОВОЕ
-                  </Badge>
-                )}
-              </div>
-              <p className="text-slate-300 text-sm mb-3">
-                {hoveredThrow.description}
-              </p>
-              <div className="flex items-center space-x-2 mb-3">
-                <span
-                  className={`w-3 h-3 rounded-full ${
-                    hoveredThrow.grenade_type === "smoke"
-                      ? "bg-gray-500"
-                      : hoveredThrow.grenade_type === "flash"
-                      ? "bg-yellow-500"
-                      : hoveredThrow.grenade_type === "he"
-                      ? "bg-red-500"
-                      : hoveredThrow.grenade_type === "molotov"
-                      ? "bg-orange-500"
-                      : "bg-green-500"
-                  }`}
-                />
-                <span className="text-sm text-slate-300">
-                  {hoveredThrow.grenade_type.toUpperCase()}
-                </span>
-                <span
-                  className={`text-xs px-2 py-1 rounded-full ${
-                    hoveredThrow.difficulty === "easy"
-                      ? "bg-green-500/20 text-green-300"
-                      : hoveredThrow.difficulty === "medium"
-                      ? "bg-yellow-500/20 text-yellow-300"
-                      : "bg-red-500/20 text-red-300"
-                  }`}
-                >
-                  {hoveredThrow.difficulty}
-                </span>
-              </div>
-              {/* Throw Types */}
-              {hoveredThrow.throw_types &&
-                hoveredThrow.throw_types.length > 0 && (
-                  <div className="flex flex-wrap gap-1">
-                    {hoveredThrow.throw_types.map((throwType) => (
-                      <Badge
-                        key={throwType}
-                        variant="outline"
-                        className="text-xs text-slate-300 border-slate-600"
-                      >
-                        {ThrowTypes[throwType] || throwType}
-                      </Badge>
-                    ))}
-                  </div>
-                )}
-            </div>
-          )}
         </div>
 
         {/* Stats */}
@@ -326,13 +307,15 @@ const MapDetail = () => {
           />
         )}
 
-        {/* Add Grenade Form */}
-        <AddGrenadeForm
-          map={map}
-          isOpen={showAddForm}
-          onClose={() => setShowAddForm(false)}
-          onSuccess={handleAddSuccess}
-        />
+        {/* Add Grenade Form - Only for authenticated users */}
+        {user && (
+          <AddGrenadeForm
+            map={map}
+            isOpen={showAddForm}
+            onClose={() => setShowAddForm(false)}
+            onSuccess={handleAddSuccess}
+          />
+        )}
       </div>
     </div>
   );
