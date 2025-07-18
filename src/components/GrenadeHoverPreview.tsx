@@ -1,6 +1,6 @@
-import React from 'react';
-import { GrenadeThrow, ThrowTypes } from '../types/map';
-import { Badge } from './ui/badge';
+import React from "react";
+import { GrenadeThrow, ThrowTypes } from "../types/map";
+import { Badge } from "./ui/badge";
 
 interface GrenadeHoverPreviewProps {
   throw: GrenadeThrow;
@@ -9,7 +9,7 @@ interface GrenadeHoverPreviewProps {
 
 const GrenadeHoverPreview: React.FC<GrenadeHoverPreviewProps> = ({
   throw: grenadeThrow,
-  position
+  position,
 }) => {
   const isNewThrow = (createdAt: string) => {
     const twoWeeksAgo = new Date();
@@ -24,24 +24,25 @@ const GrenadeHoverPreview: React.FC<GrenadeHoverPreviewProps> = ({
         <div className="aspect-video mb-3 rounded overflow-hidden w-full">
           <iframe
             src={grenadeThrow.video_url}
-            className="w-full h-full"
+            className="w-full h-full aspect-video"
             title={grenadeThrow.name}
-            style={{ pointerEvents: 'none' }}
+            style={{ pointerEvents: "none" }}
             allow="autoplay; muted"
           />
         </div>
       )}
 
       {/* Thumbnail for image throws */}
-      {grenadeThrow.media_type === "screenshots" && grenadeThrow.thumbnail_url && (
-        <div className="aspect-video mb-3 rounded overflow-hidden w-full">
-          <img
-            src={grenadeThrow.thumbnail_url}
-            alt={grenadeThrow.name}
-            className="w-full h-full object-cover"
-          />
-        </div>
-      )}
+      {grenadeThrow.media_type === "screenshots" &&
+        grenadeThrow.thumbnail_url && (
+          <div className="aspect-video mb-3 rounded overflow-hidden w-full">
+            <img
+              src={grenadeThrow.thumbnail_url}
+              alt={grenadeThrow.name}
+              className="w-full h-full object-cover"
+            />
+          </div>
+        )}
 
       <div className="flex items-center justify-between mb-2">
         <h3 className="text-white font-bold">{grenadeThrow.name}</h3>
@@ -54,11 +55,9 @@ const GrenadeHoverPreview: React.FC<GrenadeHoverPreviewProps> = ({
           </Badge>
         )}
       </div>
-      
-      <p className="text-slate-300 text-sm mb-3">
-        {grenadeThrow.description}
-      </p>
-      
+
+      <p className="text-slate-300 text-sm mb-3">{grenadeThrow.description}</p>
+
       <div className="flex items-center space-x-2 mb-3">
         <span
           className={`w-3 h-3 rounded-full ${
@@ -88,7 +87,7 @@ const GrenadeHoverPreview: React.FC<GrenadeHoverPreviewProps> = ({
           {grenadeThrow.difficulty}
         </span>
       </div>
-      
+
       {/* Throw Types */}
       {grenadeThrow.throw_types && grenadeThrow.throw_types.length > 0 && (
         <div className="flex flex-wrap gap-1">

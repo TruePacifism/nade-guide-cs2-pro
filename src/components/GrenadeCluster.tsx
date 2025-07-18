@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { GrenadeThrow } from '../types/map';
-import GrenadeHoverPreview from './GrenadeHoverPreview';
+import React, { useState } from "react";
+import { GrenadeThrow } from "../types/map";
+import GrenadeHoverPreview from "./GrenadeHoverPreview";
 
 interface GrenadeClusterProps {
   throws: GrenadeThrow[];
@@ -15,36 +15,42 @@ const GrenadeCluster: React.FC<GrenadeClusterProps> = ({
   isThrowPoint,
   position,
   onClick,
-  onHover
+  onHover,
 }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [hoveredThrow, setHoveredThrow] = useState<GrenadeThrow | null>(null);
 
   if (throws.length === 1) {
     return (
-      <div
-        className="absolute transform -translate-x-1/2 -translate-y-1/2 cursor-pointer transition-all duration-200 z-10"
-        style={{
-          left: `${position.x}%`,
-          top: `${position.y}%`
-        }}
-        onClick={() => onClick(throws[0])}
-        onMouseEnter={() => {
-          setIsHovered(true);
-          setHoveredThrow(throws[0]);
-          onHover?.(throws[0]);
-        }}
-        onMouseLeave={() => {
-          setIsHovered(false);
-          setHoveredThrow(null);
-          onHover?.(null);
-        }}
-      >
-        <GrenadePoint throw={throws[0]} isThrowPoint={isThrowPoint} isHovered={isHovered} />
+      <>
+        <div
+          className="absolute transform -translate-x-1/2 -translate-y-1/2 cursor-pointer transition-all duration-200 z-10"
+          style={{
+            left: `${position.x}%`,
+            top: `${position.y}%`,
+          }}
+          onClick={() => onClick(throws[0])}
+          onMouseEnter={() => {
+            setIsHovered(true);
+            setHoveredThrow(throws[0]);
+            onHover?.(throws[0]);
+          }}
+          onMouseLeave={() => {
+            setIsHovered(false);
+            setHoveredThrow(null);
+            onHover?.(null);
+          }}
+        >
+          <GrenadePoint
+            throw={throws[0]}
+            isThrowPoint={isThrowPoint}
+            isHovered={isHovered}
+          />
+        </div>
         {hoveredThrow && (
           <GrenadeHoverPreview throw={hoveredThrow} position={position} />
         )}
-      </div>
+      </>
     );
   }
 
@@ -53,7 +59,7 @@ const GrenadeCluster: React.FC<GrenadeClusterProps> = ({
       className="absolute transform -translate-x-1/2 -translate-y-1/2 cursor-pointer transition-all duration-200 z-10"
       style={{
         left: `${position.x}%`,
-        top: `${position.y}%`
+        top: `${position.y}%`,
       }}
       onMouseEnter={() => {
         setIsHovered(true);
@@ -66,7 +72,11 @@ const GrenadeCluster: React.FC<GrenadeClusterProps> = ({
       }}
     >
       {/* Cluster indicator */}
-      <div className={`relative ${isHovered ? 'scale-125' : ''} transition-transform duration-200`}>
+      <div
+        className={`relative ${
+          isHovered ? "scale-125" : ""
+        } transition-transform duration-200`}
+      >
         <div className="w-6 h-6 bg-orange-500 rounded-full border-2 border-white flex items-center justify-center">
           <span className="text-white text-xs font-bold">{throws.length}</span>
         </div>
@@ -79,7 +89,7 @@ const GrenadeCluster: React.FC<GrenadeClusterProps> = ({
       {isHovered && (
         <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 bg-black/90 backdrop-blur-sm rounded-lg p-2 min-w-48 z-20">
           <div className="text-white text-xs mb-2 font-medium">
-            {isThrowPoint ? 'Броски из этой точки:' : 'Броски в эту точку:'}
+            {isThrowPoint ? "Броски из этой точки:" : "Броски в эту точку:"}
           </div>
           {throws.map((grenadeThrow, index) => (
             <div
@@ -111,40 +121,41 @@ const GrenadeCluster: React.FC<GrenadeClusterProps> = ({
 
       {/* Hover preview for selected throw */}
       {hoveredThrow && (
-        <GrenadeHoverPreview 
-          throw={hoveredThrow} 
-          position={position}
-        />
+        <GrenadeHoverPreview throw={hoveredThrow} position={position} />
       )}
     </div>
   );
 };
 
 // Helper component for grenade type indicator
-const GrenadePoint: React.FC<{ throw: GrenadeThrow; isThrowPoint: boolean; isHovered: boolean }> = ({
-  throw: grenadeThrow,
-  isThrowPoint,
-  isHovered
-}) => {
+const GrenadePoint: React.FC<{
+  throw: GrenadeThrow;
+  isThrowPoint: boolean;
+  isHovered: boolean;
+}> = ({ throw: grenadeThrow, isThrowPoint, isHovered }) => {
   const grenadeColors = {
-    smoke: 'bg-gray-500 border-gray-300',
-    flash: 'bg-yellow-500 border-yellow-300',
-    he: 'bg-red-500 border-red-300',
-    molotov: 'bg-orange-500 border-orange-300',
-    decoy: 'bg-green-500 border-green-300'
+    smoke: "bg-gray-500 border-gray-300",
+    flash: "bg-yellow-500 border-yellow-300",
+    he: "bg-red-500 border-red-300",
+    molotov: "bg-orange-500 border-orange-300",
+    decoy: "bg-green-500 border-green-300",
   };
 
   const teamColors = {
-    ct: 'ring-blue-400',
-    t: 'ring-yellow-400',
-    both: 'ring-purple-400'
+    ct: "ring-blue-400",
+    t: "ring-yellow-400",
+    both: "ring-purple-400",
   };
 
   return (
     <div
-      className={`w-4 h-4 rounded-full border-2 ${grenadeColors[grenadeThrow.grenade_type]} ${
-        isThrowPoint ? 'ring-2 ring-white' : `ring-2 ${teamColors[grenadeThrow.team]}`
-      } ${isHovered ? 'animate-pulse' : ''}`}
+      className={`w-4 h-4 rounded-full border-2 ${
+        grenadeColors[grenadeThrow.grenade_type]
+      } ${
+        isThrowPoint
+          ? "ring-2 ring-white"
+          : `ring-2 ${teamColors[grenadeThrow.team]}`
+      } ${isHovered ? "animate-pulse" : ""}`}
     >
       {!isThrowPoint && (
         <div className="absolute -top-1 -right-1 w-2 h-2 bg-white rounded-full border border-gray-400" />
@@ -155,14 +166,18 @@ const GrenadePoint: React.FC<{ throw: GrenadeThrow; isThrowPoint: boolean; isHov
 
 const GrenadeTypeIndicator: React.FC<{ type: string }> = ({ type }) => {
   const colors = {
-    smoke: 'bg-gray-500',
-    flash: 'bg-yellow-500',
-    he: 'bg-red-500',
-    molotov: 'bg-orange-500',
-    decoy: 'bg-green-500'
+    smoke: "bg-gray-500",
+    flash: "bg-yellow-500",
+    he: "bg-red-500",
+    molotov: "bg-orange-500",
+    decoy: "bg-green-500",
   };
 
-  return <div className={`w-3 h-3 rounded-full ${colors[type as keyof typeof colors]}`} />;
+  return (
+    <div
+      className={`w-3 h-3 rounded-full ${colors[type as keyof typeof colors]}`}
+    />
+  );
 };
 
 export default GrenadeCluster;
