@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { GrenadeThrow } from "../types/map";
 import GrenadeHoverPreview from "./GrenadeHoverPreview";
+import ConnectionLine from "./ConnectionLine";
 
 interface GrenadeClusterProps {
   throws: GrenadeThrow[];
@@ -87,14 +88,14 @@ const GrenadeCluster: React.FC<GrenadeClusterProps> = ({
 
       {/* Dropdown list */}
       {isHovered && (
-        <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 bg-black/90 backdrop-blur-sm rounded-lg p-2 min-w-48 z-20">
-          <div className="text-white text-xs mb-2 font-medium">
+        <div className="fixed top-4 left-4 bg-black/90 backdrop-blur-sm rounded-lg p-3 min-w-64 z-50">
+          <div className="text-white text-sm mb-3 font-medium">
             {isThrowPoint ? "Броски из этой точки:" : "Броски в эту точку:"}
           </div>
           {throws.map((grenadeThrow, index) => (
             <div
               key={grenadeThrow.id}
-              className="p-2 hover:bg-orange-500/20 rounded cursor-pointer transition-colors"
+              className="p-3 hover:bg-orange-500/20 rounded cursor-pointer transition-colors mb-2 last:mb-0 border border-transparent hover:border-orange-500/30"
               onClick={() => onClick(grenadeThrow)}
               onMouseEnter={() => {
                 setHoveredThrow(grenadeThrow);
@@ -105,24 +106,52 @@ const GrenadeCluster: React.FC<GrenadeClusterProps> = ({
                 onHover?.(null);
               }}
             >
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center space-x-3 mb-2">
                 <GrenadeTypeIndicator type={grenadeThrow.grenade_type} />
-                <span className="text-white text-sm font-medium truncate">
+                <span className="text-white text-sm font-medium">
                   {grenadeThrow.name}
                 </span>
               </div>
-              <div className="text-slate-300 text-xs mt-1 truncate">
+              <div className="text-slate-300 text-xs leading-relaxed">
                 {grenadeThrow.description}
               </div>
+              {grenadeThrow.media_type === "video" && grenadeThrow.video_url && (
+                <div className="aspect-video mt-2 rounded overflow-hidden w-full">
+                  <iframe
+                    src={grenadeThrow.video_url}
+                    className="w-full h-full"
+                    title={grenadeThrow.name}
+                    style={{ pointerEvents: "none" }}
+                    allow="autoplay; muted"
+                  />
+                </div>
+              )}
+              {grenadeThrow.media_type === "screenshots" && grenadeThrow.thumbnail_url && (
+                <div className="aspect-video mt-2 rounded overflow-hidden w-full">
+                  <img
+                    src={grenadeThrow.thumbnail_url}
+                    alt={grenadeThrow.name}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              )}
             </div>
           ))}
         </div>
       )}
 
-      {/* Hover preview for selected throw */}
-      {hoveredThrow && (
-        <GrenadeHoverPreview throw={hoveredThrow} position={position} />
-      )}
+      {/* Connection lines to related points */}
+      {isHovered && throws.length > 1 && throws.map((grenadeThrow) => (
+        <ConnectionLine 
+          key={grenadeThrow.id}
+          from={position}
+          to={isThrowPoint ? 
+            { x: grenadeThrow.landing_point_x, y: grenadeThrow.landing_point_y } : 
+            { x: grenadeThrow.throw_point_x, y: grenadeThrow.throw_point_y }
+          }
+          isActive={hoveredThrow?.id === grenadeThrow.id}
+        />
+      ))}
     </div>
   );
 };
