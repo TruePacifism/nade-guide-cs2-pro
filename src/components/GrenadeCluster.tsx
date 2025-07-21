@@ -88,55 +88,108 @@ const GrenadeCluster: React.FC<GrenadeClusterProps> = ({
 
       {/* Dropdown list */}
       {isHovered && (
-        <div className="fixed top-4 left-4 bg-black/90 backdrop-blur-sm rounded-lg p-3 min-w-64 z-50">
+        <div className="fixed top-4 left-4 bg-black/90 backdrop-blur-sm rounded-lg p-4 min-w-80 max-w-md z-50">
           <div className="text-white text-sm mb-3 font-medium">
             {isThrowPoint ? "Броски из этой точки:" : "Броски в эту точку:"}
           </div>
-          {throws.map((grenadeThrow, index) => (
-            <div
-              key={grenadeThrow.id}
-              className="p-3 hover:bg-orange-500/20 rounded cursor-pointer transition-colors mb-2 last:mb-0 border border-transparent hover:border-orange-500/30"
-              onClick={() => onClick(grenadeThrow)}
-              onMouseEnter={() => {
-                setHoveredThrow(grenadeThrow);
-                onHover?.(grenadeThrow);
-              }}
-              onMouseLeave={() => {
-                setHoveredThrow(null);
-                onHover?.(null);
-              }}
-            >
-              <div className="flex items-center space-x-3 mb-2">
-                <GrenadeTypeIndicator type={grenadeThrow.grenade_type} />
-                <span className="text-white text-sm font-medium">
-                  {grenadeThrow.name}
-                </span>
-              </div>
-              <div className="text-slate-300 text-xs leading-relaxed">
-                {grenadeThrow.description}
-              </div>
-              {grenadeThrow.media_type === "video" && grenadeThrow.video_url && (
-                <div className="aspect-video mt-2 rounded overflow-hidden w-full">
+          
+          {/* Show preview for hovered throw */}
+          {hoveredThrow && (
+            <div className="mb-4 p-3 bg-white/10 rounded-lg border border-orange-500/30">
+              <h3 className="text-white font-bold mb-2">{hoveredThrow.name}</h3>
+              
+              {/* Video Preview */}
+              {hoveredThrow.media_type === "video" && hoveredThrow.video_url && (
+                <div className="aspect-video mb-3 rounded overflow-hidden w-full">
                   <iframe
-                    src={grenadeThrow.video_url}
+                    src={hoveredThrow.video_url}
                     className="w-full h-full"
-                    title={grenadeThrow.name}
+                    title={hoveredThrow.name}
                     style={{ pointerEvents: "none" }}
                     allow="autoplay; muted"
                   />
                 </div>
               )}
-              {grenadeThrow.media_type === "screenshots" && grenadeThrow.thumbnail_url && (
-                <div className="aspect-video mt-2 rounded overflow-hidden w-full">
+
+              {/* Thumbnail for image throws */}
+              {hoveredThrow.media_type === "screenshots" && hoveredThrow.thumbnail_url && (
+                <div className="aspect-video mb-3 rounded overflow-hidden w-full">
                   <img
-                    src={grenadeThrow.thumbnail_url}
-                    alt={grenadeThrow.name}
+                    src={hoveredThrow.thumbnail_url}
+                    alt={hoveredThrow.name}
                     className="w-full h-full object-cover"
                   />
                 </div>
               )}
+              
+              <p className="text-slate-300 text-sm mb-3">{hoveredThrow.description}</p>
+              
+              <div className="flex items-center space-x-2">
+                <span
+                  className={`w-3 h-3 rounded-full ${
+                    hoveredThrow.grenade_type === "smoke"
+                      ? "bg-gray-500"
+                      : hoveredThrow.grenade_type === "flash"
+                      ? "bg-yellow-500"
+                      : hoveredThrow.grenade_type === "he"
+                      ? "bg-red-500"
+                      : hoveredThrow.grenade_type === "molotov"
+                      ? "bg-orange-500"
+                      : "bg-green-500"
+                  }`}
+                />
+                <span className="text-sm text-slate-300">
+                  {hoveredThrow.grenade_type.toUpperCase()}
+                </span>
+                <span
+                  className={`text-xs px-2 py-1 rounded-full ${
+                    hoveredThrow.difficulty === "easy"
+                      ? "bg-green-500/20 text-green-300"
+                      : hoveredThrow.difficulty === "medium"
+                      ? "bg-yellow-500/20 text-yellow-300"
+                      : "bg-red-500/20 text-red-300"
+                  }`}
+                >
+                  {hoveredThrow.difficulty}
+                </span>
+              </div>
             </div>
-          ))}
+          )}
+          
+          {/* List of grenades */}
+          <div className="space-y-2">
+            {throws.map((grenadeThrow) => (
+              <div
+                key={grenadeThrow.id}
+                className={`p-3 rounded cursor-pointer transition-all duration-200 border ${
+                  hoveredThrow?.id === grenadeThrow.id
+                    ? "bg-orange-500/20 border-orange-500/50"
+                    : "hover:bg-orange-500/10 border-transparent hover:border-orange-500/30"
+                }`}
+                onClick={() => onClick(grenadeThrow)}
+                onMouseEnter={() => {
+                  setHoveredThrow(grenadeThrow);
+                  onHover?.(grenadeThrow);
+                }}
+                onMouseLeave={() => {
+                  if (hoveredThrow?.id === grenadeThrow.id) {
+                    setHoveredThrow(null);
+                    onHover?.(null);
+                  }
+                }}
+              >
+                <div className="flex items-center space-x-3">
+                  <GrenadeTypeIndicator type={grenadeThrow.grenade_type} />
+                  <span className="text-white text-sm font-medium">
+                    {grenadeThrow.name}
+                  </span>
+                </div>
+                <div className="text-slate-400 text-xs mt-1 line-clamp-2">
+                  {grenadeThrow.description}
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       )}
 
