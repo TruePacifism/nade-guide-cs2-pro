@@ -194,7 +194,7 @@ const GrenadeCluster: React.FC<GrenadeClusterProps> = ({
       )}
 
       {/* Connection lines to related points */}
-      {isHovered && throws.length > 1 && throws.map((grenadeThrow) => (
+      {isHovered && throws.map((grenadeThrow) => (
         <ConnectionLine 
           key={grenadeThrow.id}
           from={position}
