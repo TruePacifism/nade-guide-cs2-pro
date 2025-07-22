@@ -9,6 +9,7 @@ interface GrenadeClusterProps {
   position: { x: number; y: number };
   onClick: (grenadeThrow: GrenadeThrow) => void;
   onHover?: (grenadeThrow: GrenadeThrow | null) => void;
+  onLeave?: () => void;
 }
 
 const GrenadeCluster: React.FC<GrenadeClusterProps> = ({
@@ -17,6 +18,7 @@ const GrenadeCluster: React.FC<GrenadeClusterProps> = ({
   position,
   onClick,
   onHover,
+  onLeave,
 }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [hoveredThrow, setHoveredThrow] = useState<GrenadeThrow | null>(null);
@@ -40,6 +42,7 @@ const GrenadeCluster: React.FC<GrenadeClusterProps> = ({
             setIsHovered(false);
             setHoveredThrow(null);
             onHover?.(null);
+            onLeave?.();
           }}
         >
           <GrenadePoint
@@ -70,6 +73,7 @@ const GrenadeCluster: React.FC<GrenadeClusterProps> = ({
         setIsHovered(false);
         setHoveredThrow(null);
         onHover?.(null);
+        onLeave?.();
       }}
     >
       {/* Cluster indicator */}
@@ -92,38 +96,42 @@ const GrenadeCluster: React.FC<GrenadeClusterProps> = ({
           <div className="text-white text-sm mb-3 font-medium">
             {isThrowPoint ? "Броски из этой точки:" : "Броски в эту точку:"}
           </div>
-          
+
           {/* Show preview for hovered throw */}
           {hoveredThrow && (
             <div className="mb-4 p-3 bg-white/10 rounded-lg border border-orange-500/30">
               <h3 className="text-white font-bold mb-2">{hoveredThrow.name}</h3>
-              
+
               {/* Video Preview */}
-              {hoveredThrow.media_type === "video" && hoveredThrow.video_url && (
-                <div className="aspect-video mb-3 rounded overflow-hidden w-full">
-                  <iframe
-                    src={hoveredThrow.video_url}
-                    className="w-full h-full"
-                    title={hoveredThrow.name}
-                    style={{ pointerEvents: "none" }}
-                    allow="autoplay; muted"
-                  />
-                </div>
-              )}
+              {hoveredThrow.media_type === "video" &&
+                hoveredThrow.video_url && (
+                  <div className="aspect-video mb-3 rounded overflow-hidden w-full">
+                    <iframe
+                      src={hoveredThrow.video_url}
+                      className="w-full h-full"
+                      title={hoveredThrow.name}
+                      style={{ pointerEvents: "none" }}
+                      allow="autoplay; muted"
+                    />
+                  </div>
+                )}
 
               {/* Thumbnail for image throws */}
-              {hoveredThrow.media_type === "screenshots" && hoveredThrow.thumbnail_url && (
-                <div className="aspect-video mb-3 rounded overflow-hidden w-full">
-                  <img
-                    src={hoveredThrow.thumbnail_url}
-                    alt={hoveredThrow.name}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-              )}
-              
-              <p className="text-slate-300 text-sm mb-3">{hoveredThrow.description}</p>
-              
+              {hoveredThrow.media_type === "screenshots" &&
+                hoveredThrow.thumbnail_url && (
+                  <div className="aspect-video mb-3 rounded overflow-hidden w-full">
+                    <img
+                      src={hoveredThrow.thumbnail_url}
+                      alt={hoveredThrow.name}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                )}
+
+              <p className="text-slate-300 text-sm mb-3">
+                {hoveredThrow.description}
+              </p>
+
               <div className="flex items-center space-x-2">
                 <span
                   className={`w-3 h-3 rounded-full ${
@@ -155,7 +163,7 @@ const GrenadeCluster: React.FC<GrenadeClusterProps> = ({
               </div>
             </div>
           )}
-          
+
           {/* List of grenades */}
           <div className="space-y-2">
             {throws.map((grenadeThrow) => (
@@ -192,19 +200,6 @@ const GrenadeCluster: React.FC<GrenadeClusterProps> = ({
           </div>
         </div>
       )}
-
-      {/* Connection lines to related points */}
-      {isHovered && throws.map((grenadeThrow) => (
-        <ConnectionLine 
-          key={grenadeThrow.id}
-          from={position}
-          to={isThrowPoint ? 
-            { x: grenadeThrow.landing_point_x, y: grenadeThrow.landing_point_y } : 
-            { x: grenadeThrow.throw_point_x, y: grenadeThrow.throw_point_y }
-          }
-          isActive={hoveredThrow?.id === grenadeThrow.id}
-        />
-      ))}
     </div>
   );
 };

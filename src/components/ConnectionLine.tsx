@@ -6,13 +6,18 @@ interface ConnectionLineProps {
   isActive: boolean;
 }
 
-const ConnectionLine: React.FC<ConnectionLineProps> = ({ from, to, isActive }) => {
+const ConnectionLine: React.FC<ConnectionLineProps> = ({
+  from,
+  to,
+  isActive,
+}) => {
   // Calculate line position and rotation
   const deltaX = to.x - from.x;
   const deltaY = to.y - from.y;
+
   const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
   const angle = Math.atan2(deltaY, deltaX) * (180 / Math.PI);
-  
+
   return (
     <div
       className={`absolute pointer-events-none z-[5] transition-all duration-300 ${

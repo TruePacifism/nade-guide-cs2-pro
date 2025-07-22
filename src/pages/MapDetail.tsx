@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useMaps } from "@/hooks/useMaps";
@@ -27,7 +27,7 @@ const MapDetail = () => {
   const toggleFavorite = useToggleFavorite();
 
   const [selectedThrow, setSelectedThrow] = useState<GrenadeThrow | null>(null);
-  const [hoveredThrow, setHoveredThrow] = useState<GrenadeThrow | null>(null);
+  const [hoveredThrow, setHoveredThrow] = useState<GrenadeThrow[] | null>(null);
   const [filterType, setFilterType] = useState<string>("all");
   const [filterTeam, setFilterTeam] = useState<string>("all");
   const [filterFavorites, setFilterFavorites] = useState<boolean>(false);
@@ -89,13 +89,16 @@ const MapDetail = () => {
 
   // Group nearby throws (within 3% distance)
   const groupNearbyThrows = (throws: GrenadeThrow[], isThrowPoint: boolean) => {
-    const groups: { throws: GrenadeThrow[]; position: { x: number; y: number } }[] = [];
+    const groups: {
+      throws: GrenadeThrow[];
+      position: { x: number; y: number };
+    }[] = [];
     const processed = new Set<string>();
 
     throws.forEach((currentThrow) => {
       if (processed.has(currentThrow.id)) return;
 
-      const currentPos = isThrowPoint 
+      const currentPos = isThrowPoint
         ? { x: currentThrow.throw_point_x, y: currentThrow.throw_point_y }
         : { x: currentThrow.landing_point_x, y: currentThrow.landing_point_y };
 
@@ -107,17 +110,18 @@ const MapDetail = () => {
           : { x: otherThrow.landing_point_x, y: otherThrow.landing_point_y };
 
         const distance = Math.sqrt(
-          Math.pow(currentPos.x - otherPos.x, 2) + Math.pow(currentPos.y - otherPos.y, 2)
+          Math.pow(currentPos.x - otherPos.x, 2) +
+            Math.pow(currentPos.y - otherPos.y, 2)
         );
 
         return distance <= 3; // 3% distance threshold
       });
 
-      nearbyThrows.forEach(t => processed.add(t.id));
-      
+      nearbyThrows.forEach((t) => processed.add(t.id));
+
       groups.push({
         throws: nearbyThrows,
-        position: currentPos
+        position: currentPos,
       });
     });
 
@@ -233,7 +237,13 @@ const MapDetail = () => {
                 isThrowPoint={true}
                 position={group.position}
                 onClick={setSelectedThrow}
-                onHover={setHoveredThrow}
+                onLeave={() => setHoveredThrow(null)}
+                onHover={() =>
+                  setHoveredThrow((oldHovered) => [
+                    ...(oldHovered || []),
+                    ...group.throws,
+                  ])
+                }
               />
             ))}
 
@@ -245,27 +255,36 @@ const MapDetail = () => {
                 isThrowPoint={false}
                 position={group.position}
                 onClick={setSelectedThrow}
-                onHover={setHoveredThrow}
+                onLeave={() => setHoveredThrow(null)}
+                onHover={() =>
+                  setHoveredThrow((oldHovered) => [
+                    ...(oldHovered || []),
+                    ...group.throws,
+                  ])
+                }
               />
             ))}
 
             {/* Connection Lines for hovered throws */}
-            {hoveredThrow && (
-              <svg className="absolute inset-0 pointer-events-none w-full h-full">
-                <line
-                  x1={`${hoveredThrow.throw_point_x}%`}
-                  y1={`${hoveredThrow.throw_point_y}%`}
-                  x2={`${hoveredThrow.landing_point_x}%`}
-                  y2={`${hoveredThrow.landing_point_y}%`}
-                  stroke="#f97316"
-                  strokeWidth="2"
-                  strokeDasharray="5,5"
-                  className="animate-pulse"
-                />
-              </svg>
-            )}
+            {hoveredThrow &&
+              hoveredThrow.map((throwItem) => (
+                <svg
+                  key={`line-${throwItem.id}`}
+                  className="absolute inset-0 pointer-events-none w-full h-full"
+                >
+                  <line
+                    x1={`${throwItem.throw_point_x}%`}
+                    y1={`${throwItem.throw_point_y}%`}
+                    x2={`${throwItem.landing_point_x}%`}
+                    y2={`${throwItem.landing_point_y}%`}
+                    stroke="#f97316"
+                    strokeWidth="2"
+                    strokeDasharray="5,5"
+                    className="animate-pulse"
+                  />
+                </svg>
+              ))}
           </div>
-
         </div>
 
         {/* Stats */}
