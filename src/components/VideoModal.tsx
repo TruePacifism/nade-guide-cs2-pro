@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useRef } from "react";
 import { GrenadeThrow, ThrowTypes } from "../types/map";
-import { Heart, X } from "lucide-react";
+import { Cross, Crosshair, CrosshairIcon, Heart, X } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useToggleFavorite, useUserFavorites } from "@/hooks/useGrenadeThrows";
 import { Button } from "./ui/button";
@@ -21,6 +21,7 @@ const VideoModal: React.FC<VideoModalProps> = ({
   const { user } = useAuth();
   const { data: userFavorites } = useUserFavorites();
   const toggleFavorite = useToggleFavorite();
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   const isNewThrow = (createdAt: string) => {
     const twoWeeksAgo = new Date();
@@ -54,7 +55,10 @@ const VideoModal: React.FC<VideoModalProps> = ({
                 {grenadeThrow.name}
               </h2>
               {isNewThrow(grenadeThrow.created_at) && (
-                <Badge variant="outline" className="bg-green-500/20 text-green-300 border-green-500">
+                <Badge
+                  variant="outline"
+                  className="bg-green-500/20 text-green-300 border-green-500"
+                >
                   НОВОЕ
                 </Badge>
               )}
@@ -102,12 +106,22 @@ const VideoModal: React.FC<VideoModalProps> = ({
         {/* Video */}
         {grenadeThrow.media_type === "video" ? (
           <div className="aspect-video bg-black p-6">
-            <iframe
-              src={grenadeThrow.video_url || ""}
-              className="w-full h-full"
-              allowFullScreen
-              title={grenadeThrow.name}
-            />
+            {grenadeThrow.video_url.endsWith(".mp4") ? (
+              <video
+                src={grenadeThrow.video_url || ""}
+                ref={videoRef}
+                controls
+                className="w-full h-full"
+                title={grenadeThrow.name}
+              />
+            ) : (
+              <iframe
+                src={grenadeThrow.video_url || ""}
+                className="w-full h-full"
+                allowFullScreen
+                title={grenadeThrow.name}
+              />
+            )}
           </div>
         ) : (
           <div className="p-6">
@@ -164,7 +178,6 @@ const VideoModal: React.FC<VideoModalProps> = ({
               <span className="text-white font-medium">
                 {grenadeThrow.grenade_type.toUpperCase()}
               </span>
-
               <span
                 className={`px-3 py-1 rounded-full text-sm ${
                   grenadeThrow.team === "ct"
@@ -178,7 +191,6 @@ const VideoModal: React.FC<VideoModalProps> = ({
                   ? "CT & T"
                   : grenadeThrow.team.toUpperCase()}
               </span>
-
               <span
                 className={`px-3 py-1 rounded-full text-sm ${
                   grenadeThrow.difficulty === "easy"
@@ -203,6 +215,60 @@ const VideoModal: React.FC<VideoModalProps> = ({
                   {ThrowTypes[throwType] || throwType}
                 </Badge>
               ))}
+
+              {grenadeThrow.video_url &&
+                videoRef.current &&
+                grenadeThrow.position_timestamp && (
+                  <div
+                    title="Перейти к позиции броска"
+                    className="cursor-pointer static h-6 w-6 bg-orange-300 rounded-full flex items-center justify-center"
+                    onClick={() => {
+                      videoRef.current.pause();
+                      videoRef.current.currentTime =
+                        grenadeThrow.position_timestamp;
+                    }}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="w-[75%] block"
+                      viewBox="0 0 100 100"
+                      aria-hidden="true"
+                      role="img"
+                      preserveAspectRatio="xMidYMid meet"
+                    >
+                      <path
+                        d="M68.913 48.908l-.048.126c.015-.038.027-.077.042-.115l.006-.011z"
+                        fill="#000000"
+                      />
+                      <path
+                        d="M63.848 73.354l-1.383 1.71c1.87.226 3.68.491 5.375.812l-5.479 1.623l7.313 1.945l5.451-1.719c3.348 1.123 7.984 2.496 9.52 4.057h-10.93l1.086 3.176h11.342c-.034 1.79-3.234 3.244-6.29 4.422l-7.751-1.676l-7.303 2.617l7.8 1.78c-4.554 1.24-12.2 1.994-18.53 2.341l-.266-3.64h-7.606l-.267 3.64c-6.33-.347-13.975-1.1-18.53-2.34l7.801-1.781l-7.303-2.617l-7.752 1.676c-3.012-.915-6.255-2.632-6.289-4.422H25.2l1.086-3.176h-10.93c1.536-1.561 6.172-2.934 9.52-4.057l5.451 1.719l7.313-1.945l-5.479-1.623a82.552 82.552 0 0 1 5.336-.807l-1.363-1.713c-14.785 1.537-27.073 4.81-30.295 9.979C.7 91.573 19.658 99.86 49.37 99.989c.442.022.878.006 1.29 0c29.695-.136 48.636-8.42 43.501-16.654c-3.224-5.171-15.52-8.445-30.314-9.981z"
+                        fill="#000000"
+                      />
+                      <path
+                        d="M49.855 0A10.5 10.5 0 0 0 39.5 10.5A10.5 10.5 0 0 0 50 21a10.5 10.5 0 0 0 10.5-10.5A10.5 10.5 0 0 0 50 0a10.5 10.5 0 0 0-.145 0zm-.057 23.592c-7.834.002-15.596 3.368-14.78 10.096l2 14.625c.351 2.573 2.09 6.687 4.687 6.687h.185l2.127 24.531c.092 1.105.892 2 2 2h8c1.108 0 1.908-.895 2-2l2.127-24.53h.186c2.597 0 4.335-4.115 4.687-6.688l2-14.625c.524-6.734-7.384-10.097-15.219-10.096z"
+                        fill="#000000"
+                      />
+                      <path
+                        d="M-159.25 61.817l-.048.126c.016-.038.027-.076.043-.115c0-.004.004-.007.006-.01z"
+                        fill="#000000"
+                      />
+                    </svg>
+                  </div>
+                )}
+              {grenadeThrow.video_url &&
+                videoRef.current &&
+                grenadeThrow.aim_timestamp && (
+                  <div
+                    title="Перейти к прицелу"
+                    className="cursor-pointer static h-6 w-6 bg-orange-300 rounded-full flex items-center justify-center"
+                    onClick={() => {
+                      videoRef.current.pause();
+                      videoRef.current.currentTime = grenadeThrow.aim_timestamp;
+                    }}
+                  >
+                    <Crosshair className="w-[75%] block" />
+                  </div>
+                )}
             </div>
           </div>
 

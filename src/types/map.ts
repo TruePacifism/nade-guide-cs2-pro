@@ -46,6 +46,9 @@ export interface GrenadeThrow {
   is_verified: boolean;
   created_at: string;
   updated_at: string;
+
+  aim_timestamp?: number;
+  position_timestamp?: number;
 }
 
 // Интерфейс для карты
