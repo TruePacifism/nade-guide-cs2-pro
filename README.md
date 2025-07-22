@@ -1,73 +1,49 @@
-# Welcome to your Lovable project
+# CS2 Nade Lineups — Лайнапы гранат для CS2
 
-## Project info
+Веб-приложение для просмотра и добавления лайнапов гранат в Counter-Strike 2. Подходит как для новичков, так и для опытных игроков — можно найти базовые раскидки или загрузить собственные через видео или скриншоты.
 
-**URL**: https://lovable.dev/projects/02c0174b-213f-4b7c-ad2f-1df47479c810
+## 🚀 Возможности
 
-## How can I edit this code?
+- Просмотр раскидок по картам
+- Загрузка собственных лайнапов (видео/скриншот)
+- Авторизация через удобную форму
+- Хранение данных в Supabase
 
-There are several ways of editing your application.
+## 🧱 Технологии
 
-**Use Lovable**
+- **React**
+- **TypeScript**
+- **Tailwind CSS**
+- **Vite**
+- **Supabase** (аутентификация + база данных)
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/02c0174b-213f-4b7c-ad2f-1df47479c810) and start prompting.
+## 📁 Структура проекта
 
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
 ```
 
-**Edit a file directly in GitHub**
+src/
+├── components/         # Интерфейсные компоненты
+├── hooks/              # Пользовательские хуки
+├── integrations/
+│   └── supabase/       # Конфигурация и взаимодействие с Supabase
+├── lib/                # Вспомогательные функции и утилиты
+├── pages/              # Страницы приложения
+└── types/              # Глобальные типы и интерфейсы
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+````
 
-**Use GitHub Codespaces**
+## 🛠️ Запуск проекта
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+```bash
+# Установка зависимостей
+npm install
 
-## What technologies are used for this project?
+# Запуск проекта
+npm run dev
+````
 
-This project is built with:
+Приложение использует [Vite](https://vitejs.dev/) для быстрой разработки с поддержкой HMR.
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+---
 
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/02c0174b-213f-4b7c-ad2f-1df47479c810) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+**CS2 Nade Lineups — наглядные раскидки, в нужный момент.**
