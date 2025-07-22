@@ -238,12 +238,7 @@ const MapDetail = () => {
                 position={group.position}
                 onClick={setSelectedThrow}
                 onLeave={() => setHoveredThrow(null)}
-                onHover={() =>
-                  setHoveredThrow((oldHovered) => [
-                    ...(oldHovered || []),
-                    ...group.throws,
-                  ])
-                }
+                onHover={(value) => setHoveredThrow(value)}
               />
             ))}
 
@@ -256,12 +251,7 @@ const MapDetail = () => {
                 position={group.position}
                 onClick={setSelectedThrow}
                 onLeave={() => setHoveredThrow(null)}
-                onHover={() =>
-                  setHoveredThrow((oldHovered) => [
-                    ...(oldHovered || []),
-                    ...group.throws,
-                  ])
-                }
+                onHover={(value) => setHoveredThrow(value)}
               />
             ))}
 

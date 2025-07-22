@@ -4,12 +4,10 @@ import { Badge } from "./ui/badge";
 
 interface GrenadeHoverPreviewProps {
   throw: GrenadeThrow;
-  position: { x: number; y: number };
 }
 
 const GrenadeHoverPreview: React.FC<GrenadeHoverPreviewProps> = ({
   throw: grenadeThrow,
-  position,
 }) => {
   const isNewThrow = (createdAt: string) => {
     const twoWeeksAgo = new Date();
