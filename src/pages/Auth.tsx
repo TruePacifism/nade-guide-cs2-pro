@@ -15,7 +15,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import { ArrowLeft } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
-import { sendVisitLog } from "@/lib/utils";
 
 const Auth = () => {
   const { signIn, signUp, signInWithGoogle, user } = useAuth();
@@ -32,9 +31,6 @@ const Auth = () => {
       navigate("/");
     }
   }, [user, navigate]);
-  useEffect(() => {
-    sendVisitLog(user?.email || "guest");
-  }, []);
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();

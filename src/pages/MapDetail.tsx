@@ -17,7 +17,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { sendVisitLog } from "@/lib/utils";
 
 const MapDetail = () => {
   const { mapId } = useParams<{ mapId: string }>();
@@ -34,9 +33,6 @@ const MapDetail = () => {
   const [filterTeam, setFilterTeam] = useState<string>("all");
   const [filterFavorites, setFilterFavorites] = useState<boolean>(false);
   const [showAddForm, setShowAddForm] = useState(false);
-  useEffect(() => {
-    sendVisitLog(user?.email || "guest");
-  }, []);
 
   const map = maps?.find((m) => m.id === mapId);
 

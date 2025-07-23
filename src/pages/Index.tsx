@@ -6,13 +6,8 @@ import MapSelector from "../components/MapSelector";
 import Settings from "./Settings";
 import { Button } from "@/components/ui/button";
 import { User, LogOut, Settings as SettingsIcon } from "lucide-react";
-import { sendVisitLog } from "@/lib/utils";
 
 const Index = () => {
-  useEffect(() => {
-    sendVisitLog();
-  }, []);
-
   const { user, profile, signOut, loading } = useAuth();
   const { data: maps, isLoading: mapsLoading } = useMaps();
   const [showSettings, setShowSettings] = useState(false);
