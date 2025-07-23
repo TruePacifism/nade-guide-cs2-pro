@@ -9,14 +9,10 @@ import Auth from "./pages/Auth";
 import MapDetail from "./pages/MapDetail";
 import NotFound from "./pages/NotFound";
 import { useEffect } from "react";
-import { sendStatsToGoogleSheets } from "./lib/utils";
 
 const queryClient = new QueryClient();
 
 const App = () => {
-  useEffect(() => {
-    sendStatsToGoogleSheets();
-  }, []);
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
