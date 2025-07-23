@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useMaps } from "@/hooks/useMaps";
@@ -6,8 +6,13 @@ import MapSelector from "../components/MapSelector";
 import Settings from "./Settings";
 import { Button } from "@/components/ui/button";
 import { User, LogOut, Settings as SettingsIcon } from "lucide-react";
+import { sendVisitLog } from "@/lib/utils";
 
 const Index = () => {
+  useEffect(() => {
+    sendVisitLog();
+  }, []);
+
   const { user, profile, signOut, loading } = useAuth();
   const { data: maps, isLoading: mapsLoading } = useMaps();
   const [showSettings, setShowSettings] = useState(false);
@@ -82,7 +87,7 @@ const Index = () => {
             <div className="flex items-center space-x-2 text-white">
               <User size={18} className="sm:w-5 sm:h-5" />
               <span className="text-sm sm:text-base truncate">
-                Привет, {profile?.username || user.email?.split('@')[0]}!
+                Привет, {profile?.username || user.email?.split("@")[0]}!
               </span>
             </div>
           </div>

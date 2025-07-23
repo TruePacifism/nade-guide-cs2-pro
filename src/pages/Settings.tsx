@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
@@ -7,6 +7,7 @@ import {
   useUserCustomGrenades,
   useUserFavorites,
 } from "@/hooks/useGrenadeThrows";
+import { sendVisitLog } from "@/lib/utils";
 
 interface SettingsProps {
   onBack: () => void;
@@ -16,6 +17,9 @@ const Settings: React.FC<SettingsProps> = ({ onBack }) => {
   const { user, profile } = useAuth();
   const { data: favouriteGrenades } = useUserFavorites();
   const { data: customGrenades } = useUserCustomGrenades();
+  useEffect(() => {
+    sendVisitLog(user?.email || "guest");
+  }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
