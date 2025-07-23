@@ -114,7 +114,7 @@ const MapDetail = () => {
             Math.pow(currentPos.y - otherPos.y, 2)
         );
 
-        return distance <= 3; // 3% distance threshold
+        return distance <= 2; // 3% distance threshold
       });
 
       nearbyThrows.forEach((t) => processed.add(t.id));

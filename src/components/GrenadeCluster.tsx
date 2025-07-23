@@ -60,7 +60,7 @@ const GrenadeCluster: React.FC<GrenadeClusterProps> = ({
   return (
     <>
       <div
-        className="absolute transform -translate-x-1/2 max-w-6 max-h-6 -translate-y-1/2 z-10"
+        className="z-50 absolute transform -translate-x-1/2 max-w-6 max-h-6 -translate-y-1/2 z-10"
         style={{
           left: `${position.x}%`,
           top: `${position.y}%`,
