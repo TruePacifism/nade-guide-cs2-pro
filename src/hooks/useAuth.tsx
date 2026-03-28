@@ -1,6 +1,7 @@
 import { useState, useEffect, createContext, useContext } from "react";
 import { User, Session } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
+import { lovable } from "@/integrations/lovable/index";
 import { UserProfile } from "@/types/map";
 
 interface AuthContextType {
