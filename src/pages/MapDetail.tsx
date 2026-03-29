@@ -5,7 +5,7 @@ import { useMaps } from "@/hooks/useMaps";
 import { useUserFavorites, useToggleFavorite } from "@/hooks/useGrenadeThrows";
 import { ThrowTypes, GrenadeThrow } from "../types/map";
 import GrenadeCluster from "../components/GrenadeCluster";
-import VideoModal from "../components/VideoModal";
+import GrenadeFullInfo from "../components/GrenadeFullInfo";
 import AddGrenadeForm from "../components/AddGrenadeForm";
 import { ArrowLeft, Plus, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -112,7 +112,7 @@ const MapDetail = () => {
 
         const distance = Math.sqrt(
           Math.pow(currentPos.x - otherPos.x, 2) +
-            Math.pow(currentPos.y - otherPos.y, 2)
+            Math.pow(currentPos.y - otherPos.y, 2),
         );
 
         return distance <= 2; // 3% distance threshold
@@ -310,7 +310,7 @@ const MapDetail = () => {
 
         {/* Video Modal */}
         {selectedThrow && (
-          <VideoModal
+          <GrenadeFullInfo
             throw={selectedThrow}
             isOpen={!!selectedThrow}
             onClose={() => setSelectedThrow(null)}

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { GrenadeThrow } from "../types/map";
-import GrenadeHoverPreview from "./GrenadeHoverPreview";
+import GrenadePreview from "./GrenadePreview";
 import ConnectionLine from "./ConnectionLine";
 import { on } from "events";
 
@@ -52,7 +52,7 @@ const GrenadeCluster: React.FC<GrenadeClusterProps> = ({
             isHovered={isHovered}
           />
         </div>
-        {hoveredThrow && <GrenadeHoverPreview throw={hoveredThrow[0]} />}
+        {hoveredThrow && <GrenadePreview throw={hoveredThrow[0]} />}
       </>
     );
   }
@@ -124,7 +124,7 @@ const GrenadeCluster: React.FC<GrenadeClusterProps> = ({
         )}
       </div>
       {hoveredThrow && hoveredThrow.length === 1 && (
-        <GrenadeHoverPreview throw={hoveredThrow[0]} />
+        <GrenadePreview throw={hoveredThrow[0]} />
       )}
     </>
   );

@@ -1,12 +1,13 @@
 import React from "react";
 import { GrenadeThrow, ThrowTypes } from "../types/map";
+import CustomVideoPlayer from "./CustomVideoPlayer";
 import { Badge } from "./ui/badge";
 
-interface GrenadeHoverPreviewProps {
+interface GrenadePreviewProps {
   throw: GrenadeThrow;
 }
 
-const GrenadeHoverPreview: React.FC<GrenadeHoverPreviewProps> = ({
+const GrenadePreview: React.FC<GrenadePreviewProps> = ({
   throw: grenadeThrow,
 }) => {
   const isNewThrow = (createdAt: string) => {
@@ -19,13 +20,16 @@ const GrenadeHoverPreview: React.FC<GrenadeHoverPreviewProps> = ({
     <div className="fixed top-2 left-2 sm:top-4 sm:left-4 bg-black/90 backdrop-blur-sm rounded-lg p-3 sm:p-4 max-w-sm w-80 z-50 text-xs sm:text-sm">
       {/* Video Preview */}
       {grenadeThrow.media_type === "video" && grenadeThrow.video_url && (
-        <div className="aspect-video mb-3 rounded overflow-hidden w-full">
-          <iframe
+        <div className="mb-3 w-full">
+          <CustomVideoPlayer
             src={grenadeThrow.video_url}
-            className="w-full h-full aspect-video"
             title={grenadeThrow.name}
-            style={{ pointerEvents: "none" }}
-            allow="autoplay; muted"
+            thumbnailUrl={grenadeThrow.thumbnail_url}
+            autoPlay
+            showControls={false}
+            showProgress={false}
+            wrapperClassName="w-full"
+            className="rounded-2xl"
           />
         </div>
       )}
@@ -62,12 +66,12 @@ const GrenadeHoverPreview: React.FC<GrenadeHoverPreviewProps> = ({
             grenadeThrow.grenade_type === "smoke"
               ? "bg-gray-500"
               : grenadeThrow.grenade_type === "flash"
-              ? "bg-yellow-500"
-              : grenadeThrow.grenade_type === "he"
-              ? "bg-red-500"
-              : grenadeThrow.grenade_type === "molotov"
-              ? "bg-orange-500"
-              : "bg-green-500"
+                ? "bg-yellow-500"
+                : grenadeThrow.grenade_type === "he"
+                  ? "bg-red-500"
+                  : grenadeThrow.grenade_type === "molotov"
+                    ? "bg-orange-500"
+                    : "bg-green-500"
           }`}
         />
         <span className="text-sm text-slate-300">
@@ -78,8 +82,8 @@ const GrenadeHoverPreview: React.FC<GrenadeHoverPreviewProps> = ({
             grenadeThrow.difficulty === "easy"
               ? "bg-green-500/20 text-green-300"
               : grenadeThrow.difficulty === "medium"
-              ? "bg-yellow-500/20 text-yellow-300"
-              : "bg-red-500/20 text-red-300"
+                ? "bg-yellow-500/20 text-yellow-300"
+                : "bg-red-500/20 text-red-300"
           }`}
         >
           {grenadeThrow.difficulty}
@@ -104,4 +108,4 @@ const GrenadeHoverPreview: React.FC<GrenadeHoverPreviewProps> = ({
   );
 };
 
-export default GrenadeHoverPreview;
+export default GrenadePreview;

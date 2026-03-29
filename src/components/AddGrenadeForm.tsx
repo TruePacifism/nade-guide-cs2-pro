@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { v4 as uuidv4 } from "uuid";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -9,9 +10,10 @@ import {
   TeamType,
   ThrowType,
 } from "@/types/map";
-import { X, Upload, XIcon } from "lucide-react";
+import { X, XIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import GrenadePoint from "./GrenadePoint";
+import FileUploadField from "./FileUploadField";
 import { toast } from "sonner";
 
 interface AddGrenadeFormProps {
@@ -95,10 +97,10 @@ const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
 
   const handleFileUpload = async (
     file: File,
-    path: string
+    path: string,
   ): Promise<string> => {
     const fileExt = file.name.split(".").pop();
-    const fileName = `${Math.random()}.${fileExt}`;
+    const fileName = `${uuidv4()}.${fileExt}`;
     const filePath = `${path}/${fileName}`;
 
     const { error: uploadError } = await supabase.storage
@@ -159,19 +161,19 @@ const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
       if (uploadedFiles.setup_image) {
         setup_image_url = await handleFileUpload(
           uploadedFiles.setup_image,
-          "images"
+          "images",
         );
       }
       if (uploadedFiles.aim_image) {
         aim_image_url = await handleFileUpload(
           uploadedFiles.aim_image,
-          "images"
+          "images",
         );
       }
       if (uploadedFiles.result_image) {
         result_image_url = await handleFileUpload(
           uploadedFiles.result_image,
-          "images"
+          "images",
         );
       }
 
@@ -229,7 +231,9 @@ const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
     >
       <div className="bg-slate-800 rounded-lg sm:rounded-xl max-w-6xl w-full max-h-[95vh] sm:max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between p-4 sm:p-6 border-b border-slate-700">
-          <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-white">Добавить раскидку</h2>
+          <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-white">
+            Добавить раскидку
+          </h2>
           <button
             onClick={onClose}
             className="text-slate-400 hover:text-white transition-colors"
@@ -238,9 +242,9 @@ const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
           </button>
         </div>
 
-        <div className="flex flex-col lg:flex-row">
+        <div className="flex flex-col">
           {/* Map Preview */}
-          <div className="w-full lg:w-1/2 p-4 sm:p-6">
+          <div className="w-full p-4 sm:p-6">
             <h3 className="text-base sm:text-lg font-bold text-white mb-3 sm:mb-4">
               {isSelectingCoordinates
                 ? `Кликните на карту для ${
@@ -339,7 +343,7 @@ const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
           </div>
 
           {/* Form */}
-          <div className="w-full lg:w-1/2 p-4 sm:p-6">
+          <div className="w-full p-4 sm:p-6">
             <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
               <div>
                 <label className="block text-sm font-medium text-slate-300 mb-2">
@@ -461,7 +465,7 @@ const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
                 </div>
               </div>
 
-                {/* Media Type Selection */}
+              {/* Media Type Selection */}
               <div>
                 <label className="block text-sm font-medium text-slate-300 mb-2">
                   Тип медиа *
@@ -540,154 +544,46 @@ const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
                     </div>
                   </div>
                   <div className="text-center text-slate-400">или</div>
-                  <div>
-                    <label className="block text-sm font-medium text-slate-300 mb-2">
-                      Загрузить видео файл *
-                    </label>
-                    <div className="relative">
-                      <input
-                        type="file"
-                        accept="video/*"
-                        onChange={(e) =>
-                          setUploadedFiles({
-                            ...uploadedFiles,
-                            video: e.target.files?.[0] || null,
-                          })
-                        }
-                        className="w-full bg-slate-700 border border-slate-600 rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-                        ref={(input) => {
-                          // Store ref for clearing value
-                          (window as any).videoInput = input;
-                        }}
-                      />
-                      <XIcon
-                        className={`absolute top-1/2 -translate-y-1/2 right-4 text-white cursor-pointer ${
-                          !uploadedFiles.video && "invisible"
-                        }`}
-                        onClick={() => {
-                          setUploadedFiles((old) => {
-                            return { ...old, video: null };
-                          });
-                          // Clear the file input value
-                          const input = (window as any)
-                            .videoInput as HTMLInputElement | null;
-                          if (input) input.value = "";
-                        }}
-                      />
-                    </div>
-                  </div>
+                  <FileUploadField
+                    label="Загрузить видео файл"
+                    accept="video/*"
+                    file={uploadedFiles.video}
+                    onFileChange={(file) =>
+                      setUploadedFiles({ ...uploadedFiles, video: file })
+                    }
+                    placeholder="MP4, WEBM или другой поддерживаемый формат"
+                    hint="Перетащите видео сюда или выберите файл"
+                  />
                 </div>
               ) : (
                 <div className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-slate-300 mb-2">
-                      Скриншот места броска *
-                    </label>
-                    <div className="relative">
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={(e) =>
-                          setUploadedFiles({
-                            ...uploadedFiles,
-                            setup_image: e.target.files?.[0] || null,
-                          })
-                        }
-                        className="w-full bg-slate-700 border border-slate-600 rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-                        ref={(input) => {
-                          // Store ref for clearing value
-                          (window as any).setupImageInput = input;
-                        }}
-                      />
-                      <XIcon
-                        className={`absolute top-1/2 -translate-y-1/2 right-4 text-white cursor-pointer ${
-                          !uploadedFiles.setup_image && "invisible"
-                        }`}
-                        onClick={() => {
-                          setUploadedFiles((old) => {
-                            return { ...old, setup_image: null };
-                          });
-                          // Clear the file input value
-                          const input = (window as any)
-                            .setupImageInput as HTMLInputElement | null;
-                          if (input) input.value = "";
-                        }}
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-slate-300 mb-2">
-                      Скриншот точки прицела *
-                    </label>
-                    <div className="relative">
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={(e) =>
-                          setUploadedFiles({
-                            ...uploadedFiles,
-                            aim_image: e.target.files?.[0] || null,
-                          })
-                        }
-                        ref={(input) => {
-                          // Store ref for clearing value
-                          (window as any).aimImageInput = input;
-                        }}
-                        className="w-full bg-slate-700 border border-slate-600 rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-                      />
-                      <XIcon
-                        className={`absolute top-1/2 -translate-y-1/2 right-4 text-white cursor-pointer ${
-                          !uploadedFiles.aim_image && "invisible"
-                        }`}
-                        onClick={() => {
-                          setUploadedFiles((old) => {
-                            return { ...old, aim_image: null };
-                          });
-                          // Clear the file input value
-                          const input = (window as any)
-                            .aimImageInput as HTMLInputElement | null;
-                          if (input) input.value = "";
-                        }}
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-slate-300 mb-2">
-                      Скриншот результата *
-                    </label>
-                    <div className="relative">
-                      <input
-                        type="file"
-                        accept="image/*"
-                        value={undefined}
-                        onChange={(e) =>
-                          setUploadedFiles({
-                            ...uploadedFiles,
-                            result_image: e.target.files?.[0] || null,
-                          })
-                        }
-                        className="w-full bg-slate-700 border border-slate-600 rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-                        ref={(input) => {
-                          // Store ref for clearing value
-                          (window as any).resultImageInput = input;
-                        }}
-                      />
-                      <XIcon
-                        className={`absolute top-1/2 -translate-y-1/2 right-4 text-white cursor-pointer ${
-                          !uploadedFiles.result_image && "invisible"
-                        }`}
-                        onClick={() => {
-                          setUploadedFiles((old) => {
-                            return { ...old, result_image: null };
-                          });
-                          // Clear the file input value
-                          const input = (window as any)
-                            .resultImageInput as HTMLInputElement | null;
-                          if (input) input.value = "";
-                        }}
-                      />
-                    </div>
-                  </div>
+                  <FileUploadField
+                    label="Скриншот места броска"
+                    accept="image/*"
+                    file={uploadedFiles.setup_image}
+                    onFileChange={(file) =>
+                      setUploadedFiles({ ...uploadedFiles, setup_image: file })
+                    }
+                    hint="Перетащите скриншот местоположения или выберите файл"
+                  />
+                  <FileUploadField
+                    label="Скриншот точки прицела"
+                    accept="image/*"
+                    file={uploadedFiles.aim_image}
+                    onFileChange={(file) =>
+                      setUploadedFiles({ ...uploadedFiles, aim_image: file })
+                    }
+                    hint="Перетащите изображение прицела или выберите файл"
+                  />
+                  <FileUploadField
+                    label="Скриншот результата"
+                    accept="image/*"
+                    file={uploadedFiles.result_image}
+                    onFileChange={(file) =>
+                      setUploadedFiles({ ...uploadedFiles, result_image: file })
+                    }
+                    hint="Перетащите результат или выберите файл"
+                  />
                 </div>
               )}
 
