@@ -1,6 +1,6 @@
 import { Database } from "@/integrations/supabase/types";
 
-// Типы из Supabase
+// Типы из базы данных
 export type GrenadeType = Database["public"]["Enums"]["grenade_type"];
 export type DifficultyLevel = Database["public"]["Enums"]["difficulty_level"];
 export type TeamType = Database["public"]["Enums"]["team_type"];
