@@ -468,7 +468,7 @@ const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
               {/* Media Type Selection */}
               <div>
                 <label className="block text-sm font-medium text-slate-300 mb-2">
-                  Тип медиа *
+                  {t("mediaType")}
                 </label>
                 <div className="flex flex-col sm:flex-row gap-2 sm:gap-0 sm:space-x-4">
                   <label className="flex items-center space-x-2">
