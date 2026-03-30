@@ -16,6 +16,7 @@ import { toast } from "sonner";
 import { ArrowLeft } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { useLanguage } from "@/i18n/useLanguage";
+import LanguageToggle from "@/components/LanguageToggle";
 
 const Auth = () => {
   const { signIn, signUp, signInWithGoogle, user } = useAuth();
@@ -84,6 +85,9 @@ const Auth = () => {
           <ArrowLeft size={20} />
           <span className="hidden sm:inline">{t("backToMaps")}</span>
         </Button>
+      </div>
+      <div className="fixed top-4 right-4 z-10">
+        <LanguageToggle />
       </div>
 
       <div className="w-full max-w-md mx-auto">

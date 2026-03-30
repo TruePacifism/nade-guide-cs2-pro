@@ -7,6 +7,7 @@ import {
   useUserFavorites,
 } from "@/hooks/useGrenadeThrows";
 import { useLanguage } from "@/i18n/useLanguage";
+import LanguageToggle from "@/components/LanguageToggle";
 
 interface SettingsProps {
   onBack: () => void;
@@ -21,15 +22,18 @@ const Settings: React.FC<SettingsProps> = ({ onBack }) => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
       <div className="container mx-auto px-4 py-8">
-        <div className="flex items-center space-x-4 mb-8">
-          <button
-            onClick={onBack}
-            className="flex items-center space-x-2 text-slate-300 hover:text-white transition-colors"
-          >
-            <ArrowLeft size={20} />
-            <span>{t("back")}</span>
-          </button>
-          <h1 className="text-3xl font-bold text-white">{t("settings")}</h1>
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+          <div className="flex items-center space-x-4">
+            <button
+              onClick={onBack}
+              className="flex items-center space-x-2 text-slate-300 hover:text-white transition-colors"
+            >
+              <ArrowLeft size={20} />
+              <span>{t("back")}</span>
+            </button>
+            <h1 className="text-3xl font-bold text-white">{t("settings")}</h1>
+          </div>
+          <LanguageToggle className="self-start sm:self-auto" />
         </div>
 
         <div className="max-w-2xl space-y-6">

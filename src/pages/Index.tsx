@@ -7,6 +7,7 @@ import Settings from "./Settings";
 import { Button } from "@/components/ui/button";
 import { User, LogOut, Settings as SettingsIcon } from "lucide-react";
 import { useLanguage } from "@/i18n/useLanguage";
+import LanguageToggle from "@/components/LanguageToggle";
 
 const Index = () => {
   const { user, profile, signOut, loading } = useAuth();
@@ -31,6 +32,9 @@ const Index = () => {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
         <div className="container mx-auto px-4 py-6 sm:py-8">
+          <div className="flex justify-end mb-4">
+            <LanguageToggle />
+          </div>
           <div className="text-center mb-6 sm:mb-8">
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4 bg-gradient-to-r from-orange-400 to-blue-400 bg-clip-text text-transparent">
               {t("appTitle")}
@@ -83,6 +87,7 @@ const Index = () => {
             </div>
           </div>
           <div className="flex items-center space-x-2 w-full sm:w-auto">
+            <LanguageToggle className="hidden sm:inline-flex" />
             <Button
               variant="ghost"
               size="sm"
@@ -101,6 +106,7 @@ const Index = () => {
               <LogOut size={14} className="mr-1 sm:mr-2" />
               <span className="text-xs sm:text-sm">{t("signOut")}</span>
             </Button>
+            <LanguageToggle className="inline-flex sm:hidden" />
           </div>
         </div>
 

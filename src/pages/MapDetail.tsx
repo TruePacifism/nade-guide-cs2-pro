@@ -18,9 +18,10 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useLanguage } from "@/i18n/useLanguage";
+import LanguageToggle from "@/components/LanguageToggle";
 
 const MapDetail = () => {
-  const { mapName } = useParams<{ mapName: string }>();
+  const { mapId } = useParams<{ mapId: string }>();
   const navigate = useNavigate();
   const { t } = useLanguage();
 
@@ -36,7 +37,7 @@ const MapDetail = () => {
   const [filterFavorites, setFilterFavorites] = useState<boolean>(false);
   const [showAddForm, setShowAddForm] = useState(false);
 
-  const map = maps?.find((m) => m.name === mapName);
+  const map = maps?.find((m) => m.name === mapId);
 
   if (!map) {
     return (
@@ -134,6 +135,9 @@ const MapDetail = () => {
           </div>
 
           <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 lg:gap-4 w-full sm:w-auto">
+            <div className="flex justify-end sm:justify-start">
+              <LanguageToggle />
+            </div>
             <Select value={filterType} onValueChange={setFilterType}>
               <SelectTrigger className="w-full sm:w-40 lg:w-48 bg-slate-800 text-white border-slate-600 text-sm">
                 <SelectValue />
