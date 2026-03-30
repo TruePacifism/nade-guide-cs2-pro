@@ -411,9 +411,9 @@ const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
                     }
                     className="w-full bg-slate-700 border border-slate-600 rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                   >
-                    <option value="easy">Легко</option>
-                    <option value="medium">Средне</option>
-                    <option value="hard">Сложно</option>
+                    <option value="easy">{t("difficultyEasy")}</option>
+                    <option value="medium">{t("difficultyMedium")}</option>
+                    <option value="hard">{t("difficultyHard")}</option>
                   </select>
                 </div>
 
