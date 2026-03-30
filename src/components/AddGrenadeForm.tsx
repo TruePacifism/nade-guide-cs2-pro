@@ -249,12 +249,10 @@ const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
           <div className="w-full p-4 sm:p-6">
             <h3 className="text-base sm:text-lg font-bold text-white mb-3 sm:mb-4">
               {isSelectingCoordinates
-                ? `Кликните на карту для ${
-                    coordinateMode === "throw"
-                      ? "точки броска"
-                      : "точки падения"
-                  }`
-                : "Предварительный просмотр"}
+                ? coordinateMode === "throw"
+                  ? t("clickMapForThrow")
+                  : t("clickMapForLanding")
+                : t("preview")}
             </h3>
             <div className="relative bg-slate-700 rounded-lg overflow-hidden">
               <img
