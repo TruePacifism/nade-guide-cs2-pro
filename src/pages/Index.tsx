@@ -6,12 +6,14 @@ import MapSelector from "../components/MapSelector";
 import Settings from "./Settings";
 import { Button } from "@/components/ui/button";
 import { User, LogOut, Settings as SettingsIcon } from "lucide-react";
+import { useLanguage } from "@/i18n/useLanguage";
 
 const Index = () => {
   const { user, profile, signOut, loading } = useAuth();
   const { data: maps, isLoading: mapsLoading } = useMaps();
   const [showSettings, setShowSettings] = useState(false);
   const navigate = useNavigate();
+  const { t } = useLanguage();
 
   const handleSignOut = async () => {
     await signOut();
@@ -20,41 +22,36 @@ const Index = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center">
-        <div className="text-white text-xl">Загрузка...</div>
+        <div className="text-white text-xl">{t("loading")}</div>
       </div>
     );
   }
 
   if (!user) {
-    // Показываем кнопку для перехода на страницу авторизации
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
         <div className="container mx-auto px-4 py-6 sm:py-8">
           <div className="text-center mb-6 sm:mb-8">
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4 bg-gradient-to-r from-orange-400 to-blue-400 bg-clip-text text-transparent">
-              CS2 Grenade Throws
+              {t("appTitle")}
             </h1>
             <p className="text-base sm:text-lg lg:text-xl text-slate-300 max-w-2xl mx-auto mb-6 sm:mb-8 px-4">
-              Изучите лучшие раскидки гранат для Counter-Strike 2. Выберите
-              карту и откройте для себя профессиональные тактики.
+              {t("appDescription")}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link to="/auth">
                 <Button className="bg-orange-600 hover:bg-orange-700 px-6 sm:px-8 py-2 sm:py-3 text-base sm:text-lg w-full sm:w-auto">
-                  Войти / Регистрация
+                  {t("signInUp")}
                 </Button>
               </Link>
             </div>
           </div>
           {mapsLoading ? (
             <div className="text-center text-white text-xl">
-              Загрузка карт...
+              {t("loadingMaps")}
             </div>
           ) : (
-            <MapSelector
-              maps={maps || []}
-              onMapSelect={(map) => navigate(`/map/${map.name}`)} // Изменение здесь
-            />
+            <MapSelector maps={maps || []} onMapSelect={(map) => navigate(`/map/${map.name}`)} />
           )}
         </div>
       </div>
@@ -68,7 +65,7 @@ const Index = () => {
   if (mapsLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center">
-        <div className="text-white text-xl">Загрузка карт...</div>
+        <div className="text-white text-xl">{t("loadingMaps")}</div>
       </div>
     );
   }
@@ -76,13 +73,12 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
       <div className="container mx-auto px-4 py-6 sm:py-8">
-        {/* Header with user info */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 sm:mb-8 gap-4">
           <div className="flex items-center space-x-2 sm:space-x-4">
             <div className="flex items-center space-x-2 text-white">
               <User size={18} className="sm:w-5 sm:h-5" />
               <span className="text-sm sm:text-base truncate">
-                Привет, {profile?.username || user.email?.split("@")[0]}!
+                {t("hello")}, {profile?.username || user.email?.split("@")[0]}!
               </span>
             </div>
           </div>
@@ -94,7 +90,7 @@ const Index = () => {
               className="text-slate-300 hover:text-slate-900 hover:bg-slate-300 transition-colors flex-1 sm:flex-none"
             >
               <SettingsIcon size={14} className="mr-1 sm:mr-2" />
-              <span className="text-xs sm:text-sm">Настройки</span>
+              <span className="text-xs sm:text-sm">{t("settings")}</span>
             </Button>
             <Button
               variant="ghost"
@@ -103,24 +99,20 @@ const Index = () => {
               className="text-slate-300 hover:text-slate-900 hover:bg-slate-300 transition-colors flex-1 sm:flex-none"
             >
               <LogOut size={14} className="mr-1 sm:mr-2" />
-              <span className="text-xs sm:text-sm">Выйти</span>
+              <span className="text-xs sm:text-sm">{t("signOut")}</span>
             </Button>
           </div>
         </div>
 
         <div className="text-center mb-8 sm:mb-12">
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4 bg-gradient-to-r from-orange-400 to-blue-400 bg-clip-text text-transparent">
-            CS2 Grenade Throws
+            {t("appTitle")}
           </h1>
           <p className="text-base sm:text-lg lg:text-xl text-slate-300 max-w-2xl mx-auto px-4">
-            Изучите лучшие раскидки гранат для Counter-Strike 2. Выберите карту
-            и откройте для себя профессиональные тактики.
+            {t("appDescription")}
           </p>
         </div>
-        <MapSelector
-          maps={maps || []}
-          onMapSelect={(map) => navigate(`/map/${map.name}`)} // Изменение здесь
-        />
+        <MapSelector maps={maps || []} onMapSelect={(map) => navigate(`/map/${map.name}`)} />
       </div>
     </div>
   );
