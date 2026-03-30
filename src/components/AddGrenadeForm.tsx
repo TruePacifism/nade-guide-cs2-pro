@@ -558,31 +558,31 @@ const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
               ) : (
                 <div className="space-y-4">
                   <FileUploadField
-                    label="Скриншот места броска"
+                    label={t("setupScreenshot")}
                     accept="image/*"
                     file={uploadedFiles.setup_image}
                     onFileChange={(file) =>
                       setUploadedFiles({ ...uploadedFiles, setup_image: file })
                     }
-                    hint="Перетащите скриншот местоположения или выберите файл"
+                    hint={t("dragSetup")}
                   />
                   <FileUploadField
-                    label="Скриншот точки прицела"
+                    label={t("aimScreenshot")}
                     accept="image/*"
                     file={uploadedFiles.aim_image}
                     onFileChange={(file) =>
                       setUploadedFiles({ ...uploadedFiles, aim_image: file })
                     }
-                    hint="Перетащите изображение прицела или выберите файл"
+                    hint={t("dragAim")}
                   />
                   <FileUploadField
-                    label="Скриншот результата"
+                    label={t("resultScreenshot")}
                     accept="image/*"
                     file={uploadedFiles.result_image}
                     onFileChange={(file) =>
                       setUploadedFiles({ ...uploadedFiles, result_image: file })
                     }
-                    hint="Перетащите результат или выберите файл"
+                    hint={t("dragResult")}
                   />
                 </div>
               )}
