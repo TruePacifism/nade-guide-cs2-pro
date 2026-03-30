@@ -17,10 +17,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useLanguage } from "@/i18n/useLanguage";
 
 const MapDetail = () => {
-  const { mapName } = useParams<{ mapName: string }>(); // Используем имя карты вместо id
+  const { mapName } = useParams<{ mapName: string }>();
   const navigate = useNavigate();
+  const { t } = useLanguage();
 
   const { user } = useAuth();
   const { data: maps, refetch } = useMaps();
@@ -34,28 +36,20 @@ const MapDetail = () => {
   const [filterFavorites, setFilterFavorites] = useState<boolean>(false);
   const [showAddForm, setShowAddForm] = useState(false);
 
-  const map = maps?.find((m) => m.name === mapName); // Ищем карту по имени
+  const map = maps?.find((m) => m.name === mapName);
 
   if (!map) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center">
-        <div className="text-white text-xl">Карта не найдена</div>
+        <div className="text-white text-xl">{t("mapNotFound")}</div>
       </div>
     );
   }
 
-  const isNewThrow = (createdAt: string) => {
-    const twoWeeksAgo = new Date();
-    twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14);
-    return new Date(createdAt) > twoWeeksAgo;
-  };
-
   const filteredThrows = (map.throws || []).filter((t) => {
     const typeMatch = filterType === "all" || t.grenade_type === filterType;
-    const teamMatch =
-      filterTeam === "all" || t.team === filterTeam || t.team === "both";
-    const favoriteMatch =
-      !filterFavorites || userFavorites?.some((fav) => fav.throw_id === t.id);
+    const teamMatch = filterTeam === "all" || t.team === filterTeam || t.team === "both";
+    const favoriteMatch = !filterFavorites || userFavorites?.some((fav) => fav.throw_id === t.id);
     return typeMatch && teamMatch && favoriteMatch;
   });
 
@@ -70,7 +64,7 @@ const MapDetail = () => {
   };
 
   const grenadeTypes = [
-    { value: "all", label: "Все гранаты" },
+    { value: "all", label: t("allGrenades") },
     { value: "smoke", label: "SMOKE" },
     { value: "flash", label: "FLASH" },
     { value: "he", label: "HE" },
@@ -79,7 +73,7 @@ const MapDetail = () => {
   ];
 
   const teams = [
-    { value: "all", label: "Все команды" },
+    { value: "all", label: t("allTeams") },
     { value: "ct", label: "CT" },
     { value: "t", label: "T" },
   ];
@@ -88,12 +82,8 @@ const MapDetail = () => {
     refetch();
   };
 
-  // Group nearby throws (within 3% distance)
   const groupNearbyThrows = (throws: GrenadeThrow[], isThrowPoint: boolean) => {
-    const groups: {
-      throws: GrenadeThrow[];
-      position: { x: number; y: number };
-    }[] = [];
+    const groups: { throws: GrenadeThrow[]; position: { x: number; y: number } }[] = [];
     const processed = new Set<string>();
 
     throws.forEach((currentThrow) => {
@@ -105,25 +95,17 @@ const MapDetail = () => {
 
       const nearbyThrows = throws.filter((otherThrow) => {
         if (processed.has(otherThrow.id)) return false;
-
         const otherPos = isThrowPoint
           ? { x: otherThrow.throw_point_x, y: otherThrow.throw_point_y }
           : { x: otherThrow.landing_point_x, y: otherThrow.landing_point_y };
-
         const distance = Math.sqrt(
-          Math.pow(currentPos.x - otherPos.x, 2) +
-            Math.pow(currentPos.y - otherPos.y, 2),
+          Math.pow(currentPos.x - otherPos.x, 2) + Math.pow(currentPos.y - otherPos.y, 2)
         );
-
-        return distance <= 2; // 3% distance threshold
+        return distance <= 2;
       });
 
       nearbyThrows.forEach((t) => processed.add(t.id));
-
-      groups.push({
-        throws: nearbyThrows,
-        position: currentPos,
-      });
+      groups.push({ throws: nearbyThrows, position: currentPos });
     });
 
     return groups;
@@ -132,15 +114,9 @@ const MapDetail = () => {
   const throwPointGroups = groupNearbyThrows(filteredThrows, true);
   const landingPointGroups = groupNearbyThrows(filteredThrows, false);
 
-  useEffect(() => {
-    // Обновляем URL для кнопки "Назад"
-    navigate(-1); // Возвращаемся на предыдущую страницу
-  }, [navigate]);
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
       <div className="container mx-auto px-4 py-6 sm:py-8">
-        {/* Mobile-first Header */}
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-6 gap-4">
           <div className="flex items-center space-x-2 sm:space-x-4">
             <Button
@@ -150,14 +126,13 @@ const MapDetail = () => {
               className="flex items-center space-x-1 sm:space-x-2 text-slate-300 hover:text-slate-800 transition-colors"
             >
               <ArrowLeft size={18} className="sm:w-5 sm:h-5" />
-              <span className="text-sm sm:text-base">Назад</span>
+              <span className="text-sm sm:text-base">{t("back")}</span>
             </Button>
             <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white truncate">
               {map.display_name}
             </h1>
           </div>
 
-          {/* Filters Row */}
           <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 lg:gap-4 w-full sm:w-auto">
             <Select value={filterType} onValueChange={setFilterType}>
               <SelectTrigger className="w-full sm:w-40 lg:w-48 bg-slate-800 text-white border-slate-600 text-sm">
@@ -165,11 +140,7 @@ const MapDetail = () => {
               </SelectTrigger>
               <SelectContent className="bg-slate-800 border-slate-600">
                 {grenadeTypes.map((type) => (
-                  <SelectItem
-                    key={type.value}
-                    value={type.value}
-                    className="text-white hover:bg-slate-700 text-sm"
-                  >
+                  <SelectItem key={type.value} value={type.value} className="text-white hover:bg-slate-700 text-sm">
                     {type.label}
                   </SelectItem>
                 ))}
@@ -182,11 +153,7 @@ const MapDetail = () => {
               </SelectTrigger>
               <SelectContent className="bg-slate-800 border-slate-600">
                 {teams.map((team) => (
-                  <SelectItem
-                    key={team.value}
-                    value={team.value}
-                    className="text-white hover:bg-slate-700 text-sm"
-                  >
+                  <SelectItem key={team.value} value={team.value} className="text-white hover:bg-slate-700 text-sm">
                     {team.label}
                   </SelectItem>
                 ))}
@@ -200,28 +167,17 @@ const MapDetail = () => {
                 size="sm"
                 className="flex items-center justify-center space-x-1 sm:space-x-2 w-full sm:w-auto"
               >
-                <Star
-                  size={14}
-                  className={`transition-colors ${
-                    filterFavorites ? "fill-current" : ""
-                  }`}
-                />
-                <span className="text-sm">Избранное</span>
+                <Star size={14} className={`transition-colors ${filterFavorites ? "fill-current" : ""}`} />
+                <span className="text-sm">{t("favorites")}</span>
               </Button>
             )}
           </div>
         </div>
 
-        {/* Map Container */}
         <div className="relative bg-slate-800 rounded-lg sm:rounded-xl overflow-hidden border border-slate-700">
           <div className="aspect-video relative touch-pan-x touch-pan-y">
-            <img
-              src={map.image_url}
-              alt={map.display_name}
-              className="w-full h-full object-contain"
-            />
+            <img src={map.image_url} alt={map.display_name} className="w-full h-full object-contain" />
 
-            {/* Throw Point Clusters */}
             {throwPointGroups.map((group, index) => (
               <GrenadeCluster
                 key={`throw-${index}`}
@@ -234,7 +190,6 @@ const MapDetail = () => {
               />
             ))}
 
-            {/* Landing Point Clusters */}
             {landingPointGroups.map((group, index) => (
               <GrenadeCluster
                 key={`landing-${index}`}
@@ -247,13 +202,9 @@ const MapDetail = () => {
               />
             ))}
 
-            {/* Connection Lines for hovered throws */}
             {hoveredThrow &&
               hoveredThrow.map((throwItem) => (
-                <svg
-                  key={`line-${throwItem.id}`}
-                  className="absolute inset-0 pointer-events-none w-full h-full"
-                >
+                <svg key={`line-${throwItem.id}`} className="absolute inset-0 pointer-events-none w-full h-full">
                   <line
                     x1={`${throwItem.throw_point_x}%`}
                     y1={`${throwItem.throw_point_y}%`}
@@ -269,46 +220,35 @@ const MapDetail = () => {
           </div>
         </div>
 
-        {/* Stats */}
         <div className="mt-4 sm:mt-6 grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
           <div className="bg-slate-800 rounded-lg p-3 sm:p-4 border border-slate-700">
-            <div className="text-xl sm:text-2xl font-bold text-white">
-              {filteredThrows.length}
-            </div>
-            <div className="text-slate-400 text-sm sm:text-base">
-              Раскидок найдено
-            </div>
+            <div className="text-xl sm:text-2xl font-bold text-white">{filteredThrows.length}</div>
+            <div className="text-slate-400 text-sm sm:text-base">{t("throwsFound")}</div>
           </div>
           <div className="bg-slate-800 rounded-lg p-3 sm:p-4 border border-slate-700">
             <div className="text-xl sm:text-2xl font-bold text-green-400">
               {filteredThrows.filter((t) => t.difficulty === "easy").length}
             </div>
-            <div className="text-slate-400 text-sm sm:text-base">Легких</div>
+            <div className="text-slate-400 text-sm sm:text-base">{t("easy")}</div>
           </div>
           <div className="bg-slate-800 rounded-lg p-3 sm:p-4 border border-slate-700">
             <div className="text-xl sm:text-2xl font-bold text-yellow-400">
               {filteredThrows.filter((t) => t.difficulty === "medium").length}
             </div>
-            <div className="text-slate-400 text-sm sm:text-base">Средних</div>
+            <div className="text-slate-400 text-sm sm:text-base">{t("medium")}</div>
           </div>
           <div className="bg-slate-800 rounded-lg p-3 sm:p-4 border border-slate-700">
             <div className="text-xl sm:text-2xl font-bold text-red-400">
               {filteredThrows.filter((t) => t.difficulty === "hard").length}
             </div>
-            <div className="text-slate-400 text-sm sm:text-base">Сложных</div>
+            <div className="text-slate-400 text-sm sm:text-base">{t("hard")}</div>
           </div>
         </div>
 
-        {/* Video Modal */}
         {selectedThrow && (
-          <GrenadeFullInfo
-            throw={selectedThrow}
-            isOpen={!!selectedThrow}
-            onClose={() => setSelectedThrow(null)}
-          />
+          <GrenadeFullInfo throw={selectedThrow} isOpen={!!selectedThrow} onClose={() => setSelectedThrow(null)} />
         )}
 
-        {/* Add Grenade Form - Only for authenticated users */}
         {user && (
           <AddGrenadeForm
             map={map}

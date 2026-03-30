@@ -15,6 +15,7 @@ import { Badge } from "@/components/ui/badge";
 import GrenadePoint from "./GrenadePoint";
 import FileUploadField from "./FileUploadField";
 import { toast } from "sonner";
+import { useLanguage } from "@/i18n/useLanguage";
 
 interface AddGrenadeFormProps {
   map: Map;
@@ -30,6 +31,7 @@ const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
   onSuccess,
 }) => {
   const { user } = useAuth();
+  const { t } = useLanguage();
   const [loading, setLoading] = useState(false);
   const [isSelectingCoordinates, setIsSelectingCoordinates] = useState(false);
   const [coordinateMode, setCoordinateMode] = useState<
@@ -57,13 +59,13 @@ const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
   });
 
   const throwTypeOptions: { value: ThrowType; label: string }[] = [
-    { value: "standing", label: "С места" },
-    { value: "jump_throw", label: "Jump Throw" },
-    { value: "running_left", label: "В движении влево" },
-    { value: "running_right", label: "В движении вправо" },
-    { value: "running_forward", label: "В движении вперед" },
-    { value: "crouching", label: "В присяде" },
-    { value: "walk_throw", label: "Шагом" },
+    { value: "standing", label: t("throwStanding") },
+    { value: "jump_throw", label: t("throwJump") },
+    { value: "running_left", label: t("throwRunLeft") },
+    { value: "running_right", label: t("throwRunRight") },
+    { value: "running_forward", label: t("throwRunForward") },
+    { value: "crouching", label: t("throwCrouching") },
+    { value: "walk_throw", label: t("throwWalk") },
   ];
 
   const handleMapClick = (event: React.MouseEvent<HTMLImageElement>) => {
@@ -124,7 +126,7 @@ const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
       (formData.throw_point_x === 0 && formData.throw_point_y === 0) ||
       (formData.landing_point_x === 0 && formData.landing_point_y === 0)
     ) {
-      toast.error("Пожалуйста, укажите точки броска и попадания на карте");
+      toast.error(t("errorSetPoints"));
       return;
     }
 
@@ -134,7 +136,7 @@ const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
       !formData.video_url &&
       !uploadedFiles.video
     ) {
-      toast.error("Видео обязательно при создании раскидки");
+      toast.error(t("errorVideoRequired"));
       return;
     }
     if (
@@ -143,7 +145,7 @@ const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
       !uploadedFiles.aim_image &&
       !uploadedFiles.result_image
     ) {
-      toast.error("Хотя бы одно изображение обязательно при создании раскидки");
+      toast.error(t("errorImageRequired"));
       return;
     }
 
@@ -214,7 +216,7 @@ const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
         result_image: null,
       });
     } catch (error) {
-      console.error("Ошибка при создании раскидки:", error);
+      console.error(t("errorCreating"), error);
     } finally {
       setLoading(false);
     }
@@ -232,7 +234,7 @@ const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
       <div className="bg-slate-800 rounded-lg sm:rounded-xl max-w-6xl w-full max-h-[95vh] sm:max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between p-4 sm:p-6 border-b border-slate-700">
           <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-white">
-            Добавить раскидку
+            {t("addThrow")}
           </h2>
           <button
             onClick={onClose}
@@ -247,12 +249,10 @@ const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
           <div className="w-full p-4 sm:p-6">
             <h3 className="text-base sm:text-lg font-bold text-white mb-3 sm:mb-4">
               {isSelectingCoordinates
-                ? `Кликните на карту для ${
-                    coordinateMode === "throw"
-                      ? "точки броска"
-                      : "точки падения"
-                  }`
-                : "Предварительный просмотр"}
+                ? coordinateMode === "throw"
+                  ? t("clickMapForThrow")
+                  : t("clickMapForLanding")
+                : t("preview")}
             </h3>
             <div className="relative bg-slate-700 rounded-lg overflow-hidden">
               <img
@@ -328,7 +328,7 @@ const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
                 className="bg-orange-500 hover:bg-orange-600 text-white text-xs sm:text-sm"
                 disabled={isSelectingCoordinates}
               >
-                Точка броска
+                {t("throwPoint")}
               </Button>
               <Button
                 type="button"
@@ -337,7 +337,7 @@ const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
                 className="bg-blue-500 hover:bg-blue-600 text-white text-xs sm:text-sm"
                 disabled={isSelectingCoordinates}
               >
-                Точка падения
+                {t("landingPoint")}
               </Button>
             </div>
           </div>
@@ -347,7 +347,7 @@ const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
             <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
               <div>
                 <label className="block text-sm font-medium text-slate-300 mb-2">
-                  Название раскидки *
+                  {t("throwName")}
                 </label>
                 <input
                   type="text"
@@ -362,7 +362,7 @@ const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
 
               <div>
                 <label className="block text-sm font-medium text-slate-300 mb-2">
-                  Описание
+                  {t("description")}
                 </label>
                 <textarea
                   value={formData.description}
@@ -377,7 +377,7 @@ const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
                 <div>
                   <label className="block text-sm font-medium text-slate-300 mb-2">
-                    Тип гранаты *
+                    {t("grenadeType")}
                   </label>
                   <select
                     value={formData.grenade_type}
@@ -399,7 +399,7 @@ const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
 
                 <div>
                   <label className="block text-sm font-medium text-slate-300 mb-2">
-                    Сложность *
+                    {t("difficulty")}
                   </label>
                   <select
                     value={formData.difficulty}
@@ -411,15 +411,15 @@ const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
                     }
                     className="w-full bg-slate-700 border border-slate-600 rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                   >
-                    <option value="easy">Легко</option>
-                    <option value="medium">Средне</option>
-                    <option value="hard">Сложно</option>
+                    <option value="easy">{t("difficultyEasy")}</option>
+                    <option value="medium">{t("difficultyMedium")}</option>
+                    <option value="hard">{t("difficultyHard")}</option>
                   </select>
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-slate-300 mb-2">
-                    Команда *
+                    {t("team")}
                   </label>
                   <select
                     value={formData.team}
@@ -431,7 +431,7 @@ const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
                     }
                     className="w-full bg-slate-700 border border-slate-600 rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                   >
-                    <option value="both">Обе</option>
+                    <option value="both">{t("teamBoth")}</option>
                     <option value="ct">CT</option>
                     <option value="t">T</option>
                   </select>
@@ -441,7 +441,7 @@ const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
               {/* Throw Types */}
               <div>
                 <label className="block text-sm font-medium text-slate-300 mb-2">
-                  Типы броска *
+                  {t("throwTypes")}
                 </label>
                 <div className="flex flex-wrap gap-2">
                   {throwTypeOptions.map((option) => (
@@ -468,7 +468,7 @@ const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
               {/* Media Type Selection */}
               <div>
                 <label className="block text-sm font-medium text-slate-300 mb-2">
-                  Тип медиа *
+                  {t("mediaType")}
                 </label>
                 <div className="flex flex-col sm:flex-row gap-2 sm:gap-0 sm:space-x-4">
                   <label className="flex items-center space-x-2">
@@ -484,7 +484,7 @@ const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
                       }
                       className="text-orange-500"
                     />
-                    <span className="text-slate-300">Видео</span>
+                    <span className="text-slate-300">{t("video")}</span>
                   </label>
                   <label className="flex items-center space-x-2">
                     <input
@@ -499,7 +499,7 @@ const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
                       }
                       className="text-orange-500"
                     />
-                    <span className="text-slate-300">Скриншоты</span>
+                    <span className="text-slate-300">{t("screenshots")}</span>
                   </label>
                 </div>
               </div>
@@ -509,7 +509,7 @@ const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
                 <div className="space-y-4">
                   <div>
                     <label className="block text-sm font-medium text-slate-300 mb-2">
-                      Ссылка на видео (YouTube) *
+                      {t("videoLink")}
                     </label>
                     <div className="relative">
                       <input
@@ -543,46 +543,46 @@ const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
                       />
                     </div>
                   </div>
-                  <div className="text-center text-slate-400">или</div>
+                  <div className="text-center text-slate-400">{t("or")}</div>
                   <FileUploadField
-                    label="Загрузить видео файл"
+                    label={t("uploadVideo")}
                     accept="video/*"
                     file={uploadedFiles.video}
                     onFileChange={(file) =>
                       setUploadedFiles({ ...uploadedFiles, video: file })
                     }
-                    placeholder="MP4, WEBM или другой поддерживаемый формат"
-                    hint="Перетащите видео сюда или выберите файл"
+                    placeholder={t("videoFormats")}
+                    hint={t("dragVideo")}
                   />
                 </div>
               ) : (
                 <div className="space-y-4">
                   <FileUploadField
-                    label="Скриншот места броска"
+                    label={t("setupScreenshot")}
                     accept="image/*"
                     file={uploadedFiles.setup_image}
                     onFileChange={(file) =>
                       setUploadedFiles({ ...uploadedFiles, setup_image: file })
                     }
-                    hint="Перетащите скриншот местоположения или выберите файл"
+                    hint={t("dragSetup")}
                   />
                   <FileUploadField
-                    label="Скриншот точки прицела"
+                    label={t("aimScreenshot")}
                     accept="image/*"
                     file={uploadedFiles.aim_image}
                     onFileChange={(file) =>
                       setUploadedFiles({ ...uploadedFiles, aim_image: file })
                     }
-                    hint="Перетащите изображение прицела или выберите файл"
+                    hint={t("dragAim")}
                   />
                   <FileUploadField
-                    label="Скриншот результата"
+                    label={t("resultScreenshot")}
                     accept="image/*"
                     file={uploadedFiles.result_image}
                     onFileChange={(file) =>
                       setUploadedFiles({ ...uploadedFiles, result_image: file })
                     }
-                    hint="Перетащите результат или выберите файл"
+                    hint={t("dragResult")}
                   />
                 </div>
               )}
@@ -594,7 +594,7 @@ const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
                   onClick={onClose}
                   className="text-slate-300 hover:text-white hover:bg-slate-700 order-last sm:order-first"
                 >
-                  Отмена
+                  {t("cancel")}
                 </Button>
                 <Button
                   type="submit"
@@ -612,7 +612,7 @@ const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
                   }
                   className="bg-orange-500 hover:bg-orange-600 text-white disabled:opacity-50 order-first sm:order-last"
                 >
-                  {loading ? "Создание..." : "Создать раскидку"}
+                  {loading ? t("creating") : t("createThrow")}
                 </Button>
               </div>
             </form>

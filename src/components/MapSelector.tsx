@@ -1,5 +1,6 @@
 import React from "react";
 import { Map } from "../types/map";
+import { useLanguage } from "@/i18n/useLanguage";
 
 interface MapSelectorProps {
   maps: Map[];
@@ -7,6 +8,8 @@ interface MapSelectorProps {
 }
 
 const MapSelector: React.FC<MapSelectorProps> = ({ maps, onMapSelect }) => {
+  const { t } = useLanguage();
+
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 max-w-6xl mx-auto">
       {maps.map((map) => (
@@ -27,7 +30,7 @@ const MapSelector: React.FC<MapSelectorProps> = ({ maps, onMapSelect }) => {
                 {map.display_name}
               </h3>
               <p className="text-orange-400 text-xs sm:text-sm">
-                {map.throws?.length || 0} раскидок доступно
+                {map.throws?.length || 0} {t("throwsAvailable")}
               </p>
             </div>
           </div>
@@ -35,11 +38,8 @@ const MapSelector: React.FC<MapSelectorProps> = ({ maps, onMapSelect }) => {
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 sm:gap-0">
               <div className="flex flex-wrap gap-1 sm:gap-2">
                 {["smoke", "flash", "he", "molotov", "decoy"].map((type) => {
-                  const count =
-                    map.throws?.filter((t) => t.grenade_type === type).length ||
-                    0;
+                  const count = map.throws?.filter((t) => t.grenade_type === type).length || 0;
                   if (count === 0) return null;
-
                   const colors = {
                     smoke: "bg-gray-500",
                     flash: "bg-yellow-500",
@@ -47,7 +47,6 @@ const MapSelector: React.FC<MapSelectorProps> = ({ maps, onMapSelect }) => {
                     molotov: "bg-orange-500",
                     decoy: "bg-green-500",
                   };
-
                   return (
                     <span
                       key={type}
@@ -59,7 +58,7 @@ const MapSelector: React.FC<MapSelectorProps> = ({ maps, onMapSelect }) => {
                 })}
               </div>
               <button className="text-blue-400 hover:text-blue-300 font-medium transition-colors text-sm sm:text-base">
-                Открыть →
+                {t("open")}
               </button>
             </div>
           </div>
