@@ -31,6 +31,7 @@ const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
   onSuccess,
 }) => {
   const { user } = useAuth();
+  const { t } = useLanguage();
   const [loading, setLoading] = useState(false);
   const [isSelectingCoordinates, setIsSelectingCoordinates] = useState(false);
   const [coordinateMode, setCoordinateMode] = useState<
