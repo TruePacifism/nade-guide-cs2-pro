@@ -484,7 +484,7 @@ const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
                       }
                       className="text-orange-500"
                     />
-                    <span className="text-slate-300">Видео</span>
+                    <span className="text-slate-300">{t("video")}</span>
                   </label>
                   <label className="flex items-center space-x-2">
                     <input
