@@ -499,7 +499,7 @@ const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
                       }
                       className="text-orange-500"
                     />
-                    <span className="text-slate-300">Скриншоты</span>
+                    <span className="text-slate-300">{t("screenshots")}</span>
                   </label>
                 </div>
               </div>
