@@ -362,7 +362,7 @@ const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
 
               <div>
                 <label className="block text-sm font-medium text-slate-300 mb-2">
-                  Описание
+                  {t("description")}
                 </label>
                 <textarea
                   value={formData.description}
