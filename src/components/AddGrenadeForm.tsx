@@ -328,7 +328,7 @@ const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
                 className="bg-orange-500 hover:bg-orange-600 text-white text-xs sm:text-sm"
                 disabled={isSelectingCoordinates}
               >
-                Точка броска
+                {t("throwPoint")}
               </Button>
               <Button
                 type="button"
