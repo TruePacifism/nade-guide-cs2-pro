@@ -145,7 +145,7 @@ const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
       !uploadedFiles.aim_image &&
       !uploadedFiles.result_image
     ) {
-      toast.error("Хотя бы одно изображение обязательно при создании раскидки");
+      toast.error(t("errorImageRequired"));
       return;
     }
 
