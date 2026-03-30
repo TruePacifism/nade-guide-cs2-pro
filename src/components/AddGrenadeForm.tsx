@@ -216,7 +216,7 @@ const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
         result_image: null,
       });
     } catch (error) {
-      console.error("Ошибка при создании раскидки:", error);
+      console.error(t("errorCreating"), error);
     } finally {
       setLoading(false);
     }
