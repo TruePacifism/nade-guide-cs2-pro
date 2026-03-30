@@ -15,6 +15,7 @@ import { Badge } from "@/components/ui/badge";
 import GrenadePoint from "./GrenadePoint";
 import FileUploadField from "./FileUploadField";
 import { toast } from "sonner";
+import { useLanguage } from "@/i18n/useLanguage";
 
 interface AddGrenadeFormProps {
   map: Map;
