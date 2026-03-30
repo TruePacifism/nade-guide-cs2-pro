@@ -419,7 +419,7 @@ const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
 
                 <div>
                   <label className="block text-sm font-medium text-slate-300 mb-2">
-                    Команда *
+                    {t("team")}
                   </label>
                   <select
                     value={formData.team}
