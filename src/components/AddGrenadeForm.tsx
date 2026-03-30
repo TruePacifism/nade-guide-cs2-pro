@@ -126,7 +126,7 @@ const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
       (formData.throw_point_x === 0 && formData.throw_point_y === 0) ||
       (formData.landing_point_x === 0 && formData.landing_point_y === 0)
     ) {
-      toast.error("Пожалуйста, укажите точки броска и попадания на карте");
+      toast.error(t("errorSetPoints"));
       return;
     }
 
