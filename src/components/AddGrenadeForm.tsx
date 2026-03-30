@@ -612,7 +612,7 @@ const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
                   }
                   className="bg-orange-500 hover:bg-orange-600 text-white disabled:opacity-50 order-first sm:order-last"
                 >
-                  {loading ? "Создание..." : "Создать раскидку"}
+                  {loading ? t("creating") : t("createThrow")}
                 </Button>
               </div>
             </form>
