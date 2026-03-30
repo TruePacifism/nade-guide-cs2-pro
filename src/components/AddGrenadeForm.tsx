@@ -441,7 +441,7 @@ const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
               {/* Throw Types */}
               <div>
                 <label className="block text-sm font-medium text-slate-300 mb-2">
-                  Типы броска *
+                  {t("throwTypes")}
                 </label>
                 <div className="flex flex-wrap gap-2">
                   {throwTypeOptions.map((option) => (
