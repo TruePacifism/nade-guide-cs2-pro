@@ -509,7 +509,7 @@ const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
                 <div className="space-y-4">
                   <div>
                     <label className="block text-sm font-medium text-slate-300 mb-2">
-                      Ссылка на видео (YouTube) *
+                      {t("videoLink")}
                     </label>
                     <div className="relative">
                       <input
