@@ -347,7 +347,7 @@ const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
             <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
               <div>
                 <label className="block text-sm font-medium text-slate-300 mb-2">
-                  Название раскидки *
+                  {t("throwName")}
                 </label>
                 <input
                   type="text"
