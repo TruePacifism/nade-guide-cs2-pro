@@ -399,7 +399,7 @@ const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
 
                 <div>
                   <label className="block text-sm font-medium text-slate-300 mb-2">
-                    Сложность *
+                    {t("difficulty")}
                   </label>
                   <select
                     value={formData.difficulty}
