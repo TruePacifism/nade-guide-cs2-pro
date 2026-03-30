@@ -431,7 +431,7 @@ const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
                     }
                     className="w-full bg-slate-700 border border-slate-600 rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                   >
-                    <option value="both">Обе</option>
+                    <option value="both">{t("teamBoth")}</option>
                     <option value="ct">CT</option>
                     <option value="t">T</option>
                   </select>
