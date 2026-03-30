@@ -59,13 +59,13 @@ const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
   });
 
   const throwTypeOptions: { value: ThrowType; label: string }[] = [
-    { value: "standing", label: "С места" },
-    { value: "jump_throw", label: "Jump Throw" },
-    { value: "running_left", label: "В движении влево" },
-    { value: "running_right", label: "В движении вправо" },
-    { value: "running_forward", label: "В движении вперед" },
-    { value: "crouching", label: "В присяде" },
-    { value: "walk_throw", label: "Шагом" },
+    { value: "standing", label: t("throwStanding") },
+    { value: "jump_throw", label: t("throwJump") },
+    { value: "running_left", label: t("throwRunLeft") },
+    { value: "running_right", label: t("throwRunRight") },
+    { value: "running_forward", label: t("throwRunForward") },
+    { value: "crouching", label: t("throwCrouching") },
+    { value: "walk_throw", label: t("throwWalk") },
   ];
 
   const handleMapClick = (event: React.MouseEvent<HTMLImageElement>) => {
