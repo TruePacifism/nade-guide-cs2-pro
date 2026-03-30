@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/select";
 
 const MapDetail = () => {
-  const { mapId } = useParams<{ mapId: string }>();
+  const { mapName } = useParams<{ mapName: string }>(); // Используем имя карты вместо id
   const navigate = useNavigate();
 
   const { user } = useAuth();
@@ -34,7 +34,7 @@ const MapDetail = () => {
   const [filterFavorites, setFilterFavorites] = useState<boolean>(false);
   const [showAddForm, setShowAddForm] = useState(false);
 
-  const map = maps?.find((m) => m.id === mapId);
+  const map = maps?.find((m) => m.name === mapName); // Ищем карту по имени
 
   if (!map) {
     return (
@@ -132,6 +132,11 @@ const MapDetail = () => {
   const throwPointGroups = groupNearbyThrows(filteredThrows, true);
   const landingPointGroups = groupNearbyThrows(filteredThrows, false);
 
+  useEffect(() => {
+    // Обновляем URL для кнопки "Назад"
+    navigate(-1); // Возвращаемся на предыдущую страницу
+  }, [navigate]);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
       <div className="container mx-auto px-4 py-6 sm:py-8">
@@ -152,72 +157,58 @@ const MapDetail = () => {
             </h1>
           </div>
 
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 lg:gap-4">
-            {/* Add Grenade Button - Only for authenticated users */}
+          {/* Filters Row */}
+          <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 lg:gap-4 w-full sm:w-auto">
+            <Select value={filterType} onValueChange={setFilterType}>
+              <SelectTrigger className="w-full sm:w-40 lg:w-48 bg-slate-800 text-white border-slate-600 text-sm">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent className="bg-slate-800 border-slate-600">
+                {grenadeTypes.map((type) => (
+                  <SelectItem
+                    key={type.value}
+                    value={type.value}
+                    className="text-white hover:bg-slate-700 text-sm"
+                  >
+                    {type.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            <Select value={filterTeam} onValueChange={setFilterTeam}>
+              <SelectTrigger className="w-full sm:w-40 lg:w-48 bg-slate-800 text-white border-slate-600 text-sm">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent className="bg-slate-800 border-slate-600">
+                {teams.map((team) => (
+                  <SelectItem
+                    key={team.value}
+                    value={team.value}
+                    className="text-white hover:bg-slate-700 text-sm"
+                  >
+                    {team.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
             {user && (
               <Button
-                onClick={() => setShowAddForm(true)}
+                onClick={() => setFilterFavorites(!filterFavorites)}
+                variant="outline"
                 size="sm"
-                className="bg-orange-500 hover:bg-orange-600 text-white flex items-center justify-center space-x-1 sm:space-x-2 order-last sm:order-first"
+                className="flex items-center justify-center space-x-1 sm:space-x-2 w-full sm:w-auto"
               >
-                <Plus size={16} className="sm:w-4 sm:h-4" />
-                <span className="text-sm sm:text-base">Добавить</span>
+                <Star
+                  size={14}
+                  className={`transition-colors ${
+                    filterFavorites ? "fill-current" : ""
+                  }`}
+                />
+                <span className="text-sm">Избранное</span>
               </Button>
             )}
-
-            {/* Filters Row */}
-            <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 lg:gap-4 w-full sm:w-auto">
-              <Select value={filterType} onValueChange={setFilterType}>
-                <SelectTrigger className="w-full sm:w-40 lg:w-48 bg-slate-800 text-white border-slate-600 text-sm">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent className="bg-slate-800 border-slate-600">
-                  {grenadeTypes.map((type) => (
-                    <SelectItem
-                      key={type.value}
-                      value={type.value}
-                      className="text-white hover:bg-slate-700 text-sm"
-                    >
-                      {type.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-
-              <Select value={filterTeam} onValueChange={setFilterTeam}>
-                <SelectTrigger className="w-full sm:w-40 lg:w-48 bg-slate-800 text-white border-slate-600 text-sm">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent className="bg-slate-800 border-slate-600">
-                  {teams.map((team) => (
-                    <SelectItem
-                      key={team.value}
-                      value={team.value}
-                      className="text-white hover:bg-slate-700 text-sm"
-                    >
-                      {team.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-
-              {user && (
-                <Button
-                  onClick={() => setFilterFavorites(!filterFavorites)}
-                  variant="outline"
-                  size="sm"
-                  className="flex items-center justify-center space-x-1 sm:space-x-2 w-full sm:w-auto"
-                >
-                  <Star
-                    size={14}
-                    className={`transition-colors ${
-                      filterFavorites ? "fill-current" : ""
-                    }`}
-                  />
-                  <span className="text-sm">Избранное</span>
-                </Button>
-              )}
-            </div>
           </div>
         </div>
 

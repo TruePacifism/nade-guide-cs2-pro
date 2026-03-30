@@ -53,7 +53,7 @@ const Index = () => {
           ) : (
             <MapSelector
               maps={maps || []}
-              onMapSelect={(map) => navigate(`/map/${map.id}`)}
+              onMapSelect={(map) => navigate(`/map/${map.name}`)} // Изменение здесь
             />
           )}
         </div>
@@ -119,7 +119,7 @@ const Index = () => {
         </div>
         <MapSelector
           maps={maps || []}
-          onMapSelect={(map) => navigate(`/map/${map.id}`)}
+          onMapSelect={(map) => navigate(`/map/${map.name}`)} // Изменение здесь
         />
       </div>
     </div>
