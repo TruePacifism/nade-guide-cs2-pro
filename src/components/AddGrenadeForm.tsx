@@ -136,7 +136,7 @@ const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
       !formData.video_url &&
       !uploadedFiles.video
     ) {
-      toast.error("Видео обязательно при создании раскидки");
+      toast.error(t("errorVideoRequired"));
       return;
     }
     if (
