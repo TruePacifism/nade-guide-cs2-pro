@@ -234,7 +234,7 @@ const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
       <div className="bg-slate-800 rounded-lg sm:rounded-xl max-w-6xl w-full max-h-[95vh] sm:max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between p-4 sm:p-6 border-b border-slate-700">
           <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-white">
-            Добавить раскидку
+            {t("addThrow")}
           </h2>
           <button
             onClick={onClose}
