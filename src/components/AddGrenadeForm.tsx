@@ -594,7 +594,7 @@ const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
                   onClick={onClose}
                   className="text-slate-300 hover:text-white hover:bg-slate-700 order-last sm:order-first"
                 >
-                  Отмена
+                  {t("cancel")}
                 </Button>
                 <Button
                   type="submit"
