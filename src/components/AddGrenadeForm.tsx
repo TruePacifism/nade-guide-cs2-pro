@@ -543,16 +543,16 @@ const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
                       />
                     </div>
                   </div>
-                  <div className="text-center text-slate-400">или</div>
+                  <div className="text-center text-slate-400">{t("or")}</div>
                   <FileUploadField
-                    label="Загрузить видео файл"
+                    label={t("uploadVideo")}
                     accept="video/*"
                     file={uploadedFiles.video}
                     onFileChange={(file) =>
                       setUploadedFiles({ ...uploadedFiles, video: file })
                     }
-                    placeholder="MP4, WEBM или другой поддерживаемый формат"
-                    hint="Перетащите видео сюда или выберите файл"
+                    placeholder={t("videoFormats")}
+                    hint={t("dragVideo")}
                   />
                 </div>
               ) : (
