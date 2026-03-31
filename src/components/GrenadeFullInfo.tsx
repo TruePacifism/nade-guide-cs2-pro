@@ -199,6 +199,49 @@ const GrenadeFullInfo: React.FC<GrenadeFullInfoProps> = ({
               <li>{t("step4")}</li>
             </ol>
           </div>
+
+          {user && grenadeThrow.user_id === user.id && (
+            <div className="mt-4 pt-4 border-t border-slate-700">
+              {!showDeleteConfirm ? (
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  onClick={() => setShowDeleteConfirm(true)}
+                  className="flex items-center gap-2"
+                >
+                  <Trash2 size={16} />
+                  {t("deleteThrow")}
+                </Button>
+              ) : (
+                <div className="flex items-center gap-3">
+                  <span className="text-slate-300 text-sm">{t("deleteConfirm")}</span>
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    disabled={deleteThrow.isPending}
+                    onClick={() => {
+                      deleteThrow.mutate(grenadeThrow.id, {
+                        onSuccess: () => {
+                          onClose();
+                          onDeleted?.();
+                        },
+                      });
+                    }}
+                  >
+                    {t("deleteYes")}
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setShowDeleteConfirm(false)}
+                    className="text-slate-400"
+                  >
+                    {t("cancel")}
+                  </Button>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>
