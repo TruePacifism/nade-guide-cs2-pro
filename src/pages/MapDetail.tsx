@@ -262,6 +262,15 @@ const MapDetail = () => {
         )}
 
         {user && (
+          <Button
+            onClick={() => setShowAddForm(true)}
+            className="fixed bottom-6 right-6 z-50 bg-orange-600 hover:bg-orange-700 rounded-full w-14 h-14 p-0 shadow-lg"
+          >
+            <Plus size={24} />
+          </Button>
+        )}
+
+        {user && (
           <AddGrenadeForm
             map={map}
             isOpen={showAddForm}
