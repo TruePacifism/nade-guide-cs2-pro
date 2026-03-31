@@ -26,7 +26,7 @@ const MapDetail = () => {
   const { t } = useLanguage();
 
   const { user } = useAuth();
-  const { data: maps, refetch } = useMaps();
+  const { data: maps, isLoading, refetch } = useMaps();
   const { data: userFavorites } = useUserFavorites();
   const toggleFavorite = useToggleFavorite();
 
@@ -38,6 +38,14 @@ const MapDetail = () => {
   const [showAddForm, setShowAddForm] = useState(false);
 
   const map = maps?.find((m) => m.name === mapId);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center">
+        <div className="text-white text-xl animate-pulse">{t("loading")}</div>
+      </div>
+    );
+  }
 
   if (!map) {
     return (
