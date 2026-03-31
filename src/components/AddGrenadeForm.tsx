@@ -213,6 +213,8 @@ const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
         landing_point_y: 0,
         media_type: "video",
         throw_types: [],
+        position_timestamp: null,
+        aim_timestamp: null,
       });
       setUploadedFiles({
         video: null,
