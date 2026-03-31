@@ -190,6 +190,8 @@ const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
         setup_image_url,
         aim_image_url,
         result_image_url,
+        position_timestamp: formData.position_timestamp,
+        aim_timestamp: formData.aim_timestamp,
         is_public: false,
         is_verified: false,
       });
