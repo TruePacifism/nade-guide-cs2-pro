@@ -258,7 +258,7 @@ const MapDetail = () => {
         </div>
 
         {selectedThrow && (
-          <GrenadeFullInfo throw={selectedThrow} isOpen={!!selectedThrow} onClose={() => setSelectedThrow(null)} />
+          <GrenadeFullInfo throw={selectedThrow} isOpen={!!selectedThrow} onClose={() => setSelectedThrow(null)} onDeleted={() => refetch()} />
         )}
 
         {user && (
