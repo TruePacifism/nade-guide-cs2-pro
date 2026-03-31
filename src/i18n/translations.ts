@@ -101,6 +101,18 @@ export const translations = {
     errorVideoRequired: "Видео обязательно при создании раскидки",
     errorImageRequired: "Хотя бы одно изображение обязательно при создании раскидки",
     errorCreating: "Ошибка при создании раскидки:",
+    
+    // Timestamps
+    positionTimestamp: "Момент позиции (сек)",
+    aimTimestamp: "Момент прицела (сек)",
+    markPosition: "Отметить позицию",
+    markAim: "Отметить прицел",
+    timestampHint: "Загрузите видео и воспроизведите его, затем нажмите кнопку в нужный момент",
+
+    // Delete
+    deleteThrow: "Удалить раскидку",
+    deleteConfirm: "Вы уверены, что хотите удалить эту раскидку?",
+    deleteYes: "Удалить",
 
     // GrenadeFullInfo
     whereToStand: "Куда встать",
@@ -221,6 +233,18 @@ export const translations = {
     errorVideoRequired: "Video is required when creating a lineup",
     errorImageRequired: "At least one image is required when creating a lineup",
     errorCreating: "Error creating lineup:",
+
+    // Timestamps
+    positionTimestamp: "Position moment (sec)",
+    aimTimestamp: "Aim moment (sec)",
+    markPosition: "Mark position",
+    markAim: "Mark aim",
+    timestampHint: "Upload a video and play it, then click the button at the right moment",
+
+    // Delete
+    deleteThrow: "Delete lineup",
+    deleteConfirm: "Are you sure you want to delete this lineup?",
+    deleteYes: "Delete",
 
     // GrenadeFullInfo
     whereToStand: "Where to stand",

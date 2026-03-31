@@ -1,28 +1,33 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { GrenadeThrow, ThrowTypes } from "../types/map";
-import { Crosshair, Heart, X } from "lucide-react";
+import { Crosshair, Heart, Trash2, X } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
-import { useToggleFavorite, useUserFavorites } from "@/hooks/useGrenadeThrows";
+import { useToggleFavorite, useUserFavorites, useDeleteGrenadeThrow } from "@/hooks/useGrenadeThrows";
 import CustomVideoPlayer from "./CustomVideoPlayer";
 import { Badge } from "./ui/badge";
+import { Button } from "./ui/button";
 import { useLanguage } from "@/i18n/useLanguage";
 
 interface GrenadeFullInfoProps {
   throw: GrenadeThrow;
   isOpen: boolean;
   onClose: () => void;
+  onDeleted?: () => void;
 }
 
 const GrenadeFullInfo: React.FC<GrenadeFullInfoProps> = ({
   throw: grenadeThrow,
   isOpen,
   onClose,
+  onDeleted,
 }) => {
   const { user } = useAuth();
   const { data: userFavorites } = useUserFavorites();
   const toggleFavorite = useToggleFavorite();
+  const deleteThrow = useDeleteGrenadeThrow();
   const videoRef = useRef<HTMLVideoElement>(null);
   const { t } = useLanguage();
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   if (!isOpen) return null;
 
@@ -194,6 +199,49 @@ const GrenadeFullInfo: React.FC<GrenadeFullInfoProps> = ({
               <li>{t("step4")}</li>
             </ol>
           </div>
+
+          {user && grenadeThrow.user_id === user.id && (
+            <div className="mt-4 pt-4 border-t border-slate-700">
+              {!showDeleteConfirm ? (
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  onClick={() => setShowDeleteConfirm(true)}
+                  className="flex items-center gap-2"
+                >
+                  <Trash2 size={16} />
+                  {t("deleteThrow")}
+                </Button>
+              ) : (
+                <div className="flex items-center gap-3">
+                  <span className="text-slate-300 text-sm">{t("deleteConfirm")}</span>
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    disabled={deleteThrow.isPending}
+                    onClick={() => {
+                      deleteThrow.mutate(grenadeThrow.id, {
+                        onSuccess: () => {
+                          onClose();
+                          onDeleted?.();
+                        },
+                      });
+                    }}
+                  >
+                    {t("deleteYes")}
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setShowDeleteConfirm(false)}
+                    className="text-slate-400"
+                  >
+                    {t("cancel")}
+                  </Button>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>

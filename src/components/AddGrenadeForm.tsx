@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
@@ -10,7 +10,7 @@ import {
   TeamType,
   ThrowType,
 } from "@/types/map";
-import { X, XIcon } from "lucide-react";
+import { X, XIcon, Crosshair } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import GrenadePoint from "./GrenadePoint";
 import FileUploadField from "./FileUploadField";
@@ -34,6 +34,7 @@ const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
   const { t } = useLanguage();
   const [loading, setLoading] = useState(false);
   const [isSelectingCoordinates, setIsSelectingCoordinates] = useState(false);
+  const videoPreviewRef = useRef<HTMLVideoElement>(null);
   const [coordinateMode, setCoordinateMode] = useState<
     "throw" | "landing" | null
   >(null);
@@ -50,6 +51,8 @@ const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
     landing_point_y: 0,
     media_type: "video" as "video" | "screenshots",
     throw_types: [] as ThrowType[],
+    position_timestamp: null as number | null,
+    aim_timestamp: null as number | null,
   });
   const [uploadedFiles, setUploadedFiles] = useState({
     video: null as File | null,
@@ -187,6 +190,8 @@ const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
         setup_image_url,
         aim_image_url,
         result_image_url,
+        position_timestamp: formData.position_timestamp,
+        aim_timestamp: formData.aim_timestamp,
         is_public: false,
         is_verified: false,
       });
@@ -208,6 +213,8 @@ const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
         landing_point_y: 0,
         media_type: "video",
         throw_types: [],
+        position_timestamp: null,
+        aim_timestamp: null,
       });
       setUploadedFiles({
         video: null,
@@ -554,6 +561,53 @@ const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
                     placeholder={t("videoFormats")}
                     hint={t("dragVideo")}
                   />
+
+                  {/* Video preview for timestamp marking */}
+                  {uploadedFiles.video && (
+                    <div className="space-y-3">
+                      <video
+                        ref={videoPreviewRef}
+                        src={URL.createObjectURL(uploadedFiles.video)}
+                        controls
+                        className="w-full rounded-lg max-h-64"
+                      />
+                      <div className="flex flex-col sm:flex-row gap-2">
+                        <div className="flex-1">
+                          <Button
+                            type="button"
+                            size="sm"
+                            className="w-full bg-orange-500 hover:bg-orange-600 text-white text-xs"
+                            onClick={() => {
+                              if (videoPreviewRef.current) {
+                                setFormData({ ...formData, position_timestamp: Math.round(videoPreviewRef.current.currentTime * 100) / 100 });
+                              }
+                            }}
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 mr-1" viewBox="0 0 100 100" fill="currentColor"><path d="M49.855 0A10.5 10.5 0 0 0 39.5 10.5 10.5 10.5 0 0 0 50 21a10.5 10.5 0 0 0 10.5-10.5A10.5 10.5 0 0 0 50 0zm-.057 23.592c-7.834.002-15.596 3.368-14.78 10.096l2 14.625c.351 2.573 2.09 6.687 4.687 6.687h.185l2.127 24.531c.092 1.105.892 2 2 2h8c1.108 0 1.908-.895 2-2l2.127-24.53h.186c2.597 0 4.335-4.115 4.687-6.688l2-14.625c.524-6.734-7.384-10.097-15.219-10.096z"/></svg>
+                            {t("markPosition")}
+                            {formData.position_timestamp !== null && ` (${formData.position_timestamp}s)`}
+                          </Button>
+                        </div>
+                        <div className="flex-1">
+                          <Button
+                            type="button"
+                            size="sm"
+                            className="w-full bg-blue-500 hover:bg-blue-600 text-white text-xs"
+                            onClick={() => {
+                              if (videoPreviewRef.current) {
+                                setFormData({ ...formData, aim_timestamp: Math.round(videoPreviewRef.current.currentTime * 100) / 100 });
+                              }
+                            }}
+                          >
+                            <Crosshair size={16} className="mr-1" />
+                            {t("markAim")}
+                            {formData.aim_timestamp !== null && ` (${formData.aim_timestamp}s)`}
+                          </Button>
+                        </div>
+                      </div>
+                      <p className="text-xs text-slate-500">{t("timestampHint")}</p>
+                    </div>
+                  )}
                 </div>
               ) : (
                 <div className="space-y-4">
