@@ -5,6 +5,7 @@ import { GrenadeThrow, CreateGrenadeThrowData } from "@/types/map";
 import { useAuth } from "./useAuth";
 import { toast } from "sonner";
 import { useLanguage } from "@/i18n/useLanguage";
+import { attachSignedMediaUrls } from "@/lib/storage";
 
 export const useGrenadeThrows = (mapId?: string) => {
   const { user } = useAuth();
@@ -24,7 +25,11 @@ export const useGrenadeThrows = (mapId?: string) => {
       const { data, error } = await query;
 
       if (error) throw error;
-      return data as GrenadeThrow[];
+      const throws = (data as GrenadeThrow[]) ?? [];
+      const signedThrows = await Promise.all(
+        throws.map((throwItem) => attachSignedMediaUrls(throwItem)),
+      );
+      return signedThrows;
     },
   });
 };
@@ -96,7 +101,17 @@ export const useUserCustomGrenades = () => {
         .eq("user_id", user.id);
 
       if (error) throw error;
-      return data;
+      const favorites = data ?? [];
+      const signedFavorites = await Promise.all(
+        favorites.map(async (favorite) => {
+          if (!favorite?.grenade_throws) return favorite;
+          const signedThrow = await attachSignedMediaUrls(
+            favorite.grenade_throws,
+          );
+          return { ...favorite, grenade_throws: signedThrow };
+        }),
+      );
+      return signedFavorites;
     },
     enabled: !!user,
   });

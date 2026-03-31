@@ -35,6 +35,7 @@ const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
   const [loading, setLoading] = useState(false);
   const [isSelectingCoordinates, setIsSelectingCoordinates] = useState(false);
   const videoPreviewRef = useRef<HTMLVideoElement>(null);
+  const videoLinkInputRef = useRef<HTMLInputElement | null>(null);
   const [coordinateMode, setCoordinateMode] = useState<
     "throw" | "landing" | null
   >(null);
@@ -56,7 +57,7 @@ const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
     grenade_type: "smoke" as GrenadeType,
     difficulty: "medium" as DifficultyLevel,
     team: "both" as TeamType,
-    video_url: "",
+    video_url: null as string | null,
     throw_point_x: 0,
     throw_point_y: 0,
     landing_point_x: 0,
@@ -72,6 +73,9 @@ const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
     aim_image: null as File | null,
     result_image: null as File | null,
   });
+  const MAX_VIDEO_SIZE_MB = 200;
+  const MAX_IMAGE_SIZE_MB = 10;
+  const BYTES_IN_MB = 1024 * 1024;
 
   const throwTypeOptions: { value: ThrowType; label: string }[] = [
     { value: "standing", label: t("throwStanding") },
@@ -213,15 +217,46 @@ const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
 
     const { error: uploadError } = await supabase.storage
       .from("grenade-media")
-      .upload(filePath, file);
+      .upload(filePath, file, { contentType: file.type });
 
     if (uploadError) throw uploadError;
 
-    const { data } = supabase.storage
-      .from("grenade-media")
-      .getPublicUrl(filePath);
+    return filePath;
+  };
 
-    return data.publicUrl;
+  const validateFile = (file: File, kind: "video" | "image") => {
+    if (kind === "video" && !file.type.startsWith("video/")) {
+      toast.error(t("errorInvalidVideoType"));
+      return false;
+    }
+    if (kind === "image" && !file.type.startsWith("image/")) {
+      toast.error(t("errorInvalidImageType"));
+      return false;
+    }
+    const maxBytes =
+      kind === "video"
+        ? MAX_VIDEO_SIZE_MB * BYTES_IN_MB
+        : MAX_IMAGE_SIZE_MB * BYTES_IN_MB;
+    if (file.size > maxBytes) {
+      toast.error(
+        kind === "video" ? t("errorVideoTooLarge") : t("errorImageTooLarge"),
+      );
+      return false;
+    }
+    return true;
+  };
+
+  const setFileWithValidation = (
+    file: File | null,
+    kind: "video" | "image",
+    key: keyof typeof uploadedFiles,
+  ) => {
+    if (!file) {
+      setUploadedFiles((prev) => ({ ...prev, [key]: null }));
+      return;
+    }
+    if (!validateFile(file, kind)) return;
+    setUploadedFiles((prev) => ({ ...prev, [key]: file }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -245,18 +280,40 @@ const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
       toast.error(t("errorVideoRequired"));
       return;
     }
-    if (
-      formData.media_type === "screenshots" &&
-      !uploadedFiles.setup_image &&
-      !uploadedFiles.aim_image &&
-      !uploadedFiles.result_image
-    ) {
+    const hasAnyScreenshot =
+      !!uploadedFiles.setup_image ||
+      !!uploadedFiles.aim_image ||
+      !!uploadedFiles.result_image;
+
+    if (formData.media_type === "screenshots" && !hasAnyScreenshot) {
       toast.error(t("errorImageRequired"));
       return;
     }
 
     setLoading(true);
     try {
+      if (uploadedFiles.video && !validateFile(uploadedFiles.video, "video")) {
+        return;
+      }
+      if (
+        uploadedFiles.setup_image &&
+        !validateFile(uploadedFiles.setup_image, "image")
+      ) {
+        return;
+      }
+      if (
+        uploadedFiles.aim_image &&
+        !validateFile(uploadedFiles.aim_image, "image")
+      ) {
+        return;
+      }
+      if (
+        uploadedFiles.result_image &&
+        !validateFile(uploadedFiles.result_image, "image")
+      ) {
+        return;
+      }
+
       let video_url = formData.video_url;
       let setup_image_url = null;
       let aim_image_url = null;
@@ -309,7 +366,7 @@ const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
         grenade_type: "smoke",
         difficulty: "medium",
         team: "both",
-        video_url: "",
+        video_url: null,
         throw_point_x: 0,
         throw_point_y: 0,
         landing_point_x: 0,
@@ -326,6 +383,9 @@ const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
         result_image: null,
       });
     } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+      toast.error(`${t("errorCreating")} ${errorMessage || "Unknown error"}`);
       console.error(t("errorCreating"), error);
     } finally {
       setLoading(false);
@@ -624,31 +684,23 @@ const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
                     <div className="relative">
                       <input
                         type="url"
-                        value={formData.video_url}
+                        value={formData.video_url ?? ""}
                         onChange={(e) =>
                           setFormData({
                             ...formData,
-                            video_url: e.target.value,
+                            video_url: e.target.value || null,
                           })
                         }
                         className="w-full bg-slate-700 border border-slate-600 rounded-lg px-4 py-2 text-white focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                         placeholder="https://www.youtube.com/watch?v=..."
-                        ref={(input) => {
-                          // Store ref for clearing value
-                          (window as any).videoLinkInput = input;
-                        }}
+                        ref={videoLinkInputRef}
                       />
                       <XIcon
                         className={`absolute top-1/2 -translate-y-1/2 right-4  text-white cursor-pointer ${
                           !formData.video_url && "invisible"
                         }`}
                         onClick={() => {
-                          setFormData((old) => {
-                            return { ...old, video_url: undefined };
-                          });
-                          const input = (window as any)
-                            .videoLinkInput as HTMLInputElement | null;
-                          if (input) input.value = "";
+                          setFormData((old) => ({ ...old, video_url: null }));
                         }}
                       />
                     </div>
@@ -659,7 +711,7 @@ const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
                     accept="video/*"
                     file={uploadedFiles.video}
                     onFileChange={(file) =>
-                      setUploadedFiles({ ...uploadedFiles, video: file })
+                      setFileWithValidation(file, "video", "video")
                     }
                     placeholder={t("videoFormats")}
                     hint={t("dragVideo")}
@@ -817,7 +869,7 @@ const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
                     accept="image/*"
                     file={uploadedFiles.setup_image}
                     onFileChange={(file) =>
-                      setUploadedFiles({ ...uploadedFiles, setup_image: file })
+                      setFileWithValidation(file, "image", "setup_image")
                     }
                     hint={t("dragSetup")}
                   />
@@ -826,7 +878,7 @@ const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
                     accept="image/*"
                     file={uploadedFiles.aim_image}
                     onFileChange={(file) =>
-                      setUploadedFiles({ ...uploadedFiles, aim_image: file })
+                      setFileWithValidation(file, "image", "aim_image")
                     }
                     hint={t("dragAim")}
                   />
@@ -835,7 +887,7 @@ const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
                     accept="image/*"
                     file={uploadedFiles.result_image}
                     onFileChange={(file) =>
-                      setUploadedFiles({ ...uploadedFiles, result_image: file })
+                      setFileWithValidation(file, "image", "result_image")
                     }
                     hint={t("dragResult")}
                   />
@@ -861,9 +913,9 @@ const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
                       !formData.video_url &&
                       !uploadedFiles.video) ||
                     (formData.media_type === "screenshots" &&
-                      (!uploadedFiles.aim_image ||
-                        !uploadedFiles.setup_image ||
-                        !uploadedFiles.result_image))
+                      !uploadedFiles.aim_image &&
+                      !uploadedFiles.setup_image &&
+                      !uploadedFiles.result_image)
                   }
                   className="bg-orange-500 hover:bg-orange-600 text-white disabled:opacity-50 order-first sm:order-last"
                 >

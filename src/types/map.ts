@@ -1,6 +1,6 @@
-import { Database } from "@/integrations/supabase/types";
+﻿import { Database } from "@/integrations/supabase/types";
 
-// Типы из базы данных
+// РўРёРїС‹ РёР· Р±Р°Р·С‹ РґР°РЅРЅС‹С…
 export type GrenadeType = Database["public"]["Enums"]["grenade_type"];
 export type DifficultyLevel = Database["public"]["Enums"]["difficulty_level"];
 export type TeamType = Database["public"]["Enums"]["team_type"];
@@ -8,15 +8,15 @@ export type ThrowType = Database["public"]["Enums"]["throw_type"];
 export type MediaType = Database["public"]["Enums"]["media_type"];
 
 export enum ThrowTypes {
-  standing = "С места",
+  standing = "РЎ РјРµСЃС‚Р°",
   jump_throw = "Jump Throw",
-  running_left = "Влево",
-  running_right = "Вправо",
-  running_forward = "Вперед",
-  crouching = "В присяде",
-  walk_throw = "Шагом",
+  running_left = "Р’Р»РµРІРѕ",
+  running_right = "Р’РїСЂР°РІРѕ",
+  running_forward = "Р’РїРµСЂРµРґ",
+  crouching = "Р’ РїСЂРёСЃСЏРґРµ",
+  walk_throw = "РЁР°РіРѕРј",
 }
-// Интерфейс для раскидки гранаты
+// РРЅС‚РµСЂС„РµР№СЃ РґР»СЏ СЂР°СЃРєРёРґРєРё РіСЂР°РЅР°С‚С‹
 export interface GrenadeThrow {
   id: string;
   map_id: string;
@@ -28,15 +28,15 @@ export interface GrenadeThrow {
   team: TeamType;
   throw_types: ThrowType[];
 
-  // Координаты
+  // РљРѕРѕСЂРґРёРЅР°С‚С‹
   throw_point_x: number;
   throw_point_y: number;
   landing_point_x: number;
   landing_point_y: number;
 
-  // Медиа
+  // РњРµРґРёР°
   media_type: MediaType;
-  video_url?: string;
+  video_url: string | null;
   thumbnail_url?: string;
   setup_image_url?: string;
   aim_image_url?: string;
@@ -51,7 +51,7 @@ export interface GrenadeThrow {
   position_timestamp?: number;
 }
 
-// Интерфейс для карты
+// РРЅС‚РµСЂС„РµР№СЃ РґР»СЏ РєР°СЂС‚С‹
 export interface Map {
   id: string;
   name: string;
@@ -63,7 +63,7 @@ export interface Map {
   throws?: GrenadeThrow[];
 }
 
-// Интерфейс для профиля пользователя
+// РРЅС‚РµСЂС„РµР№СЃ РґР»СЏ РїСЂРѕС„РёР»СЏ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ
 export interface UserProfile {
   id: string;
   username?: string;
@@ -72,7 +72,7 @@ export interface UserProfile {
   updated_at: string;
 }
 
-// Интерфейс для избранных раскидок
+// РРЅС‚РµСЂС„РµР№СЃ РґР»СЏ РёР·Р±СЂР°РЅРЅС‹С… СЂР°СЃРєРёРґРѕРє
 export interface UserFavorite {
   id: string;
   user_id: string;
@@ -80,7 +80,7 @@ export interface UserFavorite {
   created_at: string;
 }
 
-// Интерфейс для создания новой раскидки
+// РРЅС‚РµСЂС„РµР№СЃ РґР»СЏ СЃРѕР·РґР°РЅРёСЏ РЅРѕРІРѕР№ СЂР°СЃРєРёРґРєРё
 export interface CreateGrenadeThrowData {
   map_id: string;
   name: string;
@@ -94,9 +94,10 @@ export interface CreateGrenadeThrowData {
   landing_point_x: number;
   landing_point_y: number;
   media_type: MediaType;
-  video_url?: string;
+  video_url: string | null;
   thumbnail_url?: string;
   setup_image_url?: string;
   aim_image_url?: string;
   result_image_url?: string;
 }
+
