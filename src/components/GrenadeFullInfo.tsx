@@ -1,16 +1,18 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { GrenadeThrow, ThrowTypes } from "../types/map";
-import { Crosshair, Heart, X } from "lucide-react";
+import { Crosshair, Heart, Trash2, X } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
-import { useToggleFavorite, useUserFavorites } from "@/hooks/useGrenadeThrows";
+import { useToggleFavorite, useUserFavorites, useDeleteGrenadeThrow } from "@/hooks/useGrenadeThrows";
 import CustomVideoPlayer from "./CustomVideoPlayer";
 import { Badge } from "./ui/badge";
+import { Button } from "./ui/button";
 import { useLanguage } from "@/i18n/useLanguage";
 
 interface GrenadeFullInfoProps {
   throw: GrenadeThrow;
   isOpen: boolean;
   onClose: () => void;
+  onDeleted?: () => void;
 }
 
 const GrenadeFullInfo: React.FC<GrenadeFullInfoProps> = ({
