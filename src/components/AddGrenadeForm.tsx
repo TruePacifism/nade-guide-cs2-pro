@@ -10,7 +10,7 @@ import {
   TeamType,
   ThrowType,
 } from "@/types/map";
-import { X, XIcon } from "lucide-react";
+import { X, XIcon, Crosshair } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import GrenadePoint from "./GrenadePoint";
 import FileUploadField from "./FileUploadField";
