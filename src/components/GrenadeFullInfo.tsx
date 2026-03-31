@@ -19,12 +19,15 @@ const GrenadeFullInfo: React.FC<GrenadeFullInfoProps> = ({
   throw: grenadeThrow,
   isOpen,
   onClose,
+  onDeleted,
 }) => {
   const { user } = useAuth();
   const { data: userFavorites } = useUserFavorites();
   const toggleFavorite = useToggleFavorite();
+  const deleteThrow = useDeleteGrenadeThrow();
   const videoRef = useRef<HTMLVideoElement>(null);
   const { t } = useLanguage();
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   if (!isOpen) return null;
 
