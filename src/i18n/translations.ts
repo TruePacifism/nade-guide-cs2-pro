@@ -101,6 +101,18 @@ export const translations = {
     errorVideoRequired: "Видео обязательно при создании раскидки",
     errorImageRequired: "Хотя бы одно изображение обязательно при создании раскидки",
     errorCreating: "Ошибка при создании раскидки:",
+    
+    // Timestamps
+    positionTimestamp: "Момент позиции (сек)",
+    aimTimestamp: "Момент прицела (сек)",
+    markPosition: "Отметить позицию",
+    markAim: "Отметить прицел",
+    timestampHint: "Загрузите видео и воспроизведите его, затем нажмите кнопку в нужный момент",
+
+    // Delete
+    deleteThrow: "Удалить раскидку",
+    deleteConfirm: "Вы уверены, что хотите удалить эту раскидку?",
+    deleteYes: "Удалить",
 
     // GrenadeFullInfo
     whereToStand: "Куда встать",
