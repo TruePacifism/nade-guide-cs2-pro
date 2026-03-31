@@ -9,6 +9,11 @@ interface FileUploadFieldProps {
   onFileChange: (file: File | null) => void;
   hint?: string;
   placeholder?: string;
+  videoRef?: React.RefObject<HTMLVideoElement>;
+  showVideoProgress?: boolean;
+  videoMarkers?: { time: number; label?: string; colorClassName?: string }[];
+  onVideoSeek?: (time: number) => void;
+  onVideoMarkerClick?: (marker: { time: number; label?: string }) => void;
 }
 
 const FileUploadField: React.FC<FileUploadFieldProps> = ({
@@ -18,6 +23,11 @@ const FileUploadField: React.FC<FileUploadFieldProps> = ({
   onFileChange,
   hint,
   placeholder,
+  videoRef,
+  showVideoProgress,
+  videoMarkers,
+  onVideoSeek,
+  onVideoMarkerClick,
 }) => {
   const controlId = useId();
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -126,9 +136,13 @@ const FileUploadField: React.FC<FileUploadFieldProps> = ({
                     title={file.name}
                     thumbnailUrl={previewUrl}
                     mimeType={file.type}
-                    showProgress={false}
+                    showProgress={showVideoProgress ?? false}
                     wrapperClassName="rounded-2xl"
                     className="rounded-2xl"
+                    videoRef={videoRef}
+                    markers={videoMarkers}
+                    onSeek={onVideoSeek}
+                    onMarkerClick={onVideoMarkerClick}
                   />
                 </div>
               ) : (

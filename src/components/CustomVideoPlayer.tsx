@@ -12,6 +12,13 @@ interface CustomVideoPlayerProps {
   wrapperClassName?: string;
   className?: string;
   videoRef?: React.RefObject<HTMLVideoElement>;
+  markers?: {
+    time: number;
+    label?: string;
+    colorClassName?: string;
+  }[];
+  onMarkerClick?: (marker: { time: number; label?: string }) => void;
+  onSeek?: (time: number) => void;
 }
 
 const formatTime = (time: number) => {
@@ -55,6 +62,9 @@ const CustomVideoPlayer: React.FC<CustomVideoPlayerProps> = ({
   wrapperClassName = "",
   className = "",
   videoRef,
+  markers,
+  onMarkerClick,
+  onSeek,
 }) => {
   const internalRef = useRef<HTMLVideoElement>(null);
   const resolvedRef = videoRef ?? internalRef;
@@ -133,6 +143,16 @@ const CustomVideoPlayer: React.FC<CustomVideoPlayerProps> = ({
     if (!video) return;
     video.currentTime = nextTime;
     setCurrentTime(nextTime);
+    onSeek?.(nextTime);
+  };
+
+  const handleMarkerJump = (marker: { time: number; label?: string }) => {
+    const video = resolvedRef.current;
+    if (video) {
+      video.currentTime = marker.time;
+      setCurrentTime(marker.time);
+    }
+    onMarkerClick?.(marker);
   };
 
   if (!src) return null;
@@ -211,7 +231,7 @@ const CustomVideoPlayer: React.FC<CustomVideoPlayerProps> = ({
             <span>{formatTime(duration)}</span>
           </div>
           <div
-            className="mt-3 h-2 w-full cursor-pointer overflow-hidden rounded-full bg-slate-800"
+            className="relative mt-3 h-2 w-full cursor-pointer overflow-hidden rounded-full bg-slate-800"
             onClick={handleSeek}
           >
             <div
@@ -220,6 +240,34 @@ const CustomVideoPlayer: React.FC<CustomVideoPlayerProps> = ({
                 width: duration ? `${(currentTime / duration) * 100}%` : "0%",
               }}
             />
+            {duration
+              ? (markers || [])
+                  .filter(
+                    (marker) =>
+                      Number.isFinite(marker.time) &&
+                      marker.time >= 0 &&
+                      marker.time <= duration,
+                  )
+                  .map((marker, index) => {
+                    const left = (marker.time / duration) * 100;
+                    return (
+                      <button
+                        key={`${marker.time}-${index}`}
+                        type="button"
+                        title={marker.label}
+                        aria-label={marker.label || "Video marker"}
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          handleMarkerJump(marker);
+                        }}
+                        className={`absolute top-1/2 h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full border border-slate-100/80 shadow ${
+                          marker.colorClassName || "bg-orange-400"
+                        }`}
+                        style={{ left: `${left}%` }}
+                      />
+                    );
+                  })
+              : null}
           </div>
         </div>
       )}

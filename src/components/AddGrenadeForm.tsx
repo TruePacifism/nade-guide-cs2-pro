@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
@@ -38,6 +38,18 @@ const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
   const [coordinateMode, setCoordinateMode] = useState<
     "throw" | "landing" | null
   >(null);
+  const [timestampPreviews, setTimestampPreviews] = useState({
+    position: null as string | null,
+    aim: null as string | null,
+  });
+  const [videoMeta, setVideoMeta] = useState({
+    duration: 0,
+    currentTime: 0,
+  });
+  const [activeTimestampType, setActiveTimestampType] = useState<
+    "position" | "aim" | null
+  >(null);
+  const pendingTimestampType = useRef<"position" | "aim" | null>(null);
   const [formData, setFormData] = useState({
     name: "",
     description: "",
@@ -99,6 +111,97 @@ const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
       : [...formData.throw_types, throwType];
     setFormData({ ...formData, throw_types: newTypes });
   };
+
+  useEffect(() => {
+    setTimestampPreviews({ position: null, aim: null });
+    setVideoMeta({ duration: 0, currentTime: 0 });
+    setActiveTimestampType(null);
+    setFormData((prev) => ({
+      ...prev,
+      position_timestamp: null,
+      aim_timestamp: null,
+    }));
+  }, [uploadedFiles.video]);
+
+  const captureTimestampPreview = (type: "position" | "aim") => {
+    const video = videoPreviewRef.current;
+    if (!video || video.videoWidth === 0 || video.videoHeight === 0) return;
+
+    const canvas = document.createElement("canvas");
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    const dataUrl = canvas.toDataURL("image/jpeg", 0.85);
+    setTimestampPreviews((prev) => ({ ...prev, [type]: dataUrl }));
+  };
+
+  const formatTime = (time: number) => {
+    if (!Number.isFinite(time) || time < 0) return "0:00";
+    const minutes = Math.floor(time / 60);
+    const seconds = Math.floor(time % 60);
+    return `${minutes}:${seconds.toString().padStart(2, "0")}`;
+  };
+
+  const markTimestamp = (type: "position" | "aim") => {
+    const video = videoPreviewRef.current;
+    if (!video) return;
+    const time = Math.round(video.currentTime * 100) / 100;
+    setFormData((prev) => ({
+      ...prev,
+      ...(type === "position"
+        ? { position_timestamp: time }
+        : { aim_timestamp: time }),
+    }));
+    captureTimestampPreview(type);
+  };
+
+  const setTimestampFromTime = (type: "position" | "aim", time: number) => {
+    const rounded = Math.round(time * 100) / 100;
+    setFormData((prev) => ({
+      ...prev,
+      ...(type === "position"
+        ? { position_timestamp: rounded }
+        : { aim_timestamp: rounded }),
+    }));
+  };
+
+  useEffect(() => {
+    const video = videoPreviewRef.current;
+    if (!video) return;
+
+    const handleLoadedMetadata = () => {
+      setVideoMeta({
+        duration: video.duration || 0,
+        currentTime: video.currentTime || 0,
+      });
+    };
+    const handleTimeUpdate = () => {
+      setVideoMeta((prev) => ({
+        ...prev,
+        currentTime: video.currentTime || 0,
+      }));
+    };
+    const handleSeeked = () => {
+      const pending = pendingTimestampType.current;
+      if (pending) {
+        captureTimestampPreview(pending);
+        pendingTimestampType.current = null;
+      }
+    };
+
+    video.addEventListener("loadedmetadata", handleLoadedMetadata);
+    video.addEventListener("timeupdate", handleTimeUpdate);
+    video.addEventListener("seeked", handleSeeked);
+
+    return () => {
+      video.removeEventListener("loadedmetadata", handleLoadedMetadata);
+      video.removeEventListener("timeupdate", handleTimeUpdate);
+      video.removeEventListener("seeked", handleSeeked);
+    };
+  }, [uploadedFiles.video]);
 
   const handleFileUpload = async (
     file: File,
@@ -560,52 +663,150 @@ const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
                     }
                     placeholder={t("videoFormats")}
                     hint={t("dragVideo")}
+                    videoRef={videoPreviewRef}
+                    showVideoProgress
+                    videoMarkers={[
+                      formData.position_timestamp !== null
+                        ? {
+                            time: formData.position_timestamp,
+                            label: t("markPosition"),
+                            colorClassName: "bg-orange-400",
+                          }
+                        : null,
+                      formData.aim_timestamp !== null
+                        ? {
+                            time: formData.aim_timestamp,
+                            label: t("markAim"),
+                            colorClassName: "bg-blue-400",
+                          }
+                        : null,
+                    ].filter(Boolean) as {
+                      time: number;
+                      label?: string;
+                      colorClassName?: string;
+                    }[]}
+                    onVideoSeek={(time) => {
+                      setVideoMeta((prev) => ({
+                        ...prev,
+                        currentTime: time,
+                      }));
+                      if (activeTimestampType) {
+                        setTimestampFromTime(activeTimestampType, time);
+                        pendingTimestampType.current = activeTimestampType;
+                      }
+                    }}
+                    onVideoMarkerClick={(marker) => {
+                      if (videoPreviewRef.current) {
+                        videoPreviewRef.current.currentTime = marker.time;
+                      }
+                    }}
                   />
 
                   {/* Video preview for timestamp marking */}
                   {uploadedFiles.video && (
                     <div className="space-y-3">
-                      <video
-                        ref={videoPreviewRef}
-                        src={URL.createObjectURL(uploadedFiles.video)}
-                        controls
-                        className="w-full rounded-lg max-h-64"
-                      />
+                      <div className="flex items-center justify-between text-xs text-slate-300">
+                        <span>{formatTime(videoMeta.currentTime)}</span>
+                        <span className="text-slate-500">
+                          {formatTime(videoMeta.duration)}
+                        </span>
+                      </div>
                       <div className="flex flex-col sm:flex-row gap-2">
                         <div className="flex-1">
                           <Button
                             type="button"
                             size="sm"
-                            className="w-full bg-orange-500 hover:bg-orange-600 text-white text-xs"
+                            className={`w-full bg-orange-500 hover:bg-orange-600 text-white text-xs ${
+                              activeTimestampType === "position"
+                                ? "ring-2 ring-orange-200"
+                                : ""
+                            }`}
                             onClick={() => {
-                              if (videoPreviewRef.current) {
-                                setFormData({ ...formData, position_timestamp: Math.round(videoPreviewRef.current.currentTime * 100) / 100 });
-                              }
+                              setActiveTimestampType("position");
+                              markTimestamp("position");
                             }}
                           >
-                            <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 mr-1" viewBox="0 0 100 100" fill="currentColor"><path d="M49.855 0A10.5 10.5 0 0 0 39.5 10.5 10.5 10.5 0 0 0 50 21a10.5 10.5 0 0 0 10.5-10.5A10.5 10.5 0 0 0 50 0zm-.057 23.592c-7.834.002-15.596 3.368-14.78 10.096l2 14.625c.351 2.573 2.09 6.687 4.687 6.687h.185l2.127 24.531c.092 1.105.892 2 2 2h8c1.108 0 1.908-.895 2-2l2.127-24.53h.186c2.597 0 4.335-4.115 4.687-6.688l2-14.625c.524-6.734-7.384-10.097-15.219-10.096z"/></svg>
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              className="w-4 h-4 mr-1"
+                              viewBox="0 0 100 100"
+                              fill="currentColor"
+                            >
+                              <path d="M49.855 0A10.5 10.5 0 0 0 39.5 10.5 10.5 10.5 0 0 0 50 21a10.5 10.5 0 0 0 10.5-10.5A10.5 10.5 0 0 0 50 0zm-.057 23.592c-7.834.002-15.596 3.368-14.78 10.096l2 14.625c.351 2.573 2.09 6.687 4.687 6.687h.185l2.127 24.531c.092 1.105.892 2 2 2h8c1.108 0 1.908-.895 2-2l2.127-24.53h.186c2.597 0 4.335-4.115 4.687-6.688l2-14.625c.524-6.734-7.384-10.097-15.219-10.096z" />
+                            </svg>
                             {t("markPosition")}
-                            {formData.position_timestamp !== null && ` (${formData.position_timestamp}s)`}
                           </Button>
                         </div>
                         <div className="flex-1">
                           <Button
                             type="button"
                             size="sm"
-                            className="w-full bg-blue-500 hover:bg-blue-600 text-white text-xs"
+                            className={`w-full bg-blue-500 hover:bg-blue-600 text-white text-xs ${
+                              activeTimestampType === "aim"
+                                ? "ring-2 ring-blue-200"
+                                : ""
+                            }`}
                             onClick={() => {
-                              if (videoPreviewRef.current) {
-                                setFormData({ ...formData, aim_timestamp: Math.round(videoPreviewRef.current.currentTime * 100) / 100 });
-                              }
+                              setActiveTimestampType("aim");
+                              markTimestamp("aim");
                             }}
                           >
                             <Crosshair size={16} className="mr-1" />
                             {t("markAim")}
-                            {formData.aim_timestamp !== null && ` (${formData.aim_timestamp}s)`}
                           </Button>
                         </div>
                       </div>
-                      <p className="text-xs text-slate-500">{t("timestampHint")}</p>
+                      <div className="grid grid-cols-2 gap-2">
+                        <div className="bg-slate-700/60 border border-slate-600 rounded-lg overflow-hidden">
+                          <div className="px-2 py-1 text-[11px] text-slate-300 border-b border-slate-600 flex items-center justify-between">
+                            <span>{t("markPosition")}</span>
+                            <span className="text-slate-400">
+                              {formData.position_timestamp !== null
+                                ? `${formData.position_timestamp}s`
+                                : "--"}
+                            </span>
+                          </div>
+                          <div className="aspect-video bg-slate-800/60 flex items-center justify-center">
+                            {timestampPreviews.position ? (
+                              <img
+                                src={timestampPreviews.position}
+                                alt={t("markPosition")}
+                                className="w-full h-full object-cover"
+                              />
+                            ) : (
+                              <div className="text-xs text-slate-500">
+                                {t("timestampHint")}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                        <div className="bg-slate-700/60 border border-slate-600 rounded-lg overflow-hidden">
+                          <div className="px-2 py-1 text-[11px] text-slate-300 border-b border-slate-600 flex items-center justify-between">
+                            <span>{t("markAim")}</span>
+                            <span className="text-slate-400">
+                              {formData.aim_timestamp !== null
+                                ? `${formData.aim_timestamp}s`
+                                : "--"}
+                            </span>
+                          </div>
+                          <div className="aspect-video bg-slate-800/60 flex items-center justify-center">
+                            {timestampPreviews.aim ? (
+                              <img
+                                src={timestampPreviews.aim}
+                                alt={t("markAim")}
+                                className="w-full h-full object-cover"
+                              />
+                            ) : (
+                              <div className="text-xs text-slate-500">
+                                {t("timestampHint")}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                      <p className="text-xs text-slate-500">
+                        {t("timestampHint")}
+                      </p>
                     </div>
                   )}
                 </div>

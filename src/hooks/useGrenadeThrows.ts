@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { GrenadeThrow, CreateGrenadeThrowData } from "@/types/map";
 import { useAuth } from "./useAuth";
 import { toast } from "sonner";
+import { useLanguage } from "@/i18n/useLanguage";
 
 export const useGrenadeThrows = (mapId?: string) => {
   const { user } = useAuth();
@@ -31,11 +32,12 @@ export const useGrenadeThrows = (mapId?: string) => {
 export const useCreateGrenadeThrow = () => {
   const queryClient = useQueryClient();
   const { user } = useAuth();
+  const { t } = useLanguage();
 
   return useMutation({
     mutationFn: async (data: CreateGrenadeThrowData) => {
       const currentUser = user;
-      if (!currentUser) throw new Error("Must be logged in to create throws");
+      if (!currentUser) throw new Error(t("errorLoginRequired"));
 
       const { data: newThrow, error } = await supabase
         .from("grenade_throws")
@@ -49,16 +51,17 @@ export const useCreateGrenadeThrow = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["grenade-throws"] });
       queryClient.invalidateQueries({ queryKey: ["maps"] });
-      toast.success("Раскидка успешно создана!");
+      toast.success(t("throwCreated"));
     },
     onError: (error) => {
-      toast.error("Ошибка при создании раскидки: " + error.message);
+      toast.error(`${t("errorCreating")} ${error.message}`);
     },
   });
 };
 
 export const useDeleteGrenadeThrow = () => {
   const queryClient = useQueryClient();
+  const { t } = useLanguage();
 
   return useMutation({
     mutationFn: async (throwId: string) => {
@@ -71,10 +74,10 @@ export const useDeleteGrenadeThrow = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["grenade-throws"] });
-      toast.success("Раскидка удалена!");
+      toast.success(t("throwDeleted"));
     },
     onError: (error) => {
-      toast.error("Ошибка при удалении: " + error.message);
+      toast.error(`${t("errorDeleting")} ${error.message}`);
     },
   });
 };
@@ -126,6 +129,7 @@ export const useUserFavorites = () => {
 export const useToggleFavorite = () => {
   const queryClient = useQueryClient();
   const { user } = useAuth();
+  const { t } = useLanguage();
 
   return useMutation({
     mutationFn: async ({
@@ -135,7 +139,7 @@ export const useToggleFavorite = () => {
       throwId: string;
       isFavorite: boolean;
     }) => {
-      if (!user) throw new Error("Must be logged in");
+      if (!user) throw new Error(t("errorLoginRequired"));
 
       if (isFavorite) {
         // Удаляем из избранного
@@ -160,3 +164,4 @@ export const useToggleFavorite = () => {
     },
   });
 };
+

@@ -101,6 +101,10 @@ export const translations = {
     errorVideoRequired: "Видео обязательно при создании раскидки",
     errorImageRequired: "Хотя бы одно изображение обязательно при создании раскидки",
     errorCreating: "Ошибка при создании раскидки:",
+    errorDeleting: "Ошибка при удалении:",
+    errorLoginRequired: "Нужно войти в аккаунт",
+    throwCreated: "Раскидка успешно создана!",
+    throwDeleted: "Раскидка удалена!",
     
     // Timestamps
     positionTimestamp: "Момент позиции (сек)",
@@ -233,6 +237,10 @@ export const translations = {
     errorVideoRequired: "Video is required when creating a lineup",
     errorImageRequired: "At least one image is required when creating a lineup",
     errorCreating: "Error creating lineup:",
+    errorDeleting: "Error deleting lineup:",
+    errorLoginRequired: "You need to sign in",
+    throwCreated: "Lineup created successfully!",
+    throwDeleted: "Lineup deleted!",
 
     // Timestamps
     positionTimestamp: "Position moment (sec)",

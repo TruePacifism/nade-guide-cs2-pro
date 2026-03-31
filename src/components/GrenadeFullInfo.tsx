@@ -47,6 +47,27 @@ const GrenadeFullInfo: React.FC<GrenadeFullInfoProps> = ({
     toggleFavorite.mutate({ throwId, isFavorite });
   };
 
+  const videoMarkers = [
+    grenadeThrow.position_timestamp !== null
+      ? {
+          time: grenadeThrow.position_timestamp,
+          label: t("markPosition"),
+          colorClassName: "bg-orange-400",
+        }
+      : null,
+    grenadeThrow.aim_timestamp !== null
+      ? {
+          time: grenadeThrow.aim_timestamp,
+          label: t("markAim"),
+          colorClassName: "bg-blue-400",
+        }
+      : null,
+  ].filter(Boolean) as {
+    time: number;
+    label?: string;
+    colorClassName?: string;
+  }[];
+
   return (
     <div
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
@@ -106,6 +127,13 @@ const GrenadeFullInfo: React.FC<GrenadeFullInfoProps> = ({
               className="rounded-[1.75rem]"
               videoRef={videoRef}
               isPreview
+              markers={videoMarkers}
+              onMarkerClick={(marker) => {
+                if (videoRef.current) {
+                  videoRef.current.pause();
+                  videoRef.current.currentTime = marker.time;
+                }
+              }}
             />
           </div>
         ) : (
