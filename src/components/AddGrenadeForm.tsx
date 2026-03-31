@@ -34,6 +34,7 @@ const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
   const { t } = useLanguage();
   const [loading, setLoading] = useState(false);
   const [isSelectingCoordinates, setIsSelectingCoordinates] = useState(false);
+  const videoPreviewRef = useRef<HTMLVideoElement>(null);
   const [coordinateMode, setCoordinateMode] = useState<
     "throw" | "landing" | null
   >(null);
