@@ -234,6 +234,18 @@ export const translations = {
     errorImageRequired: "At least one image is required when creating a lineup",
     errorCreating: "Error creating lineup:",
 
+    // Timestamps
+    positionTimestamp: "Position moment (sec)",
+    aimTimestamp: "Aim moment (sec)",
+    markPosition: "Mark position",
+    markAim: "Mark aim",
+    timestampHint: "Upload a video and play it, then click the button at the right moment",
+
+    // Delete
+    deleteThrow: "Delete lineup",
+    deleteConfirm: "Are you sure you want to delete this lineup?",
+    deleteYes: "Delete",
+
     // GrenadeFullInfo
     whereToStand: "Where to stand",
     whereToAim: "Where to aim",
