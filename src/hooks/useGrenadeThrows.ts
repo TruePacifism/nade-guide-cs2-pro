@@ -101,17 +101,11 @@ export const useUserCustomGrenades = () => {
         .eq("user_id", user.id);
 
       if (error) throw error;
-      const favorites = data ?? [];
-      const signedFavorites = await Promise.all(
-        favorites.map(async (favorite) => {
-          if (!favorite?.grenade_throws) return favorite;
-          const signedThrow = await attachSignedMediaUrls(
-            favorite.grenade_throws,
-          );
-          return { ...favorite, grenade_throws: signedThrow };
-        }),
+      const throws = data ?? [];
+      const signedThrows = await Promise.all(
+        throws.map((throwItem) => attachSignedMediaUrls(throwItem)),
       );
-      return signedFavorites;
+      return signedThrows;
     },
     enabled: !!user,
   });
