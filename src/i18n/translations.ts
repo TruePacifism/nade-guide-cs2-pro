@@ -301,6 +301,29 @@ export const translations = {
     // NotFound
     pageNotFound: "Page not found",
     returnHome: "Return to Home",
+
+    // About
+    aboutTitle: "About",
+    aboutSubtitle: "CS2 Grenade Throws — an interactive guide to grenade lineups for Counter-Strike 2",
+    aboutWhatIsTitle: "What is this?",
+    aboutWhatIsText: "A web application for browsing, saving, and uploading grenade lineups for Counter-Strike 2. The platform provides an interactive map-based experience: users can explore lineups by map, grenade type, and difficulty, preview media, and contribute their own lineups with screenshots or video.",
+    aboutFeaturesTitle: "Features",
+    aboutFeatureMaps: "Maps & Lineups",
+    aboutFeatureMapsDesc: "Map selection with preview. Lineups displayed on the map with throw point and landing point, connected by trajectory lines.",
+    aboutFeatureClustering: "Clustering & Navigation",
+    aboutFeatureClusteringDesc: "Nearby points are grouped into clusters. Horizontal scrolling through lineups inside a cluster.",
+    aboutFeatureFiltering: "Filtering",
+    aboutFeatureFilteringDesc: "By grenade type (smoke, flash, HE, molotov, decoy), difficulty, side (CT/T), and throw type.",
+    aboutFeatureMedia: "Media",
+    aboutFeatureMediaDesc: "Video preview with quick timeline controls to jump to position and aim moments. Screenshot support (setup, aim, result).",
+    aboutFeatureAccounts: "Accounts",
+    aboutFeatureAccountsDesc: "Email/password and Google OAuth authentication. Favorites system. Upload your own lineups. Profile settings.",
+    aboutTechTitle: "Tech Stack",
+    aboutTechFrontend: "Frontend",
+    aboutTechBackend: "Backend",
+    aboutAuthorTitle: "Author",
+    aboutAuthorName: "Evgenii Kondratenko",
+    aboutViewOnGithub: "GitHub",
   },
 } as const;
 
