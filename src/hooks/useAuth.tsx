@@ -41,10 +41,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   };
   const getRedirectUrl = () => {
     const envRedirectUrl = import.meta.env.VITE_AUTH_REDIRECT_URL;
-    const base =
-      envRedirectUrl && envRedirectUrl.trim().length > 0
-        ? envRedirectUrl.trim()
-        : window.location.origin;
+    if (!envRedirectUrl || envRedirectUrl.trim().length === 0) {
+      throw new Error(
+        "VITE_AUTH_REDIRECT_URL is not set. Configure it to a full redirect URL.",
+      );
+    }
+    const base = envRedirectUrl.trim();
     return base.endsWith("/") ? base : `${base}/`;
   };
 
@@ -62,34 +64,31 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       setLoading(false);
     };
 
-    // Listen for auth changes — avoid async work directly in the callback
-    // to prevent blocking subsequent auth events (critical for Google OAuth)
+    const handleAuthChange = async (nextSession: Session | null) => {
+      if (!isMounted) return;
+
+      if (!nextSession?.user) {
+        setAuthState(nextSession, null);
+        return;
+      }
+
+      const { profile, error } = await loadProfile(nextSession.user.id);
+      if (!isMounted) return;
+
+      if (error) {
+        console.error("Failed to load profile", error);
+        setAuthState(nextSession, null);
+        return;
+      }
+
+      setAuthState(nextSession, profile);
+    };
+
+    // Listen for auth changes — keep callback sync and run async work separately.
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, nextSession) => {
-      if (!isMounted) return;
-
-      setSession(nextSession);
-      setUser(nextSession?.user ?? null);
-
-      if (nextSession?.user) {
-        // Load profile outside the callback to avoid deadlocks
-        setTimeout(async () => {
-          if (!isMounted) return;
-          const { profile, error } = await loadProfile(nextSession.user.id);
-          if (!isMounted) return;
-          if (error) {
-            console.error("Failed to load profile", error);
-            setProfile(null);
-          } else {
-            setProfile(profile);
-          }
-          setLoading(false);
-        }, 0);
-      } else {
-        setProfile(null);
-        setLoading(false);
-      }
+      void handleAuthChange(nextSession);
     });
 
     const initSession = async () => {
