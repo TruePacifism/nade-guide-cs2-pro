@@ -24,6 +24,23 @@ interface AddGrenadeFormProps {
   onSuccess: () => void;
 }
 
+type GrenadeFormData = {
+  name: string;
+  description: string;
+  grenade_type: GrenadeType;
+  difficulty: DifficultyLevel;
+  team: TeamType;
+  video_url: string | null;
+  throw_point_x: number;
+  throw_point_y: number;
+  landing_point_x: number;
+  landing_point_y: number;
+  media_type: "video" | "screenshots";
+  throw_types: ThrowType[];
+  position_timestamp: number | null;
+  aim_timestamp: number | null;
+};
+
 const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
   map,
   isOpen,
@@ -35,7 +52,7 @@ const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
   const [loading, setLoading] = useState(false);
   const [isSelectingCoordinates, setIsSelectingCoordinates] = useState(false);
   const videoPreviewRef = useRef<HTMLVideoElement>(null);
-  const videoLinkInputRef = useRef<HTMLInputElement | null>(null);
+  const videoLinkInputRef = useRef<HTMLInputElement>(null);
   const [coordinateMode, setCoordinateMode] = useState<
     "throw" | "landing" | null
   >(null);
@@ -51,13 +68,13 @@ const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
     "position" | "aim" | null
   >(null);
   const pendingTimestampType = useRef<"position" | "aim" | null>(null);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<GrenadeFormData>({
     name: "",
     description: "",
     grenade_type: "smoke" as GrenadeType,
     difficulty: "medium" as DifficultyLevel,
     team: "both" as TeamType,
-    video_url: null as string | null,
+    video_url: null,
     throw_point_x: 0,
     throw_point_y: 0,
     landing_point_x: 0,
@@ -76,6 +93,13 @@ const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
   const MAX_VIDEO_SIZE_MB = 200;
   const MAX_IMAGE_SIZE_MB = 10;
   const BYTES_IN_MB = 1024 * 1024;
+  const screenshotCount =
+    Number(!!uploadedFiles.setup_image) +
+    Number(!!uploadedFiles.aim_image) +
+    Number(!!uploadedFiles.result_image);
+  const hasAllScreenshots = screenshotCount === 3;
+  const hasAnyScreenshot = screenshotCount > 0;
+  const screenshotsValid = hasAllScreenshots || hasAnyScreenshot;
 
   const throwTypeOptions: { value: ThrowType; label: string }[] = [
     { value: "standing", label: t("throwStanding") },
@@ -210,7 +234,11 @@ const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
   const handleFileUpload = async (
     file: File,
     path: string,
+    kind: "video" | "image",
   ): Promise<string> => {
+    if (!validateFile(file, kind)) {
+      throw new Error("Invalid file");
+    }
     const fileExt = file.name.split(".").pop();
     const fileName = `${uuidv4()}.${fileExt}`;
     const filePath = `${path}/${fileName}`;
@@ -280,12 +308,7 @@ const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
       toast.error(t("errorVideoRequired"));
       return;
     }
-    const hasAnyScreenshot =
-      !!uploadedFiles.setup_image ||
-      !!uploadedFiles.aim_image ||
-      !!uploadedFiles.result_image;
-
-    if (formData.media_type === "screenshots" && !hasAnyScreenshot) {
+    if (formData.media_type === "screenshots" && !screenshotsValid) {
       toast.error(t("errorImageRequired"));
       return;
     }
@@ -321,24 +344,31 @@ const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
 
       // Upload files if they exist
       if (uploadedFiles.video) {
-        video_url = await handleFileUpload(uploadedFiles.video, "videos");
+        video_url = await handleFileUpload(
+          uploadedFiles.video,
+          "videos",
+          "video",
+        );
       }
       if (uploadedFiles.setup_image) {
         setup_image_url = await handleFileUpload(
           uploadedFiles.setup_image,
           "images",
+          "image",
         );
       }
       if (uploadedFiles.aim_image) {
         aim_image_url = await handleFileUpload(
           uploadedFiles.aim_image,
           "images",
+          "image",
         );
       }
       if (uploadedFiles.result_image) {
         result_image_url = await handleFileUpload(
           uploadedFiles.result_image,
           "images",
+          "image",
         );
       }
 
@@ -913,9 +943,7 @@ const AddGrenadeForm: React.FC<AddGrenadeFormProps> = ({
                       !formData.video_url &&
                       !uploadedFiles.video) ||
                     (formData.media_type === "screenshots" &&
-                      !uploadedFiles.aim_image &&
-                      !uploadedFiles.setup_image &&
-                      !uploadedFiles.result_image)
+                      !screenshotsValid)
                   }
                   className="bg-orange-500 hover:bg-orange-600 text-white disabled:opacity-50 order-first sm:order-last"
                 >

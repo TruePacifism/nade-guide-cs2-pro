@@ -26,6 +26,7 @@ const GrenadeFullInfo: React.FC<GrenadeFullInfoProps> = ({
   const toggleFavorite = useToggleFavorite();
   const deleteThrow = useDeleteGrenadeThrow();
   const videoRef = useRef<HTMLVideoElement>(null);
+  const heartRef = useRef<SVGSVGElement>(null);
   const { t } = useLanguage();
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
@@ -91,7 +92,7 @@ const GrenadeFullInfo: React.FC<GrenadeFullInfoProps> = ({
               <button
                 onClick={() => {
                   handleToggleFavorite(grenadeThrow.id);
-                  const heart = document.getElementById(`heart-${grenadeThrow.id}`);
+                  const heart = heartRef.current;
                   if (heart) {
                     heart.classList.remove("animate-ping");
                     void heart.offsetWidth;
@@ -101,7 +102,7 @@ const GrenadeFullInfo: React.FC<GrenadeFullInfoProps> = ({
                 className="p-1 h-fit w-fit bg-transparent hover:bg-transparent group"
               >
                 <Heart
-                  id={`heart-${grenadeThrow.id}`}
+                  ref={heartRef}
                   size={24}
                   className={`transition-colors ${
                     isThrowFavorite(grenadeThrow.id)

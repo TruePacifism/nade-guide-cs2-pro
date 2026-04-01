@@ -38,26 +38,48 @@ const Auth = () => {
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    const { error } = await signIn(formData.email, formData.password);
-    if (error) {
-      toast.error(t("signInError") + error.message);
-    } else {
+    try {
+      const { error } = await signIn(formData.email, formData.password);
+      if (error) {
+        toast.error(t("signInError") + error.message);
+        console.error("Sign in failed", error);
+        return;
+      }
       toast.success(t("signInSuccess"));
       navigate("/");
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+      toast.error(t("signInError") + errorMessage);
+      console.error("Sign in failed", error);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    const { error } = await signUp(formData.email, formData.password, formData.username);
-    if (error) {
-      toast.error(t("signUpError") + error.message);
-    } else {
+    try {
+      const { error } = await signUp(
+        formData.email,
+        formData.password,
+        formData.username,
+      );
+      if (error) {
+        toast.error(t("signUpError") + error.message);
+        console.error("Sign up failed", error);
+        return;
+      }
       toast.success(t("signUpSuccess"));
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+      toast.error(t("signUpError") + errorMessage);
+      console.error("Sign up failed", error);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -66,11 +88,20 @@ const Auth = () => {
 
   const handleGoogleSignIn = async () => {
     setLoading(true);
-    const { error } = await signInWithGoogle();
-    if (error) {
-      toast.error(t("googleSignInError") + error.message);
+    try {
+      const { error } = await signInWithGoogle();
+      if (error) {
+        toast.error(t("googleSignInError") + error.message);
+        console.error("Google sign in failed", error);
+      }
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+      toast.error(t("googleSignInError") + errorMessage);
+      console.error("Google sign in failed", error);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   return (
