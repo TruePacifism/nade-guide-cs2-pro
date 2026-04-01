@@ -62,24 +62,34 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       setLoading(false);
     };
 
-    // РЎР»СѓС€Р°РµРј РёР·РјРµРЅРµРЅРёСЏ Р°РІС‚РѕСЂРёР·Р°С†РёРё
+    // Listen for auth changes — avoid async work directly in the callback
+    // to prevent blocking subsequent auth events (critical for Google OAuth)
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (_event, nextSession) => {
+    } = supabase.auth.onAuthStateChange((_event, nextSession) => {
       if (!isMounted) return;
 
-      if (nextSession?.user) {
-        const { profile, error } = await loadProfile(nextSession.user.id);
-        if (error) {
-          console.error("Failed to load profile", error);
-          setAuthState(nextSession, null);
-          return;
-        }
-        setAuthState(nextSession, profile);
-        return;
-      }
+      setSession(nextSession);
+      setUser(nextSession?.user ?? null);
 
-      setAuthState(nextSession, null);
+      if (nextSession?.user) {
+        // Load profile outside the callback to avoid deadlocks
+        setTimeout(async () => {
+          if (!isMounted) return;
+          const { profile, error } = await loadProfile(nextSession.user.id);
+          if (!isMounted) return;
+          if (error) {
+            console.error("Failed to load profile", error);
+            setProfile(null);
+          } else {
+            setProfile(profile);
+          }
+          setLoading(false);
+        }, 0);
+      } else {
+        setProfile(null);
+        setLoading(false);
+      }
     });
 
     const initSession = async () => {
