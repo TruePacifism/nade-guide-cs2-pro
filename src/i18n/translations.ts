@@ -138,6 +138,29 @@ export const translations = {
     // NotFound
     pageNotFound: "Страница не найдена",
     returnHome: "Вернуться на главную",
+
+    // About
+    aboutTitle: "О проекте",
+    aboutSubtitle: "CS2 Grenade Throws — интерактивный гид по раскидкам гранат для Counter-Strike 2",
+    aboutWhatIsTitle: "Что это?",
+    aboutWhatIsText: "Веб-приложение для изучения, сохранения и загрузки раскидок гранат в Counter-Strike 2. Платформа предоставляет интерактивный опыт на основе карт: пользователи могут исследовать раскидки по карте, типу гранаты и сложности, просматривать медиа и добавлять свои собственные раскидки.",
+    aboutFeaturesTitle: "Возможности",
+    aboutFeatureMaps: "Карты и раскидки",
+    aboutFeatureMapsDesc: "Выбор карт с превью. Раскидки отображаются на карте с точками броска и приземления, соединёнными траекторией.",
+    aboutFeatureClustering: "Кластеризация и навигация",
+    aboutFeatureClusteringDesc: "Близлежащие точки группируются в кластеры. Горизонтальная прокрутка раскидок внутри кластера.",
+    aboutFeatureFiltering: "Фильтрация",
+    aboutFeatureFilteringDesc: "По типу гранаты (smoke, flash, HE, molotov, decoy), сложности, стороне (CT/T) и типу броска.",
+    aboutFeatureMedia: "Медиа",
+    aboutFeatureMediaDesc: "Видеопревью с быстрой перемоткой к моментам позиции и прицела. Поддержка скриншотов (позиция, прицел, результат).",
+    aboutFeatureAccounts: "Аккаунты",
+    aboutFeatureAccountsDesc: "Аутентификация по email/паролю и через Google. Система избранного. Загрузка своих раскидок. Настройки профиля.",
+    aboutTechTitle: "Технологии",
+    aboutTechFrontend: "Фронтенд",
+    aboutTechBackend: "Бэкенд",
+    aboutAuthorTitle: "Автор",
+    aboutAuthorName: "Evgenii Kondratenko",
+    aboutViewOnGithub: "GitHub",
   },
   en: {
     // Common
@@ -278,6 +301,29 @@ export const translations = {
     // NotFound
     pageNotFound: "Page not found",
     returnHome: "Return to Home",
+
+    // About
+    aboutTitle: "About",
+    aboutSubtitle: "CS2 Grenade Throws — an interactive guide to grenade lineups for Counter-Strike 2",
+    aboutWhatIsTitle: "What is this?",
+    aboutWhatIsText: "A web application for browsing, saving, and uploading grenade lineups for Counter-Strike 2. The platform provides an interactive map-based experience: users can explore lineups by map, grenade type, and difficulty, preview media, and contribute their own lineups with screenshots or video.",
+    aboutFeaturesTitle: "Features",
+    aboutFeatureMaps: "Maps & Lineups",
+    aboutFeatureMapsDesc: "Map selection with preview. Lineups displayed on the map with throw point and landing point, connected by trajectory lines.",
+    aboutFeatureClustering: "Clustering & Navigation",
+    aboutFeatureClusteringDesc: "Nearby points are grouped into clusters. Horizontal scrolling through lineups inside a cluster.",
+    aboutFeatureFiltering: "Filtering",
+    aboutFeatureFilteringDesc: "By grenade type (smoke, flash, HE, molotov, decoy), difficulty, side (CT/T), and throw type.",
+    aboutFeatureMedia: "Media",
+    aboutFeatureMediaDesc: "Video preview with quick timeline controls to jump to position and aim moments. Screenshot support (setup, aim, result).",
+    aboutFeatureAccounts: "Accounts",
+    aboutFeatureAccountsDesc: "Email/password and Google OAuth authentication. Favorites system. Upload your own lineups. Profile settings.",
+    aboutTechTitle: "Tech Stack",
+    aboutTechFrontend: "Frontend",
+    aboutTechBackend: "Backend",
+    aboutAuthorTitle: "Author",
+    aboutAuthorName: "Evgenii Kondratenko",
+    aboutViewOnGithub: "GitHub",
   },
 } as const;
 
