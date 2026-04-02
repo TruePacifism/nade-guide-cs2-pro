@@ -95,6 +95,12 @@ const Index = () => {
           </div>
           <div className="flex items-center space-x-2 w-full sm:w-auto">
             <LanguageToggle className="hidden sm:inline-flex" />
+            <Link to="/about">
+              <Button variant="ghost" size="sm" className="text-slate-300 hover:text-slate-900 hover:bg-slate-300">
+                <Info size={14} className="mr-1" />
+                <span className="text-xs sm:text-sm">{t("aboutTitle")}</span>
+              </Button>
+            </Link>
             <Button
               variant="ghost"
               size="sm"
