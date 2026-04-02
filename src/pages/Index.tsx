@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { Info } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useMaps } from "@/hooks/useMaps";
 import MapSelector from "../components/MapSelector";
