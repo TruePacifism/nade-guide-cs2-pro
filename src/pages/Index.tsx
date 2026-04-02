@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { Info } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useMaps } from "@/hooks/useMaps";
 import MapSelector from "../components/MapSelector";
@@ -32,7 +33,13 @@ const Index = () => {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
         <div className="container mx-auto px-4 py-6 sm:py-8">
-          <div className="flex justify-end mb-4">
+          <div className="flex justify-end items-center gap-2 mb-4">
+            <Link to="/about">
+              <Button variant="ghost" size="sm" className="text-slate-300 hover:text-slate-900 hover:bg-slate-300">
+                <Info size={14} className="mr-1" />
+                <span className="text-xs sm:text-sm">{t("aboutTitle")}</span>
+              </Button>
+            </Link>
             <LanguageToggle />
           </div>
           <div className="text-center mb-6 sm:mb-8">
@@ -88,6 +95,12 @@ const Index = () => {
           </div>
           <div className="flex items-center space-x-2 w-full sm:w-auto">
             <LanguageToggle className="hidden sm:inline-flex" />
+            <Link to="/about">
+              <Button variant="ghost" size="sm" className="text-slate-300 hover:text-slate-900 hover:bg-slate-300">
+                <Info size={14} className="mr-1" />
+                <span className="text-xs sm:text-sm">{t("aboutTitle")}</span>
+              </Button>
+            </Link>
             <Button
               variant="ghost"
               size="sm"
