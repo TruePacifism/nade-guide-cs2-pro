@@ -139,6 +139,22 @@ export const translations = {
     pageNotFound: "Страница не найдена",
     returnHome: "Вернуться на главную",
 
+    // Search & Recommendations
+    searchPlaceholder: "Поиск по названию или описанию...",
+    allDifficulties: "Все сложности",
+    allThrowTypes: "Все типы бросков",
+    sortByDate: "По дате",
+    sortByPopularity: "По популярности",
+    sortBy: "Сортировка",
+    filters: "Фильтры",
+    resetAreaSearch: "Сбросить зону",
+    areaSearchHint: "Кликните на карту, чтобы найти раскидки рядом",
+    throwsFoundCount: "Найдено раскидок",
+    popularThrows: "Популярные раскидки",
+    similarThrows: "Похожие раскидки",
+    noResults: "Раскидки не найдены",
+    searchByArea: "Поиск по области",
+
     // About
     aboutTitle: "О проекте",
     aboutSubtitle: "CS2 Grenade Throws — интерактивный гид по раскидкам гранат для Counter-Strike 2",
