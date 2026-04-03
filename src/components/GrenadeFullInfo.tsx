@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useMemo } from "react";
 import { GrenadeThrow, ThrowTypes } from "../types/map";
 import { Crosshair, Heart, Trash2, X } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
@@ -13,6 +13,7 @@ interface GrenadeFullInfoProps {
   isOpen: boolean;
   onClose: () => void;
   onDeleted?: () => void;
+  allThrows?: GrenadeThrow[];
 }
 
 const GrenadeFullInfo: React.FC<GrenadeFullInfoProps> = ({
@@ -20,6 +21,7 @@ const GrenadeFullInfo: React.FC<GrenadeFullInfoProps> = ({
   isOpen,
   onClose,
   onDeleted,
+  allThrows = [],
 }) => {
   const { user } = useAuth();
   const { data: userFavorites } = useUserFavorites();
@@ -29,6 +31,23 @@ const GrenadeFullInfo: React.FC<GrenadeFullInfoProps> = ({
   const heartRef = useRef<SVGSVGElement>(null);
   const { t } = useLanguage();
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [viewingSimilar, setViewingSimilar] = useState<GrenadeThrow | null>(null);
+
+  const similarThrows = useMemo(() => {
+    const current = viewingSimilar || grenadeThrow;
+    return allThrows
+      .filter((t) => t.id !== current.id && t.map_id === current.map_id)
+      .map((t) => ({
+        ...t,
+        distance: Math.sqrt(
+          Math.pow(t.landing_point_x - current.landing_point_x, 2) +
+          Math.pow(t.landing_point_y - current.landing_point_y, 2)
+        ),
+      }))
+      .filter((t) => t.distance <= 10)
+      .sort((a, b) => a.distance - b.distance)
+      .slice(0, 4);
+  }, [allThrows, grenadeThrow, viewingSimilar]);
 
   if (!isOpen) return null;
 
@@ -272,6 +291,43 @@ const GrenadeFullInfo: React.FC<GrenadeFullInfoProps> = ({
             </div>
           )}
         </div>
+
+          {/* Similar Throws */}
+          {similarThrows.length > 0 && (
+            <div className="p-6 pt-0">
+              <h3 className="text-white font-semibold mb-3">{t("similarThrows")}</h3>
+              <div className="grid grid-cols-2 gap-2">
+                {similarThrows.map((similar) => (
+                  <button
+                    key={similar.id}
+                    onClick={() => setViewingSimilar(similar)}
+                    className="bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-lg p-2 text-left transition-colors"
+                  >
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${
+                        similar.grenade_type === "smoke" ? "bg-gray-500"
+                        : similar.grenade_type === "flash" ? "bg-yellow-500"
+                        : similar.grenade_type === "he" ? "bg-red-500"
+                        : similar.grenade_type === "molotov" ? "bg-orange-500"
+                        : "bg-green-500"
+                      }`} />
+                      <span className="text-white text-xs font-medium truncate">{similar.name}</span>
+                    </div>
+                    <div className="flex items-center gap-1 text-[10px]">
+                      <span className="text-slate-400 uppercase">{similar.grenade_type}</span>
+                      <span className={`${
+                        similar.difficulty === "easy" ? "text-green-400"
+                        : similar.difficulty === "medium" ? "text-yellow-400"
+                        : "text-red-400"
+                      }`}>
+                        {t(`difficulty${similar.difficulty.charAt(0).toUpperCase() + similar.difficulty.slice(1)}` as any)}
+                      </span>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
       </div>
     </div>
   );
