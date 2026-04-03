@@ -95,7 +95,7 @@ const GrenadeFullInfo: React.FC<GrenadeFullInfoProps> = ({
                   const heart = heartRef.current;
                   if (heart) {
                     heart.classList.remove("animate-ping");
-                    void heart.offsetWidth;
+                    void (heart as unknown as HTMLElement).offsetWidth;
                     heart.classList.add("animate-ping");
                   }
                 }}
