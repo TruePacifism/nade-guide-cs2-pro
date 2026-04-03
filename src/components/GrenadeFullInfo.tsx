@@ -21,6 +21,7 @@ const GrenadeFullInfo: React.FC<GrenadeFullInfoProps> = ({
   isOpen,
   onClose,
   onDeleted,
+  allThrows = [],
 }) => {
   const { user } = useAuth();
   const { data: userFavorites } = useUserFavorites();
@@ -30,6 +31,23 @@ const GrenadeFullInfo: React.FC<GrenadeFullInfoProps> = ({
   const heartRef = useRef<SVGSVGElement>(null);
   const { t } = useLanguage();
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [viewingSimilar, setViewingSimilar] = useState<GrenadeThrow | null>(null);
+
+  const similarThrows = useMemo(() => {
+    const current = viewingSimilar || grenadeThrow;
+    return allThrows
+      .filter((t) => t.id !== current.id && t.map_id === current.map_id)
+      .map((t) => ({
+        ...t,
+        distance: Math.sqrt(
+          Math.pow(t.landing_point_x - current.landing_point_x, 2) +
+          Math.pow(t.landing_point_y - current.landing_point_y, 2)
+        ),
+      }))
+      .filter((t) => t.distance <= 10)
+      .sort((a, b) => a.distance - b.distance)
+      .slice(0, 4);
+  }, [allThrows, grenadeThrow, viewingSimilar]);
 
   if (!isOpen) return null;
 
