@@ -318,6 +318,22 @@ export const translations = {
     pageNotFound: "Page not found",
     returnHome: "Return to Home",
 
+    // Search & Recommendations
+    searchPlaceholder: "Search by name or description...",
+    allDifficulties: "All difficulties",
+    allThrowTypes: "All throw types",
+    sortByDate: "By date",
+    sortByPopularity: "By popularity",
+    sortBy: "Sort by",
+    filters: "Filters",
+    resetAreaSearch: "Reset area",
+    areaSearchHint: "Click on the map to find nearby lineups",
+    throwsFoundCount: "Lineups found",
+    popularThrows: "Popular lineups",
+    similarThrows: "Similar lineups",
+    noResults: "No lineups found",
+    searchByArea: "Search by area",
+
     // About
     aboutTitle: "About",
     aboutSubtitle: "CS2 Grenade Throws — an interactive guide to grenade lineups for Counter-Strike 2",
