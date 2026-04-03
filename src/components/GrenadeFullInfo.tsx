@@ -291,6 +291,43 @@ const GrenadeFullInfo: React.FC<GrenadeFullInfoProps> = ({
             </div>
           )}
         </div>
+
+          {/* Similar Throws */}
+          {similarThrows.length > 0 && (
+            <div className="p-6 pt-0">
+              <h3 className="text-white font-semibold mb-3">{t("similarThrows")}</h3>
+              <div className="grid grid-cols-2 gap-2">
+                {similarThrows.map((similar) => (
+                  <button
+                    key={similar.id}
+                    onClick={() => setViewingSimilar(similar)}
+                    className="bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-lg p-2 text-left transition-colors"
+                  >
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${
+                        similar.grenade_type === "smoke" ? "bg-gray-500"
+                        : similar.grenade_type === "flash" ? "bg-yellow-500"
+                        : similar.grenade_type === "he" ? "bg-red-500"
+                        : similar.grenade_type === "molotov" ? "bg-orange-500"
+                        : "bg-green-500"
+                      }`} />
+                      <span className="text-white text-xs font-medium truncate">{similar.name}</span>
+                    </div>
+                    <div className="flex items-center gap-1 text-[10px]">
+                      <span className="text-slate-400 uppercase">{similar.grenade_type}</span>
+                      <span className={`${
+                        similar.difficulty === "easy" ? "text-green-400"
+                        : similar.difficulty === "medium" ? "text-yellow-400"
+                        : "text-red-400"
+                      }`}>
+                        {t(`difficulty${similar.difficulty.charAt(0).toUpperCase() + similar.difficulty.slice(1)}` as any)}
+                      </span>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
       </div>
     </div>
   );
