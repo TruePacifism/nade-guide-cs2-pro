@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useMemo } from "react";
 import { GrenadeThrow, ThrowTypes } from "../types/map";
 import { Crosshair, Heart, Trash2, X } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
@@ -13,6 +13,7 @@ interface GrenadeFullInfoProps {
   isOpen: boolean;
   onClose: () => void;
   onDeleted?: () => void;
+  allThrows?: GrenadeThrow[];
 }
 
 const GrenadeFullInfo: React.FC<GrenadeFullInfoProps> = ({
